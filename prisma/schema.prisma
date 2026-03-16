@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Nota: SQLite não suporta enums nem Json nativamente.
+// Os campos usam String no banco, mas TypeScript garante os valores corretos via tipos.
+// Enums de domínio são definidos em atlas/types/index.ts
+
+model AtlasItem {
+  id        String   @id @default(cuid())
+  title     String
+  // ItemType: PAGE | PERSON | WORK | OBJECT | CONCEPT | COURSE | READING | REPERTOIRE
+  type      String   @default("PAGE")
+  // AreaType: ACADEMIA | ARTES | CULTURA | STUDIO | COMPASS | ATLAS
+  area      String   @default("ATLAS")
+  // StatusType: ACTIVE | BACKLOG | COMPLETED | ARCHIVED | FAVORITE
+  status    String   @default("ACTIVE")
+  // Conteúdo BlockNote serializado como string JSON
+  content   String?
+  // Metadados flexíveis (JSON serializado): período, localização, ISBN, etc.
+  metadata  String?
+  // ViewType: LIST | TABLE | KANBAN | GALLERY | ATLAS_MAP
+  viewType  String   @default("LIST")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tags          Tag[]           @relation("AtlasItemTags")
+  relationsFrom AtlasRelation[] @relation("RelationFrom")
+  relationsTo   AtlasRelation[] @relation("RelationTo")
+}
+
+model Tag {
+  id    String      @id @default(cuid())
+  name  String      @unique
+  color String      @default("#C8A45A")
+  items AtlasItem[] @relation("AtlasItemTags")
+}
+
+// Relações dirigidas entre itens do Atlas
+model AtlasRelation {
+  id           String    @id @default(cuid())
+  fromItem     AtlasItem @relation("RelationFrom", fields: [fromItemId], references: [id], onDelete: Cascade)
+  fromItemId   String
+  toItem       AtlasItem @relation("RelationTo", fields: [toItemId], references: [id], onDelete: Cascade)
+  toItemId     String
+  // Exemplos: "inspira", "parte-de", "contradiz", "autor-de", "referencia"
+  relationType String
+  createdAt    DateTime  @default(now())
+}
