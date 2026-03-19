@@ -10,7 +10,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   primary:
-    "bg-solar-amber text-solar-void font-semibold hover:bg-solar-amber-light active:scale-[0.98]",
+    "bg-solar-amber text-solar-void font-semibold hover:bg-solar-amber-lt active:scale-[0.98]",
   ghost:
     "bg-transparent text-solar-muted border border-solar-border hover:text-solar-text hover:border-solar-amber/40",
   destructive:

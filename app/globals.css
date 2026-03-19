@@ -7,15 +7,816 @@
 /* @import "@blocknote/react/style.css"; */
 /* Note: BlockNote CSS será importado dentro do componente com "use client" */
 
-/* ── Reset e base ──────────────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════════════════
+   SISTEMA DE TEMAS — 32 variações via data-theme
+   Cada tema define 8 variáveis RGB + variáveis de padrão visual
+   ══════════════════════════════════════════════════════════════════════════════ */
 
+/* 1. DEFAULT — Cosmos Escuro (tema original) */
 :root {
+  --c-void:    13  13  15;
+  --c-deep:    19  19  26;
+  --c-surface: 28  28  38;
+  --c-border:  42  42  58;
+  --c-text:   232 228 220;
+  --c-muted:  138 134 120;
+  --c-accent:  110  86 207;
+  --c-accent-lt:150 120 230;
+  --c-teal:      0 200 180;
+  --c-teal-lt:   0 230 210;
+
   --background: #0D0D0F;
   --foreground: #E8E4DC;
 
-  /* Grain texture — noise SVG inline como data URI */
+  /* Grain texture */
   --grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+  --grain-opacity: 0.04;
+
+  /* Grid de fundo — alinhada ao container max-w-6xl (72rem = 1152px) */
+  --grid-col-width: calc(min(100vw, 72rem) / 8);
+  --grid-col-offset: max(0px, calc(50vw - 36rem));
+  --grid-color: rgba(42, 42, 58, 0.18);
+
+  /* Padrão visual: grade vertical alinhada ao container */
+  --bg-pattern-image:
+    linear-gradient(to right, var(--grid-color) 1px, transparent 1px);
+  --bg-pattern-size: var(--grid-col-width) 100%;
+  --bg-pattern-pos: var(--grid-col-offset) 0;
 }
+
+/* 2. PAPEL AMARELO — Caderno de papel envelhecido (tema padrão) */
+[data-theme="papel-amarelo"] {
+  --c-void:   248 242 210;
+  --c-deep:   240 234 200;
+  --c-surface:230 222 185;
+  --c-border: 185 165 115;
+  --c-text:    38  28  14;
+  --c-muted:   88  70  42;
+  --c-accent:  115  72  20;
+  --c-accent-lt:158 102  40;
+  --c-teal:    40 130  80;
+  --grain-opacity: 0.10;
+  --grid-color: rgba(115, 85, 35, 0.13);
+
+  /* Linhas horizontais de caderno + margem vertical vermelha + grain */
+  --bg-pattern-image:
+    linear-gradient(to right, rgba(195, 75, 75, 0.22) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(115, 85, 35, 0.16) 1px, transparent 1px);
+  --bg-pattern-size: 10ch 100%, 100% 30px;
+  --bg-pattern-pos: 8ch 0, 0 6px;
+}
+
+/* 3. TERMINAL — Fósforo Verde em Preto */
+[data-theme="terminal"] {
+  --c-void:     0   0   0;
+  --c-deep:     5   8   5;
+  --c-surface: 10  18  10;
+  --c-border:  20  40  20;
+  --c-text:    51 255  51;
+  --c-muted:   30 140  30;
+  --c-accent:   51 255  51;
+  --c-accent-lt:100 255 100;
+  --grain-opacity: 0.03;
+  --grid-color: rgba(51, 255, 51, 0.07);
+
+  /* Linhas horizontais de varredura CRT */
+  --bg-pattern-image:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px, transparent 3px,
+      rgba(51, 255, 51, 0.04) 3px, rgba(51, 255, 51, 0.04) 4px
+    );
+  --bg-pattern-size: 100% 4px;
+  --bg-pattern-pos: 0 0;
+}
+
+/* 4. BLUEPRINT — Planta Arquitetônica */
+[data-theme="blueprint"] {
+  --c-void:    12  32  68;
+  --c-deep:    16  42  88;
+  --c-surface: 20  52 108;
+  --c-border:  40  80 160;
+  --c-text:   220 235 255;
+  --c-muted:  140 165 210;
+  --c-accent:  255 220  80;
+  --c-accent-lt:255 240 140;
+  --grain-opacity: 0.02;
+  --grid-color: rgba(80, 140, 255, 0.15);
+
+  /* Grade de engenharia: linhas maiores + subdivisões */
+  --bg-pattern-image:
+    linear-gradient(to right, rgba(80, 140, 255, 0.22) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(80, 140, 255, 0.22) 1px, transparent 1px),
+    linear-gradient(to right, rgba(80, 140, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(80, 140, 255, 0.08) 1px, transparent 1px);
+  --bg-pattern-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+  --bg-pattern-pos: 0 0, 0 0, 0 0, 0 0;
+}
+
+/* 5. ACADEMIA — Sala de Leitura Clássica */
+[data-theme="academia"] {
+  --c-void:    12  10  18;
+  --c-deep:    20  16  30;
+  --c-surface: 30  24  45;
+  --c-border:  55  42  80;
+  --c-text:   230 220 200;
+  --c-muted:  140 125  95;
+  --c-accent:  180 140  60;
+  --c-accent-lt:210 170  90;
+  --grain-opacity: 0.05;
+  --grid-color: rgba(55, 42, 80, 0.25);
+
+  /* Hachura diagonal fina — estilo manuscrito acadêmico */
+  --bg-pattern-image:
+    repeating-linear-gradient(
+      45deg,
+      rgba(55, 42, 80, 0.14) 0px, rgba(55, 42, 80, 0.14) 1px,
+      transparent 1px, transparent 20px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(55, 42, 80, 0.07) 0px, rgba(55, 42, 80, 0.07) 1px,
+      transparent 1px, transparent 40px
+    );
+  --bg-pattern-size: 20px 20px, 40px 40px;
+  --bg-pattern-pos: 0 0, 0 0;
+}
+
+/* 6. AZULEJO — Azulejo de Lisboa */
+[data-theme="azulejo"] {
+  --c-void:    10  24  45;
+  --c-deep:    15  35  62;
+  --c-surface: 22  48  80;
+  --c-border:  50  90 150;
+  --c-text:   220 230 245;
+  --c-muted:  130 155 195;
+  --c-accent:  220 190 110;
+  --c-accent-lt:240 215 150;
+  --grain-opacity: 0.03;
+  --grid-color: rgba(50, 90, 150, 0.18);
+
+  /* Padrão azulejo: grade + diagonais cruzadas = geométrico português */
+  --bg-pattern-image:
+    linear-gradient(to right, rgba(50, 90, 150, 0.3) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(50, 90, 150, 0.3) 1px, transparent 1px),
+    repeating-linear-gradient(45deg, rgba(50, 90, 150, 0.14) 0px, rgba(50, 90, 150, 0.14) 1px, transparent 1px, transparent 14px),
+    repeating-linear-gradient(-45deg, rgba(50, 90, 150, 0.14) 0px, rgba(50, 90, 150, 0.14) 1px, transparent 1px, transparent 14px);
+  --bg-pattern-size: 40px 40px, 40px 40px, 40px 40px, 40px 40px;
+  --bg-pattern-pos: 0 0, 0 0, 0 0, 0 0;
+}
+
+/* 7. FLORESTA — Floresta Noturna */
+[data-theme="floresta"] {
+  --c-void:     8  18  12;
+  --c-deep:    12  26  18;
+  --c-surface: 18  38  26;
+  --c-border:  30  65  40;
+  --c-text:   210 235 215;
+  --c-muted:  110 155 120;
+  --c-accent:  124 252 106;
+  --c-accent-lt:160 255 145;
+  --grain-opacity: 0.04;
+  --grid-color: rgba(30, 65, 40, 0.25);
+
+  /* Padrão orgânico: pontos irregulares como vaga-lumes */
+  --bg-pattern-image:
+    radial-gradient(circle, rgba(124, 252, 106, 0.18) 1px, transparent 1px),
+    radial-gradient(circle, rgba(30, 65, 40, 0.4) 1px, transparent 1px);
+  --bg-pattern-size: 60px 60px, 30px 30px;
+  --bg-pattern-pos: 15px 10px, 0 0;
+}
+
+/* 8. AURORA — Aurora Boreal */
+[data-theme="aurora"] {
+  --c-void:     8   8  28;
+  --c-deep:    12  12  42;
+  --c-surface: 18  18  60;
+  --c-border:  40  30  90;
+  --c-text:   215 220 245;
+  --c-muted:  130 125 180;
+  --c-accent:   80 220 200;
+  --c-accent-lt:110 245 230;
+  --grain-opacity: 0.04;
+  --grid-color: rgba(80, 60, 160, 0.18);
+
+  /* Bandas diagonais da aurora */
+  --bg-pattern-image:
+    repeating-linear-gradient(
+      -55deg,
+      transparent 0px, transparent 28px,
+      rgba(80, 60, 160, 0.1) 28px, rgba(80, 60, 160, 0.1) 30px,
+      transparent 30px, transparent 58px,
+      rgba(80, 220, 200, 0.07) 58px, rgba(80, 220, 200, 0.07) 60px
+    );
+  --bg-pattern-size: 100px 100px;
+  --bg-pattern-pos: 0 0;
+}
+
+/* 9. JAZZ — Jazz Club de Veludo */
+[data-theme="jazz"] {
+  --c-void:    12   5   8;
+  --c-deep:    22   8  14;
+  --c-surface: 35  12  22;
+  --c-border:  70  25  40;
+  --c-text:   240 225 200;
+  --c-muted:  160 130 105;
+  --c-accent:  210 170  60;
+  --c-accent-lt:240 200  90;
+  --grain-opacity: 0.06;
+  --grid-color: rgba(70, 25, 40, 0.25);
+
+  /* Padrão espinha de peixe (herringbone) */
+  --bg-pattern-image:
+    repeating-linear-gradient(
+      45deg,
+      rgba(70, 25, 40, 0.22) 0px, rgba(70, 25, 40, 0.22) 1px,
+      transparent 1px, transparent 16px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(70, 25, 40, 0.22) 0px, rgba(70, 25, 40, 0.22) 1px,
+      transparent 1px, transparent 16px
+    );
+  --bg-pattern-size: 32px 32px, 32px 32px;
+  --bg-pattern-pos: 0 0, 0 0;
+}
+
+/* 10. MANUSCRITO — Pergaminho Antigo */
+[data-theme="manuscrito"] {
+  --c-void:   200 185 155;
+  --c-deep:   215 200 168;
+  --c-surface:228 215 182;
+  --c-border: 170 145 105;
+  --c-text:    40  28  15;
+  --c-muted:   95  75  50;
+  --c-accent:   90  48  18;
+  --c-accent-lt:130  70  30;
+  --grain-opacity: 0.09;
+  --grid-color: rgba(90, 65, 35, 0.12);
+
+  /* Linhas horizontais pautadas de pergaminho */
+  --bg-pattern-image:
+    linear-gradient(to bottom, rgba(90, 65, 35, 0.18) 1px, transparent 1px);
+  --bg-pattern-size: 100% 32px;
+  --bg-pattern-pos: 0 12px;
+}
+
+/* 11. NEON TOKYO — Cyberpunk Japonês */
+[data-theme="neon-tokyo"] {
+  --c-void:     5   0  12;
+  --c-deep:     8   2  18;
+  --c-surface: 14   5  28;
+  --c-border:  35  10  60;
+  --c-text:   240 230 255;
+  --c-muted:  160 130 200;
+  --c-accent:  255  30 180;
+  --c-accent-lt:255  80 210;
+  --grain-opacity: 0.03;
+  --grid-color: rgba(180, 30, 255, 0.08);
+
+  /* Grade pixel de circuito eletrônico */
+  --bg-pattern-image:
+    linear-gradient(to right, rgba(255, 30, 180, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(180, 30, 255, 0.08) 1px, transparent 1px),
+    radial-gradient(circle, rgba(255, 30, 180, 0.3) 1px, transparent 1px);
+  --bg-pattern-size: 24px 24px, 24px 24px, 48px 48px;
+  --bg-pattern-pos: 0 0, 0 0, 12px 12px;
+}
+
+/* 12. MERCÚRIO — Metal Líquido */
+[data-theme="mercurio"] {
+  --c-void:    15  15  18;
+  --c-deep:    22  22  28;
+  --c-surface: 32  32  40;
+  --c-border:  60  62  75;
+  --c-text:   220 225 235;
+  --c-muted:  130 135 148;
+  --c-accent:  185 195 215;
+  --c-accent-lt:215 220 235;
+  --grain-opacity: 0.04;
+  --grid-color: rgba(90, 95, 120, 0.18);
+
+  /* Matriz de pontos regulares — dot matrix */
+  --bg-pattern-image:
+    radial-gradient(circle, rgba(90, 95, 120, 0.5) 1px, transparent 1px);
+  --bg-pattern-size: 16px 16px;
+  --bg-pattern-pos: 0 0;
+}
+
+/* 13. VULCÃO — Lava e Cinzas */
+[data-theme="vulcao"] {
+  --c-void:    14   8   5;
+  --c-deep:    22  12   7;
+  --c-surface: 34  18  10;
+  --c-border:  65  30  15;
+  --c-text:   235 220 210;
+  --c-muted:  155 120  95;
+  --c-accent:  255  90  30;
+  --c-accent-lt:255 140  60;
+  --grain-opacity: 0.05;
+  --grid-color: rgba(90, 35, 15, 0.25);
+
+  /* Linhas diagonais cruzadas — textura de rocha */
+  --bg-pattern-image:
+    repeating-linear-gradient(
+      32deg,
+      rgba(90, 35, 15, 0.22) 0px, rgba(90, 35, 15, 0.22) 1px,
+      transparent 1px, transparent 42px
+    ),
+    repeating-linear-gradient(
+      -28deg,
+      rgba(90, 35, 15, 0.14) 0px, rgba(90, 35, 15, 0.14) 1px,
+      transparent 1px, transparent 68px
+    );
+  --bg-pattern-size: 80px 80px, 80px 80px;
+  --bg-pattern-pos: 0 0, 0 0;
+}
+
+/* 14. GELO — Ártico Cristalino */
+[data-theme="gelo"] {
+  --c-void:   200 215 230;
+  --c-deep:   215 228 242;
+  --c-surface:228 238 250;
+  --c-border: 160 185 210;
+  --c-text:    15  30  50;
+  --c-muted:   70  95 125;
+  --c-accent:   50 130 200;
+  --c-accent-lt: 80 165 235;
+  --grain-opacity: 0.03;
+  --grid-color: rgba(100, 145, 195, 0.15);
+
+  /* Grade de diamante — cristal de gelo */
+  --bg-pattern-image:
+    repeating-linear-gradient(
+      45deg,
+      rgba(100, 145, 195, 0.2) 0px, rgba(100, 145, 195, 0.2) 1px,
+      transparent 1px, transparent 20px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(100, 145, 195, 0.2) 0px, rgba(100, 145, 195, 0.2) 1px,
+      transparent 1px, transparent 20px
+    );
+  --bg-pattern-size: 40px 40px, 40px 40px;
+  --bg-pattern-pos: 0 0, 0 0;
+}
+
+/* 15. CARVÃO — Esboço a Carvão */
+[data-theme="carvao"] {
+  --c-void:    18  16  15;
+  --c-deep:    26  24  22;
+  --c-surface: 38  35  32;
+  --c-border:  60  56  52;
+  --c-text:   245 242 238;
+  --c-muted:  155 148 138;
+  --c-accent:  240 235 228;
+  --c-accent-lt:255 252 248;
+  --grain-opacity: 0.06;
+  --grid-color: rgba(80, 75, 68, 0.22);
+
+  /* Hachura tripla — carvão sobre papel */
+  --bg-pattern-image:
+    repeating-linear-gradient(0deg, rgba(80, 75, 68, 0.15) 0px, rgba(80, 75, 68, 0.15) 1px, transparent 1px, transparent 24px),
+    repeating-linear-gradient(90deg, rgba(80, 75, 68, 0.1) 0px, rgba(80, 75, 68, 0.1) 1px, transparent 1px, transparent 24px),
+    repeating-linear-gradient(45deg, rgba(80, 75, 68, 0.07) 0px, rgba(80, 75, 68, 0.07) 1px, transparent 1px, transparent 12px);
+  --bg-pattern-size: 24px 24px, 24px 24px, 12px 12px;
+  --bg-pattern-pos: 0 0, 0 0, 0 0;
+}
+
+/* 16. MUSEU — Galeria de Arte Contemporânea */
+[data-theme="museu"] {
+  --c-void:   248 246 242;
+  --c-deep:   240 238 234;
+  --c-surface:230 228 222;
+  --c-border: 190 186 178;
+  --c-text:    28  24  20;
+  --c-muted:   95  88  78;
+  --c-accent:  180  60  80;
+  --c-accent-lt:210  90 105;
+  --grain-opacity: 0.03;
+  --grid-color: rgba(140, 132, 120, 0.15);
+
+  /* Listras verticais sutis — parede de galeria */
+  --bg-pattern-image:
+    linear-gradient(to right, rgba(140, 132, 120, 0.13) 1px, transparent 1px);
+  --bg-pattern-size: 80px 100%;
+  --bg-pattern-pos: 0 0;
+}
+
+/* 17. SUBMARINO — Profundeza Militar */
+[data-theme="submarino"] {
+  --c-void:    10  14   8;
+  --c-deep:    15  22  12;
+  --c-surface: 22  32  18;
+  --c-border:  42  60  35;
+  --c-text:   195 215 185;
+  --c-muted:  100 130  90;
+  --c-accent:  180 165  80;
+  --c-accent-lt:210 195 110;
+  --grain-opacity: 0.05;
+  --grid-color: rgba(42, 60, 35, 0.28);
+
+  /* Pontos escalonados — sonar / radar */
+  --bg-pattern-image:
+    radial-gradient(circle, rgba(42, 60, 35, 0.5) 1px, transparent 1px),
+    radial-gradient(circle, rgba(42, 60, 35, 0.3) 1px, transparent 1px);
+  --bg-pattern-size: 24px 24px, 24px 24px;
+  --bg-pattern-pos: 0 0, 12px 12px;
+}
+
+/* 18. BOTÂNICA — Herbário Noturno */
+[data-theme="botanica"] {
+  --c-void:     8  18  14;
+  --c-deep:    14  28  20;
+  --c-surface: 20  40  28;
+  --c-border:  38  72  50;
+  --c-text:   225 235 215;
+  --c-muted:  120 150 115;
+  --c-accent:  195 175 100;
+  --c-accent-lt:225 205 135;
+  --grain-opacity: 0.04;
+  --grid-color: rgba(38, 72, 50, 0.25);
+
+  /* Nervuras de folha — linhas diagonais em V */
+  --bg-pattern-image:
+    repeating-linear-gradient(
+      30deg,
+      rgba(38, 72, 50, 0.2) 0px, rgba(38, 72, 50, 0.2) 1px,
+      transparent 1px, transparent 30px
+    ),
+    repeating-linear-gradient(
+      150deg,
+      rgba(38, 72, 50, 0.13) 0px, rgba(38, 72, 50, 0.13) 1px,
+      transparent 1px, transparent 30px
+    );
+  --bg-pattern-size: 60px 60px, 60px 60px;
+  --bg-pattern-pos: 0 0, 0 0;
+}
+
+/* 19. COSMOS VIOLETA — Nebulosa Profunda */
+[data-theme="cosmos-violeta"] {
+  --c-void:    10   6  22;
+  --c-deep:    16  10  35;
+  --c-surface: 24  15  52;
+  --c-border:  50  30 100;
+  --c-text:   225 215 245;
+  --c-muted:  140 120 185;
+  --c-accent:  180 100 255;
+  --c-accent-lt:210 145 255;
+  --grain-opacity: 0.04;
+  --grid-color: rgba(80, 40, 160, 0.18);
+
+  /* Campo de estrelas — pontos em três escalas */
+  --bg-pattern-image:
+    radial-gradient(circle, rgba(210, 145, 255, 0.55) 1px, transparent 1px),
+    radial-gradient(circle, rgba(180, 100, 255, 0.4) 1px, transparent 1px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.25) 1px, transparent 1px);
+  --bg-pattern-size: 80px 80px, 50px 50px, 120px 120px;
+  --bg-pattern-pos: 10px 20px, 35px 60px, 5px 45px;
+}
+
+/* 20. MAPA ANTIGO — Cartografia Sépia */
+[data-theme="mapa-antigo"] {
+  --c-void:   185 165 130;
+  --c-deep:   198 178 142;
+  --c-surface:210 192 158;
+  --c-border: 155 128  90;
+  --c-text:    35  22  10;
+  --c-muted:   85  62  38;
+  --c-accent:  140  65  25;
+  --c-accent-lt:175  95  45;
+  --grain-opacity: 0.1;
+  --grid-color: rgba(100, 72, 40, 0.15);
+
+  /* Grade cartográfica: linhas principais + diagonais de rota */
+  --bg-pattern-image:
+    linear-gradient(to right, rgba(100, 72, 40, 0.22) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(100, 72, 40, 0.22) 1px, transparent 1px),
+    repeating-linear-gradient(
+      45deg,
+      rgba(100, 72, 40, 0.08) 0px, rgba(100, 72, 40, 0.08) 1px,
+      transparent 1px, transparent 30px
+    );
+  --bg-pattern-size: 60px 60px, 60px 60px, 60px 60px;
+  --bg-pattern-pos: 0 0, 0 0, 0 0;
+}
+
+/* 21. MOGNO — Madeira Nobre */
+[data-theme="mogno"] {
+  --c-void:    15   8   5;
+  --c-deep:    25  13   8;
+  --c-surface: 38  20  12;
+  --c-border:  68  38  22;
+  --c-text:   235 220 200;
+  --c-muted:  155 125  95;
+  --c-accent:  200 150  65;
+  --c-accent-lt:228 180  95;
+  --grain-opacity: 0.05;
+  --grid-color: rgba(68, 38, 22, 0.28);
+
+  /* Veios de madeira — linhas diagonais com variação */
+  --bg-pattern-image:
+    repeating-linear-gradient(
+      12deg,
+      rgba(68, 38, 22, 0.3) 0px, rgba(68, 38, 22, 0.3) 1px,
+      transparent 1px, transparent 10px
+    ),
+    repeating-linear-gradient(
+      12deg,
+      rgba(68, 38, 22, 0.12) 0px, rgba(68, 38, 22, 0.12) 1px,
+      transparent 1px, transparent 4px
+    );
+  --bg-pattern-size: 14px 14px, 5px 5px;
+  --bg-pattern-pos: 0 0, 0 0;
+}
+
+/* 22. JARDIM NOTURNO — Rosa e Escuridão */
+[data-theme="jardim"] {
+  --c-void:     8   6  10;
+  --c-deep:    14  10  18;
+  --c-surface: 22  15  28;
+  --c-border:  48  30  58;
+  --c-text:   240 225 235;
+  --c-muted:  155 130 150;
+  --c-accent:  210 130 160;
+  --c-accent-lt:235 165 190;
+  --grain-opacity: 0.04;
+  --grid-color: rgba(80, 45, 90, 0.2);
+
+  /* Treliça — grade de losangos com pontilhado central */
+  --bg-pattern-image:
+    repeating-linear-gradient(
+      45deg,
+      rgba(80, 45, 90, 0.22) 0px, rgba(80, 45, 90, 0.22) 1px,
+      transparent 1px, transparent 20px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(80, 45, 90, 0.22) 0px, rgba(80, 45, 90, 0.22) 1px,
+      transparent 1px, transparent 20px
+    ),
+    radial-gradient(circle, rgba(210, 130, 160, 0.25) 1px, transparent 1px);
+  --bg-pattern-size: 40px 40px, 40px 40px, 40px 40px;
+  --bg-pattern-pos: 0 0, 0 0, 20px 20px;
+}
+
+/* 23. DESERTO — Areia e Terracota */
+[data-theme="deserto"] {
+  --c-void:    28  18  10;
+  --c-deep:    40  26  14;
+  --c-surface: 55  36  20;
+  --c-border:  90  60  35;
+  --c-text:   240 228 208;
+  --c-muted:  165 138 105;
+  --c-accent:  220 140  55;
+  --c-accent-lt:245 175  85;
+  --grain-opacity: 0.06;
+  --grid-color: rgba(90, 60, 30, 0.25);
+
+  /* Ondas de areia — linhas horizontais levemente inclinadas */
+  --bg-pattern-image:
+    repeating-linear-gradient(
+      -2deg,
+      rgba(90, 60, 30, 0.2) 0px, rgba(90, 60, 30, 0.2) 1px,
+      transparent 1px, transparent 20px
+    ),
+    repeating-linear-gradient(
+      -2deg,
+      rgba(90, 60, 30, 0.1) 0px, rgba(90, 60, 30, 0.1) 1px,
+      transparent 1px, transparent 6px
+    );
+  --bg-pattern-size: 100% 22px, 100% 7px;
+  --bg-pattern-pos: 0 0, 0 3px;
+}
+
+/* 24. CIBERNÉTICO — Hacker Magenta */
+[data-theme="cibernetico"] {
+  --c-void:     3   0   8;
+  --c-deep:     6   2  14;
+  --c-surface: 10   5  22;
+  --c-border:  28  10  55;
+  --c-text:   235 225 255;
+  --c-muted:  145 120 185;
+  --c-accent:    0 255 210;
+  --c-accent-lt: 80 255 230;
+  --grain-opacity: 0.03;
+  --grid-color: rgba(0, 200, 160, 0.07);
+
+  /* Placa de circuito: grade + pontos de solda */
+  --bg-pattern-image:
+    linear-gradient(to right, rgba(0, 200, 160, 0.12) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 200, 160, 0.12) 1px, transparent 1px),
+    radial-gradient(circle, rgba(0, 255, 210, 0.35) 1.5px, transparent 1.5px);
+  --bg-pattern-size: 32px 32px, 32px 32px, 32px 32px;
+  --bg-pattern-pos: 0 0, 0 0, 16px 16px;
+}
+
+/* 25. CREPÚSCULO — Dusk Gradiente */
+[data-theme="dusk"] {
+  --c-void:    12   8  18;
+  --c-deep:    20  12  28;
+  --c-surface: 30  18  40;
+  --c-border:  65  38  80;
+  --c-text:   240 225 220;
+  --c-muted:  165 140 155;
+  --c-accent:  235 130  80;
+  --c-accent-lt:255 165 110;
+  --grain-opacity: 0.04;
+  --grid-color: rgba(90, 50, 100, 0.2);
+
+  /* Bandas horizontais suaves — horizonte ao entardecer */
+  --bg-pattern-image:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px, transparent 47px,
+      rgba(90, 50, 100, 0.12) 47px, rgba(90, 50, 100, 0.12) 48px
+    );
+  --bg-pattern-size: 100% 48px;
+  --bg-pattern-pos: 0 0;
+}
+
+/* 26. LABORATÓRIO — Caderno de Campo */
+[data-theme="laboratorio"] {
+  --c-void:   242 240 235;
+  --c-deep:   232 230 224;
+  --c-surface:220 218 210;
+  --c-border: 170 166 155;
+  --c-text:    18  28  55;
+  --c-muted:   75  88 130;
+  --c-accent:   25  65 168;
+  --c-accent-lt: 50  95 205;
+  --grain-opacity: 0.04;
+  --grid-color: rgba(25, 65, 168, 0.1);
+
+  /* Papel milimetrado: grade maior + subdivisões finas */
+  --bg-pattern-image:
+    linear-gradient(to right, rgba(25, 65, 168, 0.25) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(25, 65, 168, 0.25) 1px, transparent 1px),
+    linear-gradient(to right, rgba(25, 65, 168, 0.09) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(25, 65, 168, 0.09) 1px, transparent 1px);
+  --bg-pattern-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
+  --bg-pattern-pos: 0 0, 0 0, 0 0, 0 0;
+}
+
+/* 27. TINTA DA CHINA — Caligrafia Oriental */
+[data-theme="tinta-china"] {
+  --c-void:   255 252 248;
+  --c-deep:   245 242 238;
+  --c-surface:232 228 222;
+  --c-border: 180 175 168;
+  --c-text:    10  10  12;
+  --c-muted:   80  78  75;
+  --c-accent:  195  28  35;
+  --c-accent-lt:225  55  62;
+  --grain-opacity: 0.03;
+  --grid-color: rgba(10, 10, 12, 0.08);
+
+  /* Pinceladas verticais — bambú e papel arroz */
+  --bg-pattern-image:
+    repeating-linear-gradient(
+      90deg,
+      rgba(10, 10, 12, 0.07) 0px, rgba(10, 10, 12, 0.07) 2px,
+      transparent 2px, transparent 60px
+    );
+  --bg-pattern-size: 60px 100%;
+  --bg-pattern-pos: 0 0;
+}
+
+/* 28. OCEANO — Abismo Bioluminescente */
+[data-theme="oceano"] {
+  --c-void:     5  12  28;
+  --c-deep:     8  18  42;
+  --c-surface: 12  26  60;
+  --c-border:  25  55 120;
+  --c-text:   200 225 248;
+  --c-muted:  100 145 195;
+  --c-accent:   30 215 190;
+  --c-accent-lt: 60 240 220;
+  --grain-opacity: 0.03;
+  --grid-color: rgba(20, 80, 160, 0.18);
+
+  /* Ondas horizontais — correntes submarinas */
+  --bg-pattern-image:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px, transparent 18px,
+      rgba(20, 80, 160, 0.2) 18px, rgba(20, 80, 160, 0.2) 19px,
+      transparent 19px, transparent 22px,
+      rgba(20, 80, 160, 0.1) 22px, rgba(20, 80, 160, 0.1) 23px
+    );
+  --bg-pattern-size: 100% 40px;
+  --bg-pattern-pos: 0 0;
+}
+
+/* 29. SAKURA — Flor de Cerejeira */
+[data-theme="sakura"] {
+  --c-void:    12   6  10;
+  --c-deep:    20  10  16;
+  --c-surface: 30  15  24;
+  --c-border:  65  30  52;
+  --c-text:   248 235 242;
+  --c-muted:  175 140 162;
+  --c-accent:  235 130 165;
+  --c-accent-lt:250 165 195;
+  --grain-opacity: 0.04;
+  --grid-color: rgba(100, 45, 80, 0.2);
+
+  /* Treliça com pontos florais nos cruzamentos */
+  --bg-pattern-image:
+    repeating-linear-gradient(
+      45deg,
+      rgba(100, 45, 80, 0.22) 0px, rgba(100, 45, 80, 0.22) 1px,
+      transparent 1px, transparent 24px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      rgba(100, 45, 80, 0.22) 0px, rgba(100, 45, 80, 0.22) 1px,
+      transparent 1px, transparent 24px
+    ),
+    radial-gradient(circle, rgba(235, 130, 165, 0.35) 1.5px, transparent 1.5px);
+  --bg-pattern-size: 48px 48px, 48px 48px, 48px 48px;
+  --bg-pattern-pos: 0 0, 0 0, 24px 24px;
+}
+
+/* 30. ARCADE — Pixel Art Clássico */
+[data-theme="arcade"] {
+  --c-void:     0   0   0;
+  --c-deep:     8   4  12;
+  --c-surface: 16   8  24;
+  --c-border:  40  20  60;
+  --c-text:   255 255 255;
+  --c-muted:  180 160 210;
+  --c-accent:    0 255 128;
+  --c-accent-lt: 80 255 180;
+  --grain-opacity: 0.02;
+  --grid-color: rgba(0, 255, 128, 0.06);
+
+  /* Grade de pixels 16×16 */
+  --bg-pattern-image:
+    linear-gradient(to right, rgba(0, 255, 128, 0.12) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 255, 128, 0.12) 1px, transparent 1px);
+  --bg-pattern-size: 16px 16px, 16px 16px;
+  --bg-pattern-pos: 0 0, 0 0;
+}
+
+/* 31. SOLAR INVERTIDO — Modo Claro Âmbar */
+[data-theme="solar-inverso"] {
+  --c-void:   248 244 235;
+  --c-deep:   238 233 222;
+  --c-surface:225 220 208;
+  --c-border: 185 175 150;
+  --c-text:    22  16   8;
+  --c-muted:   88  78  58;
+  --c-accent:  168 108  28;
+  --c-accent-lt:200 140  50;
+  --grain-opacity: 0.03;
+  --grid-color: rgba(120, 95, 48, 0.12);
+
+  /* Linhas diagonais suaves — estilo editorial claro */
+  --bg-pattern-image:
+    repeating-linear-gradient(
+      60deg,
+      rgba(120, 95, 48, 0.12) 0px, rgba(120, 95, 48, 0.12) 1px,
+      transparent 1px, transparent 32px
+    );
+  --bg-pattern-size: 64px 64px;
+  --bg-pattern-pos: 0 0;
+}
+
+/* 32. PLATINA — Ultra Dark Minimalista */
+[data-theme="platina"] {
+  --c-void:     5   5   6;
+  --c-deep:     9   9  11;
+  --c-surface: 14  14  17;
+  --c-border:  28  28  35;
+  --c-text:   248 248 252;
+  --c-muted:  148 148 158;
+  --c-accent:  210 210 225;
+  --c-accent-lt:235 235 248;
+  --grain-opacity: 0.05;
+  --grid-color: rgba(60, 60, 80, 0.2);
+
+  /* Matriz de pontos ultrafina — minimalismo extremo */
+  --bg-pattern-image:
+    radial-gradient(circle, rgba(60, 60, 80, 0.6) 1px, transparent 1px);
+  --bg-pattern-size: 24px 24px;
+  --bg-pattern-pos: 0 0;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   GRID DE FUNDO — Usa variáveis de padrão do tema ativo
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+.bg-grid-aligned {
+  background-image: var(--bg-pattern-image);
+  background-size: var(--bg-pattern-size);
+  background-position: var(--bg-pattern-pos);
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   RESET E BASE
+   ══════════════════════════════════════════════════════════════════════════════ */
 
 * {
   box-sizing: border-box;
@@ -26,9 +827,9 @@ html {
 }
 
 body {
-  background-color: #0D0D0F;
-  color: #E8E4DC;
-  font-family: var(--font-source-serif), Georgia, serif;
+  background-color: rgb(var(--c-void));
+  color: rgb(var(--c-text));
+  font-family: var(--font-sans), "Inter", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -40,13 +841,13 @@ body::before {
   position: fixed;
   inset: 0;
   background-image: var(--grain);
-  opacity: 0.04;
+  opacity: var(--grain-opacity);
   pointer-events: none;
   z-index: 9999;
   mix-blend-mode: overlay;
 }
 
-/* ── Scrollbar personalizada ────────────────────────────────────────────────── */
+/* ── Scrollbar personalizada ───────────────────────────────────────────────── */
 
 ::-webkit-scrollbar {
   width: 4px;
@@ -54,29 +855,29 @@ body::before {
 }
 
 ::-webkit-scrollbar-track {
-  background: #13131A;
+  background: rgb(var(--c-deep));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2A2A3A;
+  background: rgb(var(--c-border));
   border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #C8A45A;
+  background: rgb(var(--c-accent));
 }
 
-/* ── Seleção de texto ───────────────────────────────────────────────────────── */
+/* ── Seleção de texto ─────────────────────────────────────────────────────── */
 
 ::selection {
-  background-color: rgba(200, 164, 90, 0.25);
-  color: #E8C87A;
+  background-color: rgb(var(--c-accent) / 0.25);
+  color: rgb(var(--c-accent-lt));
 }
 
-/* ── Tipografia global ──────────────────────────────────────────────────────── */
+/* ── Tipografia global ────────────────────────────────────────────────────── */
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-playfair), Georgia, serif;
+  font-family: var(--font-display), system-ui, sans-serif;
   font-weight: 700;
   line-height: 1.2;
 }
@@ -85,7 +886,7 @@ code, pre, kbd {
   font-family: var(--font-ibm-plex-mono), "Courier New", monospace;
 }
 
-/* ── Utilitários ────────────────────────────────────────────────────────────── */
+/* ── Utilitários ──────────────────────────────────────────────────────────── */
 
 @layer utilities {
   .text-balance {
@@ -93,17 +894,37 @@ code, pre, kbd {
   }
 
   .solar-border {
-    border-color: #2A2A3A;
+    border-color: rgb(var(--c-border));
   }
 
-  /* Glow âmbar — Portal Solar */
+  /* Glow accent — Portal Solar (violet) */
   .glow-amber {
-    box-shadow: 0 0 20px rgba(200, 164, 90, 0.15);
+    box-shadow: 0 0 20px rgb(var(--c-accent) / 0.25), 0 0 60px rgb(var(--c-accent) / 0.1);
+  }
+  .glow-accent {
+    box-shadow: 0 0 20px rgb(var(--c-accent) / 0.25), 0 0 60px rgb(var(--c-accent) / 0.1);
   }
 
-  /* Glow neon — Numita Compass */
+  /* Glow teal — Numita Compass */
   .glow-neon {
-    box-shadow: 0 0 20px rgba(124, 252, 106, 0.15);
+    box-shadow: 0 0 20px rgb(var(--c-teal) / 0.25), 0 0 60px rgb(var(--c-teal) / 0.1);
+  }
+  .glow-teal {
+    box-shadow: 0 0 20px rgb(var(--c-teal) / 0.25), 0 0 60px rgb(var(--c-teal) / 0.1);
+  }
+
+  /* Glassmorphism card */
+  .glass {
+    background: rgb(var(--c-surface) / 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgb(var(--c-border) / 0.5);
+  }
+  .glass-strong {
+    background: rgb(var(--c-deep) / 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgb(var(--c-border) / 0.6);
   }
 
   /* Transição padrão do sistema */
@@ -118,7 +939,19 @@ code, pre, kbd {
 
   /* Overlay de fundo para drawer/modal */
   .backdrop-solar {
-    background-color: rgba(13, 13, 15, 0.7);
+    background-color: rgb(var(--c-void) / 0.7);
     backdrop-filter: blur(4px);
+  }
+
+  /* Shimmer gradient for loading states */
+  .shimmer-bg {
+    background: linear-gradient(
+      90deg,
+      rgb(var(--c-surface)) 0%,
+      rgb(var(--c-border) / 0.5) 50%,
+      rgb(var(--c-surface)) 100%
+    );
+    background-size: 400% 100%;
+    animation: shimmer 2s linear infinite;
   }
 }

@@ -19,7 +19,7 @@ export function FAB({ onClick, label = "Novo item" }: FABProps) {
         bg-solar-amber text-solar-void
         flex items-center justify-center
         shadow-lg hover:shadow-[0_0_24px_rgba(200,164,90,0.4)]
-        hover:bg-solar-amber-light hover:scale-110
+        hover:bg-solar-amber-lt hover:scale-110
         active:scale-95
         transition-solar
         group

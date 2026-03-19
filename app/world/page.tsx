@@ -1,14 +1,30 @@
-export default function WorldPage() {
+import { findAll } from "@/atlas/lib/db"
+import { WorldClient } from "@/atlas/components/portal/WorldClient"
+
+export const metadata = {
+  title: "Mundo — Portal Solar",
+}
+
+export default async function WorldPage() {
+  const [obras, artes, pessoas] = await Promise.all([
+    findAll({ area: "OBRAS",   limit: 500 }),
+    findAll({ area: "ARTES",   limit: 500 }),
+    findAll({ area: "PESSOAS", limit: 500 }),
+  ])
+
+  const items = [...obras, ...artes, ...pessoas]
+
   return (
-    <div className="p-8">
-      <header className="mb-6">
-        <p className="font-mono text-xs text-solar-muted uppercase tracking-widest mb-1">🌐</p>
-        <h1 className="font-display text-2xl text-solar-text">Quadro Mundial</h1>
-        <p className="text-solar-muted text-sm mt-1">
-          Obras, avisos e descobertas — em construção
-        </p>
-      </header>
-      <p className="text-solar-muted text-sm">Módulo 10 — será implementado na Sessão 6.</p>
-    </div>
+    <>
+      <div
+        className="fixed inset-0 pointer-events-none z-0"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, rgba(42,42,58,0.18) 1px, transparent 1px)",
+          backgroundSize: "80px 100%",
+        }}
+      />
+      <WorldClient items={items} />
+    </>
   )
 }

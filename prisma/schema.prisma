@@ -8,30 +8,76 @@ datasource db {
 }
 
 // Nota: SQLite não suporta enums nem Json nativamente.
-// Os campos usam String no banco, mas TypeScript garante os valores corretos via tipos.
-// Enums de domínio são definidos em atlas/types/index.ts
+// Os campos usam String no banco; TypeScript garante os valores via tipos em atlas/types/index.ts.
 
 model AtlasItem {
-  id        String   @id @default(cuid())
-  title     String
-  // ItemType: PAGE | PERSON | WORK | OBJECT | CONCEPT | COURSE | READING | REPERTOIRE
-  type      String   @default("PAGE")
-  // AreaType: ACADEMIA | ARTES | CULTURA | STUDIO | COMPASS | ATLAS
-  area      String   @default("ATLAS")
+  id          String   @id @default(cuid())
+  slug        String?  @unique
+  title       String
+
+  // ItemType: PAGE | PERSON | WORK | OBJECT | CONCEPT | COURSE | READING | REPERTOIRE | NOTA | AULA | PARTITURA
+  type        String   @default("PAGE")
+
+  // AreaType: ACADEMIA | ARTES | CULTURA | STUDIO | OBRAS | PESSOAS | COMPUTACAO | AULAS | COMPASS | DIARIO | PERFIL | NOTAS | ATLAS
+  area        String   @default("ATLAS")
+
+  // Hemisphere: PORTAL | COMPASS
+  hemisphere  String   @default("PORTAL")
+
   // StatusType: ACTIVE | BACKLOG | COMPLETED | ARCHIVED | FAVORITE
-  status    String   @default("ACTIVE")
+  status      String   @default("ACTIVE")
+
+  // Flags rápidas (complementam status)
+  isFavorite  Boolean  @default(false)
+  isPinned    Boolean  @default(false)
+
   // Conteúdo BlockNote serializado como string JSON
-  content   String?
+  content     String?
+
+  // Caminho para o arquivo .md espelho em /content
+  contentPath String?
+
   // Metadados flexíveis (JSON serializado): período, localização, ISBN, etc.
-  metadata  String?
-  // ViewType: LIST | TABLE | KANBAN | GALLERY | ATLAS_MAP
-  viewType  String   @default("LIST")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  metadata    String?
+
+  // URL da imagem de capa ou retrato
+  coverImage  String?
+
+  // Geolocalização: "lat,lon" ex: "-22.9,-43.17"
+  location    String?
+
+  // ViewType: LIST | TABLE | KANBAN | GALLERY | ATLAS_MAP | SHELVES | INDEX | AUTORES | PARTITURAS | CURSOS | REPERTORIO | READINGS
+  viewType    String   @default("LIST")
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   tags          Tag[]           @relation("AtlasItemTags")
   relationsFrom AtlasRelation[] @relation("RelationFrom")
   relationsTo   AtlasRelation[] @relation("RelationTo")
+}
+
+// Compass — entradas do diário com metadados estruturados
+model JournalEntry {
+  id          String   @id @default(cuid())
+
+  // Data da entrada no formato "YYYY-MM-DD"
+  date        String   @unique
+
+  // Conteúdo BlockNote serializado como JSON string
+  content     String?
+
+  // Nível de energia: 1=Exausto 2=Pesado 3=Equilibrado 4=Energizado 5=Pleno
+  energy      Int      @default(3)
+
+  // Intenção do dia (texto curto)
+  intention   String?
+
+  // Humor predominante (texto livre)
+  mood        String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Tag {
@@ -48,7 +94,88 @@ model AtlasRelation {
   fromItemId   String
   toItem       AtlasItem @relation("RelationTo", fields: [toItemId], references: [id], onDelete: Cascade)
   toItemId     String
-  // Exemplos: "inspira", "parte-de", "contradiz", "autor-de", "referencia"
+  // Exemplos: "inspira", "parte-de", "contradiz", "autor-de", "referencia", "influenciou"
   relationType String
   createdAt    DateTime  @default(now())
+}
+
+// Compass — disciplinas e tracker de estudos
+model StudyDiscipline {
+  id          String        @id @default(cuid())
+  name        String
+  code        String        @default("")   // ex: "DES-320"
+  professor   String?
+  semester    String        @default("")   // ex: "2026-1"
+  totalHours  Int           @default(60)
+  color       String        @default("#C8A45A")
+  createdAt   DateTime      @default(now())
+  sessions    StudySession[]
+}
+
+model StudySession {
+  id           String           @id @default(cuid())
+  disciplineId String
+  discipline   StudyDiscipline  @relation(fields: [disciplineId], references: [id], onDelete: Cascade)
+  date         DateTime         @default(now())
+  durationMin  Int              @default(30)
+  note         String?
+}
+
+// Compass — metas e intenções
+model Goal {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  // "short" | "long"
+  horizon     String   @default("short")
+  // "active" | "completed" | "paused"
+  status      String   @default("active")
+  dueDate     DateTime?
+  progress    Int      @default(0)          // 0–100
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// RSS — fontes configuradas pelo usuário
+model RSSFeed {
+  id        String     @id @default(cuid())
+  url       String     @unique
+  label     String     @default("")
+  area      String     @default("ATLAS")
+  isActive  Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  items     RSSItem[]
+}
+
+// RSS — itens em cache (atualiza quando há conexão)
+model RSSItem {
+  id          String   @id @default(cuid())
+  feedId      String
+  feed        RSSFeed  @relation(fields: [feedId], references: [id], onDelete: Cascade)
+  guid        String   @unique
+  title       String
+  link        String
+  summary     String?
+  author      String?
+  publishedAt DateTime
+  cachedAt    DateTime @default(now())
+}
+
+// Quadro Mundial — avisos, eventos, obras e descobertas
+model WorldNotice {
+  id        String   @id @default(cuid())
+  title     String
+  body      String
+
+  // NoticeType: OBRA | AVISO | EVENTO | DESCOBERTA | HOMENAGEM | CITACAO
+  type      String   @default("AVISO")
+
+  // AreaType (mesmo enum do Atlas)
+  area      String   @default("ATLAS")
+
+  author    String?
+  sourceUrl String?
+  isPinned  Boolean  @default(false)
+  expiresAt DateTime?
+  createdAt DateTime @default(now())
 }

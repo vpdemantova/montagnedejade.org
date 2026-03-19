@@ -1,14 +1,21 @@
 "use client"
 
 import { useEffect, useRef } from "react"
+import Link from "next/link"
 import { X, ExternalLink, Tag as TagIcon, Calendar, Hash } from "lucide-react"
 import type { AtlasItemWithTags } from "@/atlas/types"
 import { AREA_LABELS, TYPE_LABELS, STATUS_LABELS, AREA_COLORS } from "@/atlas/types"
 import { Tag } from "@/atlas/components/ui/Tag"
+import { RelationsPanel } from "@/atlas/components/ui/RelationsPanel"
 
 type ItemDrawerProps = {
   item: AtlasItemWithTags | null
   onClose: () => void
+}
+
+function parseMetadata(raw?: string | null) {
+  if (!raw) return {} as Record<string, unknown>
+  try { return JSON.parse(raw) as Record<string, unknown> } catch { return {} }
 }
 
 function itemCode(id: string): string {
@@ -45,6 +52,11 @@ export function ItemDrawer({ item, onClose }: ItemDrawerProps) {
   const typeLabel  = TYPE_LABELS[item.type as keyof typeof TYPE_LABELS] ?? item.type
   const statusLabel = STATUS_LABELS[item.status as keyof typeof STATUS_LABELS] ?? item.status
   const code       = itemCode(item.id)
+
+  const meta     = parseMetadata(item.metadata)
+  const imageUrl = ((item as Record<string, unknown>).coverImage ?? meta.imageUrl ?? meta.portrait ?? "") as string
+  const period   = meta.period as { start?: number; end?: number } | undefined
+  const location = (meta.location ?? meta.country ?? meta.nationality ?? "") as string
 
   const createdAt = new Date(item.createdAt).toLocaleDateString("pt-BR", {
     day: "2-digit", month: "long", year: "numeric",
@@ -106,13 +118,13 @@ export function ItemDrawer({ item, onClose }: ItemDrawerProps) {
 
           {/* Botões de ação */}
           <div className="flex items-center gap-1 ml-3 flex-shrink-0">
-            <a
-              href={`/atlas/${item.id}`}
+            <Link
+              href={`/atlas/${item.slug ?? item.id}`}
               className="w-8 h-8 flex items-center justify-center rounded-md text-solar-muted hover:text-solar-amber hover:bg-solar-amber/10 transition-solar"
               title="Abrir página completa"
             >
               <ExternalLink size={14} />
-            </a>
+            </Link>
             <button
               onClick={onClose}
               className="w-8 h-8 flex items-center justify-center rounded-md text-solar-muted hover:text-solar-text hover:bg-solar-surface transition-solar"
@@ -158,7 +170,33 @@ export function ItemDrawer({ item, onClose }: ItemDrawerProps) {
         )}
 
         {/* ── Conteúdo ── */}
-        <div className="flex-1 overflow-y-auto px-6 py-4">
+        <div className="flex-1 overflow-y-auto">
+          {/* Cover image */}
+          {imageUrl && (
+            <div className="w-full aspect-[16/7] overflow-hidden flex-shrink-0">
+              <img
+                src={imageUrl}
+                alt={item.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
+
+          {/* Period and location */}
+          {(period?.start || location) && (
+            <div className="flex items-center gap-4 px-6 py-3 border-b border-solar-border">
+              {period?.start && (
+                <span className="text-[9px] font-mono text-solar-muted/50">
+                  {period.start}{period.end && period.end !== period.start ? ` – ${period.end}` : ""}
+                </span>
+              )}
+              {location && (
+                <span className="text-[9px] font-mono text-solar-muted/40">◎ {location}</span>
+              )}
+            </div>
+          )}
+
+          <div className="px-6 py-4">
           {item.content ? (
             <div className="prose prose-sm prose-invert max-w-none">
               <p className="text-solar-text/80 text-sm leading-relaxed whitespace-pre-wrap font-body">
@@ -168,23 +206,27 @@ export function ItemDrawer({ item, onClose }: ItemDrawerProps) {
           ) : (
             <div className="flex flex-col items-center justify-center h-32 text-center">
               <p className="text-solar-muted/50 text-sm font-mono">Sem conteúdo ainda.</p>
-              <a
-                href={`/atlas/${item.id}`}
+              <Link
+                href={`/atlas/${item.slug ?? item.id}`}
                 className="mt-2 text-xs font-mono text-solar-amber/60 hover:text-solar-amber transition-solar"
               >
                 Abrir para editar →
-              </a>
+              </Link>
             </div>
           )}
+          </div>
         </div>
+
+        {/* ── Relações ── */}
+        <RelationsPanel itemId={item.id} />
 
         {/* ── Footer ── */}
         <div className="px-6 py-3 border-t border-solar-border flex items-center justify-between">
           <span className="text-[9px] font-mono text-solar-muted/40 tracking-wider">
             ESC para fechar
           </span>
-          <a
-            href={`/atlas/${item.id}`}
+          <Link
+            href={`/atlas/${item.slug ?? item.id}`}
             className="
               text-[11px] font-mono px-3 py-1.5 rounded-md
               bg-solar-amber/10 text-solar-amber border border-solar-amber/20
@@ -192,7 +234,7 @@ export function ItemDrawer({ item, onClose }: ItemDrawerProps) {
             "
           >
             Editar item →
-          </a>
+          </Link>
         </div>
       </div>
     </>

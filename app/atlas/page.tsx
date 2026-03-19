@@ -5,18 +5,21 @@ import type { AreaType, ItemType, StatusType } from "@/atlas/types"
 export default async function AtlasPage({
   searchParams,
 }: {
-  searchParams: { area?: string; type?: string; status?: string }
+  searchParams: Promise<{ area?: string; type?: string; status?: string; view?: string }>
 }) {
+  const params = await searchParams
   const items = await findAll({
-    area:   searchParams.area   as AreaType   | undefined,
-    type:   searchParams.type   as ItemType   | undefined,
-    status: searchParams.status as StatusType | undefined,
+    area:   params.area   as AreaType   | undefined,
+    type:   params.type   as ItemType   | undefined,
+    status: params.status as StatusType | undefined,
+    limit:  1000,
   })
 
   return (
     <AtlasClient
       items={items}
-      initialArea={searchParams.area}
+      initialArea={params.area}
+      defaultView={params.view ?? "HORIZONTAL"}
     />
   )
 }

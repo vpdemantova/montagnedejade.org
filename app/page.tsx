@@ -1,119 +1,88 @@
-import { findRecent, countByArea } from "@/atlas/lib/db"
-import { ItemCard } from "@/atlas/components/ui/ItemCard"
-import { AREA_LABELS, AREA_COLORS } from "@/atlas/types"
+import { findRecent, findAll, countByArea, findAllNotices } from "@/atlas/lib/db"
+import { DashboardClient } from "@/atlas/components/views/DashboardClient"
+import { WorldHero }       from "@/atlas/components/views/WorldHero"
+
+// Seleciona um item com seed = data atual — mesmo item o dia todo
+function getDailyDiscovery<T>(items: T[]): T | null {
+  if (!items.length) return null
+  const today = new Date().toISOString().split("T")[0]!         // "2026-03-16"
+  const seed  = today.replace(/-/g, "")                         // "20260316"
+    .split("")
+    .reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
+  return items[seed % items.length]!
+}
 
 export default async function DashboardPage() {
-  const [recentItems, areaCounts] = await Promise.all([
+  const [recentItems, allItems, areaCounts, notices] = await Promise.all([
     findRecent(5),
+    findAll({ limit: 200 }),
     countByArea(),
+    findAllNotices(20),
   ])
+
+  // Filtra apenas itens do Portal (hemisphere PORTAL) para a descoberta
+  const portalItems = allItems.filter((i) => i.hemisphere === "PORTAL")
+  const discoveryItem = getDailyDiscovery(portalItems)
+
+  const totalItems = Object.values(areaCounts).reduce((a, b) => a + b, 0)
 
   const today = new Date().toLocaleDateString("pt-BR", {
     weekday: "long",
-    day: "numeric",
-    month: "long",
+    day:     "numeric",
+    month:   "long",
   })
 
   return (
-    <div className="p-8 max-w-5xl mx-auto">
-      {/* Saudação */}
-      <header className="mb-10">
-        <p className="font-mono text-xs text-solar-muted uppercase tracking-widest mb-1">
-          {today}
-        </p>
-        <h1 className="font-display text-3xl text-solar-text">
-          Bem-vindo ao Portal Solar
-        </h1>
-        <p className="text-solar-muted mt-2 text-sm">
-          Sua biblioteca cósmica de conhecimento.
-        </p>
-      </header>
+    <div className="relative min-h-screen">
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Coluna principal */}
-        <div className="lg:col-span-2 space-y-8">
-          <section>
-            <h2 className="font-display text-lg text-solar-text mb-4">
-              Continuar de onde parou
-            </h2>
-            {recentItems.length === 0 ? (
-              <p className="text-solar-muted text-sm">
-                Nenhum item ainda.{" "}
-                <a href="/atlas" className="text-solar-amber hover:underline">
-                  Criar o primeiro item →
-                </a>
-              </p>
-            ) : (
-              <div className="grid gap-3">
-                {recentItems.map((item) => (
-                  <ItemCard key={item.id} item={item} />
-                ))}
-              </div>
-            )}
-          </section>
-        </div>
+      {/* Grade de fundo */}
+      <div
+        className="fixed inset-0 pointer-events-none z-0"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, rgba(42,42,58,0.18) 1px, transparent 1px)",
+          backgroundSize: "80px 100%",
+        }}
+      />
 
-        {/* Painel lateral */}
-        <div className="space-y-6">
-          {/* Estatísticas por área */}
-          <section className="bg-solar-surface border border-solar-border rounded-lg p-4">
-            <h3 className="font-mono text-xs text-solar-muted uppercase tracking-widest mb-4">
-              Atlas — Itens por área
-            </h3>
-            <ul className="space-y-2">
-              {Object.entries(AREA_LABELS).map(([key, label]) => {
-                const count = areaCounts[key] ?? 0
-                const color = AREA_COLORS[key as keyof typeof AREA_COLORS] ?? "#C8A45A"
-                const maxCount = Math.max(...Object.values(areaCounts), 1)
-
-                return (
-                  <li key={key} className="flex items-center gap-2">
-                    <span className="text-xs text-solar-muted w-20 shrink-0">{label}</span>
-                    <div className="flex-1 bg-solar-border rounded-full h-1">
-                      <div
-                        className="h-1 rounded-full transition-solar"
-                        style={{
-                          width: `${(count / maxCount) * 100}%`,
-                          backgroundColor: color,
-                        }}
-                      />
-                    </div>
-                    <span
-                      className="text-xs font-mono w-4 text-right"
-                      style={{ color }}
-                    >
-                      {count}
-                    </span>
-                  </li>
-                )
-              })}
-            </ul>
-          </section>
-
-          {/* Links rápidos */}
-          <section className="bg-solar-surface border border-solar-border rounded-lg p-4">
-            <h3 className="font-mono text-xs text-solar-muted uppercase tracking-widest mb-3">
-              Ações rápidas
-            </h3>
-            <nav className="space-y-1">
-              {[
-                { href: "/atlas",           label: "Ver o Atlas completo" },
-                { href: "/compass/journal", label: "Abrir diário de hoje" },
-                { href: "/world",           label: "Quadro Mundial" },
-                { href: "/monument",        label: "Monumento Solar 🌌" },
-              ].map(({ href, label }) => (
-                <a
-                  key={href}
-                  href={href}
-                  className="block text-sm text-solar-muted hover:text-solar-amber transition-solar py-0.5"
-                >
-                  → {label}
-                </a>
-              ))}
-            </nav>
-          </section>
-        </div>
+      {/* Hero — mundo interativo com toggle Constelação / Globo / Mapa */}
+      <div className="relative z-10">
+        <WorldHero items={allItems} showStats showCTA />
       </div>
+
+      {/* Dashboard client — saudação, GSAP, seções */}
+      <DashboardClient
+        recentItems={recentItems}
+        discoveryItem={discoveryItem}
+        areaCounts={areaCounts}
+        totalItems={totalItems}
+        today={today}
+        notices={notices}
+      />
+
+      {/* Footer */}
+      <footer className="relative z-10 border-t border-solar-border/15 mt-12 px-12 py-10">
+        <div className="max-w-6xl mx-auto flex flex-col items-center gap-3 text-center">
+          <p className="text-[10px] font-mono text-solar-muted/30 tracking-widest uppercase">
+            Made with love by{" "}
+            <a
+              href="https://github.com/vitordemantova"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-solar-amber/50 hover:text-solar-amber transition-solar"
+            >
+              Vitor de Mantova
+            </a>
+            {" "}· Since 2020 · Alone, with love, with A.I.
+          </p>
+          <p className="text-[9px] font-mono text-solar-muted/18 italic tracking-wide">
+            And all of humanity on the mind — building a cathedral, one stone at a time.
+          </p>
+          <p className="text-[8px] font-mono text-solar-muted/15 tracking-[0.3em] uppercase mt-1">
+            ☀ Portal Solar · MMXX–MMXXVI
+          </p>
+        </div>
+      </footer>
     </div>
   )
 }

@@ -14,6 +14,11 @@ function itemCode(id: string): string {
   return `SOL-${n.toString().padStart(3, "0")}`
 }
 
+function parseMetadata(raw?: string | null) {
+  if (!raw) return {} as Record<string, unknown>
+  try { return JSON.parse(raw) as Record<string, unknown> } catch { return {} }
+}
+
 export function ItemCard({ item, onClick }: ItemCardProps) {
   const areaLabel   = AREA_LABELS[item.area as keyof typeof AREA_LABELS]   ?? item.area
   const typeLabel   = TYPE_LABELS[item.type as keyof typeof TYPE_LABELS]   ?? item.type
@@ -23,6 +28,9 @@ export function ItemCard({ item, onClick }: ItemCardProps) {
   const isFavorite = item.status === "FAVORITE"
   const isActive   = item.status === "ACTIVE"
 
+  const meta     = parseMetadata(item.metadata)
+  const imageUrl = ((item as Record<string, unknown>).coverImage ?? meta.imageUrl ?? meta.coverImage ?? "") as string
+
   const updatedAt = new Date(item.updatedAt).toLocaleDateString("pt-BR", {
     day: "2-digit", month: "short",
   })
@@ -31,21 +39,32 @@ export function ItemCard({ item, onClick }: ItemCardProps) {
     <article
       onClick={() => onClick?.(item)}
       className="
-        group bg-solar-surface/40 border border-solar-border/50
-        hover:bg-solar-surface hover:border-solar-border
-        transition-solar cursor-pointer rounded-sm overflow-hidden
+        group hover:bg-solar-surface/30
+        transition-solar cursor-pointer overflow-hidden
         stagger-item
       "
       style={{ animationDelay: "var(--stagger-delay, 0ms)" }}
     >
+      {/* Cover image */}
+      {imageUrl && (
+        <div className="aspect-[16/6] overflow-hidden bg-solar-surface/30">
+          <img
+            src={imageUrl}
+            alt={item.title}
+            className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+            loading="lazy"
+          />
+        </div>
+      )}
+
       {/* Barra de metadados */}
       <div className="flex items-center justify-between px-3 py-1.5 border-b border-solar-border/30">
-        <span className="text-[9px] font-mono uppercase tracking-widest text-solar-muted/50">
+        <span className="text-[9px] font-mono uppercase tracking-widest text-solar-muted/75">
           {areaLabel}
           <span className="mx-1 text-solar-border">·</span>
           {typeLabel}
         </span>
-        <span className="text-[9px] font-mono text-solar-muted/30 tracking-wider">
+        <span className="text-[9px] font-mono text-solar-muted/55 tracking-wider">
           {code}
         </span>
       </div>
@@ -53,8 +72,8 @@ export function ItemCard({ item, onClick }: ItemCardProps) {
       {/* Corpo */}
       <div className="px-3 py-3">
         <h3 className="
-          font-display text-solar-text/90 text-[14px] leading-snug mb-2
-          group-hover:text-solar-text transition-solar line-clamp-2
+          font-display text-solar-text text-[14px] leading-snug mb-2
+          group-hover:text-solar-amber-lt transition-solar line-clamp-2
         ">
           {item.title}
         </h3>
@@ -75,7 +94,7 @@ export function ItemCard({ item, onClick }: ItemCardProps) {
             {isFavorite && (
               <span className="text-solar-amber text-[9px]">★</span>
             )}
-            <span className="text-[9px] font-mono text-solar-muted/40">{updatedAt}</span>
+            <span className="text-[9px] font-mono text-solar-muted/65">{updatedAt}</span>
           </div>
         </div>
       </div>
