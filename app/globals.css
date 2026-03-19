@@ -943,6 +943,9 @@ code, pre, kbd {
     backdrop-filter: blur(4px);
   }
 
+  /* Garantir visibilidade de seções com data-gsap (fallback se GSAP falhar) */
+  [data-gsap] { visibility: visible !important; }
+
   /* Shimmer gradient for loading states */
   .shimmer-bg {
     background: linear-gradient(

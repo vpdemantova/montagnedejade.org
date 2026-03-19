@@ -799,36 +799,36 @@ export function DashboardClient({ recentItems, discoveryItem, areaCounts, totalI
 
   useGSAP(() => {
     const ctx = gsap.context(() => {
-      // Immediate on mount
-      gsap.from("[data-gsap='greeting']", {
-        opacity: 0, y: 14, duration: 0.6, delay: 0.15, ease: "power3.out",
-      })
-      gsap.from("[data-gsap='card']", {
-        opacity: 0, x: -14, duration: 0.4, stagger: 0.09, delay: 0.3, ease: "power2.out",
-      })
+      try {
+        // Immediate on mount
+        gsap.from("[data-gsap='greeting']", {
+          opacity: 0, y: 14, duration: 0.6, delay: 0.15, ease: "power3.out",
+        })
+        gsap.from("[data-gsap='card']", {
+          opacity: 0, x: -14, duration: 0.4, stagger: 0.09, delay: 0.3, ease: "power2.out",
+        })
 
-      // Scroll-triggered reveals — usa autoAlpha para não deixar seções presas em opacity:0
-      const scrollReveal = (selector: string) => {
-        const el = document.querySelectorAll(selector)
-        if (!el.length) return
-        gsap.fromTo(selector,
-          { autoAlpha: 0, y: 20 },
-          {
-            autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out",
-            scrollTrigger: { trigger: selector, start: "top 92%", once: true },
-          }
-        )
+        // Scroll-triggered reveals — gsap.from (não fromTo) para não esconder elementos por padrão
+        const scrollReveal = (selector: string) => {
+          if (!document.querySelector(selector)) return
+          gsap.from(selector, {
+            opacity: 0, y: 16, duration: 0.5, ease: "power2.out",
+            scrollTrigger: { trigger: selector, start: "top 95%", once: true },
+          })
+        }
+
+        scrollReveal("[data-gsap='escola']")
+        scrollReveal("[data-gsap='hub']")
+        scrollReveal("[data-gsap='artes']")
+        scrollReveal("[data-gsap='plataforma']")
+        scrollReveal("[data-gsap='consciencia']")
+        scrollReveal("[data-gsap='recentes']")
+        scrollReveal("[data-gsap='rss']")
+        scrollReveal("[data-gsap='stats']")
+        scrollReveal("[data-gsap='worldboard']")
+      } catch (e) {
+        console.warn("GSAP animation error:", e)
       }
-
-      scrollReveal("[data-gsap='escola']")
-      scrollReveal("[data-gsap='hub']")
-      scrollReveal("[data-gsap='artes']")
-      scrollReveal("[data-gsap='plataforma']")
-      scrollReveal("[data-gsap='consciencia']")
-      scrollReveal("[data-gsap='recentes']")
-      scrollReveal("[data-gsap='rss']")
-      scrollReveal("[data-gsap='stats']")
-      scrollReveal("[data-gsap='worldboard']")
     }, containerRef)
     return () => ctx.revert()
   }, [])
