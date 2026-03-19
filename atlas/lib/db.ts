@@ -53,8 +53,8 @@ export async function findAll(
       }),
       ...(search && {
         OR: [
-          { title:   { contains: search } },
-          { content: { contains: search } },
+          { title:   { contains: search, mode: "insensitive" } },
+          { content: { contains: search, mode: "insensitive" } },
         ],
       }),
     },

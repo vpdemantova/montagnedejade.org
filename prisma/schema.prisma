@@ -3,11 +3,11 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
-// Nota: SQLite não suporta enums nem Json nativamente.
 // Os campos usam String no banco; TypeScript garante os valores via tipos em atlas/types/index.ts.
 
 model AtlasItem {
