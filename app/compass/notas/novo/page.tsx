@@ -17,11 +17,13 @@ export default function NovaNotaPage() {
   const [title,   setTitle]   = useState("")
   const [url,     setUrl]     = useState("")
   const [loading, setLoading] = useState(false)
+  const [error,   setError]   = useState<string | null>(null)
 
   const handleCreate = async () => {
     const t = title.trim() || (mode === "link" ? url.trim() : "")
     if (!t) return
     setLoading(true)
+    setError(null)
     try {
       const res = await fetch("/api/atlas", {
         method:  "POST",
@@ -35,9 +37,14 @@ export default function NovaNotaPage() {
           tagNames:  [],
         }),
       })
+      if (!res.ok) {
+        const data = await res.json() as { error?: string }
+        throw new Error(data.error ?? `Erro ${res.status}`)
+      }
       const item = await res.json() as { id: string }
       router.push(`/compass/notas/${item.id}`)
-    } catch {
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Erro ao criar nota")
       setLoading(false)
     }
   }
@@ -47,7 +54,7 @@ export default function NovaNotaPage() {
       <div className="fixed inset-0 pointer-events-none z-0 bg-grid-aligned" />
 
       <header className="page-header relative z-10 border-b border-solar-border/40 pt-12 pb-6">
-        <div className="max-w-4xl mx-auto px-12">
+        <div className="max-w-4xl mx-auto px-4 md:px-12">
           <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-compass-neon-dim/60 mb-3">
             Numita Compass · Notas · Nova
           </p>
@@ -57,7 +64,7 @@ export default function NovaNotaPage() {
         </div>
       </header>
 
-      <div className="relative z-10 max-w-4xl mx-auto px-12 py-10 space-y-8">
+      <div className="relative z-10 max-w-4xl mx-auto px-4 md:px-12 py-10 space-y-8">
 
         {/* Mode selector */}
         <div>
@@ -112,6 +119,13 @@ export default function NovaNotaPage() {
             className="w-full bg-transparent border-b border-solar-border/50 py-2 font-display text-2xl text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-compass-neon/50 transition-solar"
           />
         </div>
+
+        {/* Error */}
+        {error && (
+          <p className="text-[10px] font-mono text-red-400/80 border border-red-400/20 px-3 py-2">
+            {error}
+          </p>
+        )}
 
         {/* Actions */}
         <div className="flex items-center gap-4 pt-2">

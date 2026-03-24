@@ -170,7 +170,7 @@ export default function MetasPage() {
       <div className="fixed inset-0 pointer-events-none z-0 bg-grid-aligned" />
 
       <header className="page-header relative z-10 border-b border-solar-border/40 pt-12 pb-6">
-        <div className="max-w-4xl mx-auto px-12">
+        <div className="max-w-4xl mx-auto px-4 md:px-12">
           <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-compass-neon-dim/60 mb-3">
             Numita Compass · Metas
           </p>
@@ -203,7 +203,7 @@ export default function MetasPage() {
         </div>
       </header>
 
-      <main className="relative z-10 max-w-4xl mx-auto px-12 py-6 space-y-6">
+      <main className="relative z-10 max-w-4xl mx-auto px-4 md:px-12 py-6 space-y-6">
 
         {/* Add form */}
         {showForm && (

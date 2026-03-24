@@ -9,7 +9,7 @@ export default async function DiarioPage() {
       <div className="fixed inset-0 pointer-events-none z-0 bg-grid-aligned" />
 
       <header className="page-header relative z-10 border-b border-solar-border/40 pt-12 pb-6">
-        <div className="max-w-6xl mx-auto px-12">
+        <div className="max-w-6xl mx-auto px-4 md:px-12">
           <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-compass-neon-dim/60 mb-3">
             Numita Compass · Diário
           </p>
@@ -19,7 +19,7 @@ export default async function DiarioPage() {
         </div>
       </header>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-12 py-6">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-12 py-6">
         <DiarioClient entries={entries} />
       </div>
     </div>

@@ -27,11 +27,11 @@ import { RepertorioView }   from "./RepertorioView"
 import { ReadingsView }       from "./ReadingsView"
 import { AtlasMapView }       from "./AtlasMapView"
 import { AtlasHorizontalView } from "./AtlasHorizontalView"
-import { FAB } from "@/atlas/components/ui/FAB"
 
 type AtlasClientProps = {
   items:        AtlasItemWithTags[]
   initialArea?: string
+  initialTag?:  string
   defaultView?: string
   backHref?:    string
   backLabel?:   string
@@ -69,7 +69,7 @@ const VIEW_CHIPS = [
   { value: ViewType.ATLAS_MAP,  label: "Grafo"   },
 ]
 
-export function AtlasClient({ items, initialArea, defaultView, backHref, backLabel }: AtlasClientProps) {
+export function AtlasClient({ items, initialArea, initialTag, defaultView, backHref, backLabel }: AtlasClientProps) {
   const router = useRouter()
   const { getViewForRoute, setViewForRoute } = useViewStore()
   const persistedView = getViewForRoute("/atlas", defaultView ?? ViewType.HORIZONTAL)
@@ -82,6 +82,7 @@ export function AtlasClient({ items, initialArea, defaultView, backHref, backLab
   const [typeFilter, setTypeFilter] = useState("")
   const [dimFilters, setDimFilters] = useState<DimensionFilters>(EMPTY_FILTERS)
   const [panelOpen, setPanelOpen]   = useState(false)
+  const [tagFilter, setTagFilter]   = useState(initialTag ?? "")
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   // Filter pipeline
@@ -92,12 +93,15 @@ export function AtlasClient({ items, initialArea, defaultView, backHref, backLab
   const typeFiltered = typeFilter
     ? areaFiltered.filter((i) => i.type === typeFilter)
     : areaFiltered
+  const tagFiltered = tagFilter
+    ? typeFiltered.filter((i) => i.tags.some((t) => t.name.toLowerCase() === tagFilter.toLowerCase()))
+    : typeFiltered
   const finalItems = query.trim()
-    ? typeFiltered.filter((i) =>
+    ? tagFiltered.filter((i) =>
         i.title.toLowerCase().includes(query.toLowerCase()) ||
         i.tags.some((t) => t.name.toLowerCase().includes(query.toLowerCase()))
       )
-    : typeFiltered
+    : tagFiltered
 
   const activeFilters = hasActiveFilters(dimFilters)
 
@@ -249,6 +253,17 @@ export function AtlasClient({ items, initialArea, defaultView, backHref, backLab
           ))}
         </div>
 
+        {/* Active tag filter chip */}
+        {tagFilter && (
+          <div className="flex items-center gap-1.5 px-3 py-1.5 border-t" style={{ borderColor: "rgb(var(--c-border) / 0.15)" }}>
+            <span className="text-[8px] font-mono uppercase tracking-widest" style={{ color: "rgb(var(--c-muted) / 0.35)" }}>Tag:</span>
+            <span className="text-[8px] font-mono px-1.5 py-0.5 rounded flex items-center gap-1" style={{ background: "rgb(var(--c-accent) / 0.1)", color: "rgb(var(--c-accent) / 0.9)" }}>
+              # {tagFilter}
+              <button onClick={() => setTagFilter("")} className="ml-0.5 hover:opacity-70 transition-opacity">×</button>
+            </span>
+          </div>
+        )}
+
         {/* Active dim-filter pills */}
         {activeFilters && (
           <div className="flex items-center gap-1.5 px-3 py-1.5 border-t" style={{ borderColor: "rgb(var(--c-border) / 0.15)" }}>
@@ -288,7 +303,6 @@ export function AtlasClient({ items, initialArea, defaultView, backHref, backLab
       </div>
 
       <ItemDrawer item={activeItem} onClose={closeItem} />
-      <FAB onClick={() => router.push("/atlas/novo")} label="Novo item" />
     </div>
   )
 }

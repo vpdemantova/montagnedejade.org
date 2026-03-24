@@ -14,7 +14,7 @@ export function FAB({ onClick, label = "Novo item" }: FABProps) {
       title={label}
       aria-label={label}
       className="
-        fixed bottom-6 right-6 z-30
+        fixed bottom-20 right-4 md:bottom-6 md:right-6 z-30
         w-12 h-12 rounded-full
         bg-solar-amber text-solar-void
         flex items-center justify-center

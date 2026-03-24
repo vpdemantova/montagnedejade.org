@@ -5,36 +5,81 @@ import { usePathname } from "next/navigation"
 
 import { useSolarStore } from "@/atlas/lib/store"
 import { BottomNav }          from "./BottomNav"
-import { SidebarNav }         from "./SidebarNav"
-import { ModeSwitch }         from "@/atlas/components/ui/ModeSwitch"
 import { OnboardingOverlay }  from "./OnboardingOverlay"
 
 // ── Mode CSS tokens ───────────────────────────────────────────────────────────
+//
+// Each mode overrides ALL --c-* variables (raw RGB triplets used by Tailwind's
+// solar-* color classes via `rgb(var(--c-*) / alpha)`) AND the --mode-* layout
+// variables. This ensures text-solar-text, bg-solar-deep, etc. automatically
+// inherit the correct palette in every mode.
 
 const MODE_VARS: Record<string, React.CSSProperties> = {
+
+  // ── FOCUS — paper/light reading ───────────────────────────────────────────
   FOCUS: {
-    "--mode-bg":          "#FAFAF8",
-    "--mode-text":        "#1A1A1A",
-    "--mode-accent":      "#6E56CF",
-    "--mode-muted":       "#6B6B6B",
-    "--mode-border":      "#E0DFDB",
+    // Palette — raw RGB triplets for Tailwind
+    "--c-void":       "250 250 248",  // near-white paper
+    "--c-deep":       "240 240 237",
+    "--c-surface":    "228 227 223",
+    "--c-border":     "196 194 189",
+    "--c-text":       "26 26 26",     // near-black
+    "--c-muted":      "100 98 92",
+    "--c-accent":     "110 86 207",   // same violet accent
+    "--c-accent-lt":  "140 116 237",
+    "--c-teal":       "0 148 128",
+    "--c-teal-lt":    "0 178 158",
+    // Layout
+    "--mode-bg":          "rgb(var(--c-void))",
+    "--mode-text":        "rgb(var(--c-text))",
+    "--mode-accent":      "rgb(var(--c-accent))",
+    "--mode-muted":       "rgb(var(--c-muted))",
+    "--mode-border":      "rgb(var(--c-border))",
     "--mode-max-width":   "680px",
     "--mode-font-size":   "18px",
     "--mode-line-height": "1.8",
     "--mode-font":        "var(--font-sans)",
   } as React.CSSProperties,
+
+  // ── CONTEMPLATION — deep night reading ────────────────────────────────────
   CONTEMPLATION: {
-    "--mode-bg":          "#0E0B18",
-    "--mode-text":        "#E8E4DC",
-    "--mode-accent":      "#6E56CF",
-    "--mode-muted":       "#8A8678",
-    "--mode-border":      "#2A2A3A",
+    // Palette
+    "--c-void":       "14 11 24",     // very dark indigo
+    "--c-deep":       "20 16 34",
+    "--c-surface":    "30 25 48",
+    "--c-border":     "50 48 70",
+    "--c-text":       "232 228 220",
+    "--c-muted":      "138 134 120",
+    "--c-accent":     "110 86 207",
+    "--c-accent-lt":  "150 120 230",
+    "--c-teal":       "0 200 180",
+    "--c-teal-lt":    "0 230 210",
+    // Layout
+    "--mode-bg":          "rgb(var(--c-void))",
+    "--mode-text":        "rgb(var(--c-text))",
+    "--mode-accent":      "rgb(var(--c-accent))",
+    "--mode-muted":       "rgb(var(--c-muted))",
+    "--mode-border":      "rgb(var(--c-border))",
     "--mode-max-width":   "62ch",
     "--mode-font-size":   "19px",
     "--mode-line-height": "2.0",
     "--mode-font":        "var(--font-sans)",
   } as React.CSSProperties,
+
+  // ── ATLAS — default dark cosmos ───────────────────────────────────────────
   ATLAS: {
+    // Palette — same as global :root defaults, explicit so switching back works
+    "--c-void":       "13 13 15",
+    "--c-deep":       "19 19 26",
+    "--c-surface":    "28 28 38",
+    "--c-border":     "42 42 58",
+    "--c-text":       "232 228 220",
+    "--c-muted":      "138 134 120",
+    "--c-accent":     "110 86 207",
+    "--c-accent-lt":  "150 120 230",
+    "--c-teal":       "0 200 180",
+    "--c-teal-lt":    "0 230 210",
+    // Layout
     "--mode-bg":          "rgb(var(--c-void))",
     "--mode-text":        "rgb(var(--c-text))",
     "--mode-accent":      "rgb(var(--c-accent))",
@@ -45,7 +90,20 @@ const MODE_VARS: Record<string, React.CSSProperties> = {
     "--mode-line-height": "1.6",
     "--mode-font":        "var(--font-sans)",
   } as React.CSSProperties,
+
+  // ── PUBLIC — same as ATLAS ────────────────────────────────────────────────
   PUBLIC: {
+    "--c-void":       "13 13 15",
+    "--c-deep":       "19 19 26",
+    "--c-surface":    "28 28 38",
+    "--c-border":     "42 42 58",
+    "--c-text":       "232 228 220",
+    "--c-muted":      "138 134 120",
+    "--c-accent":     "110 86 207",
+    "--c-accent-lt":  "150 120 230",
+    "--c-teal":       "0 200 180",
+    "--c-teal-lt":    "0 230 210",
+    // Layout
     "--mode-bg":          "rgb(var(--c-void))",
     "--mode-text":        "rgb(var(--c-text))",
     "--mode-accent":      "rgb(var(--c-accent))",
@@ -330,19 +388,15 @@ export function ModeAwareShell({ children }: { children: React.ReactNode }) {
           `}</style>
         )}
 
-        {/* Sidebar — desktop only */}
-        <SidebarNav />
-
         {/* Main content */}
         <div
           data-mode-shell
           className={`
             transition-all duration-300
-            md:pl-[60px]
             ${isFocus || isContemplation
               ? "flex flex-col items-center py-12 px-6"
               : ""}
-            pb-14
+            pb-24
           `}
         >
           {(isFocus || isContemplation) ? (
@@ -366,11 +420,8 @@ export function ModeAwareShell({ children }: { children: React.ReactNode }) {
         {/* Focus mode footer */}
         {isFocus && <FocusFooter title={pageTitle} />}
 
-        {/* BottomNav — always visible */}
+        {/* BottomNav — mobile only (md:hidden está no próprio componente) */}
         <BottomNav />
-
-        {/* ModeSwitch — always visible (bottom right) */}
-        <ModeSwitch />
 
         {/* Onboarding — shows only on first visit */}
         <OnboardingOverlay />

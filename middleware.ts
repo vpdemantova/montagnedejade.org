@@ -1,29 +1,52 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
+import { jwtVerify } from "jose"
 
-const PUBLIC_PATHS = ["/login", "/api/auth/login", "/favicon.ico", "/_next", "/fonts"]
+const PUBLIC_PATHS = [
+  "/login",
+  "/register",
+  "/api/auth/login",
+  "/api/auth/register",
+  "/favicon.ico",
+  "/_next",
+  "/fonts",
+]
 
-export function middleware(req: NextRequest) {
+const secret = new TextEncoder().encode(
+  process.env.JWT_SECRET ?? process.env.AUTH_SECRET ?? "fallback-dev-secret"
+)
+
+export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
 
-  // Liberar rotas públicas
   if (PUBLIC_PATHS.some((p) => pathname.startsWith(p))) {
     return NextResponse.next()
   }
 
-  const session = req.cookies.get("ps_session")?.value
-  const secret  = process.env.AUTH_SECRET
+  const token = req.cookies.get("ps_session")?.value
 
-  // Se AUTH_SECRET não está configurado, libera tudo (modo dev sem auth)
-  if (!secret) return NextResponse.next()
-
-  if (session !== secret) {
+  // Sem token → login
+  if (!token) {
     const login = new URL("/login", req.url)
     login.searchParams.set("from", pathname)
     return NextResponse.redirect(login)
   }
 
-  return NextResponse.next()
+  try {
+    const { payload } = await jwtVerify(token, secret)
+    // Passa userId via header para os API routes
+    const res = NextResponse.next()
+    res.headers.set("x-user-id",   String(payload.userId ?? ""))
+    res.headers.set("x-username",  String(payload.username ?? ""))
+    return res
+  } catch {
+    // Token inválido ou expirado
+    const login = new URL("/login", req.url)
+    login.searchParams.set("from", pathname)
+    const res = NextResponse.redirect(login)
+    res.cookies.set("ps_session", "", { maxAge: 0, path: "/" })
+    return res
+  }
 }
 
 export const config = {

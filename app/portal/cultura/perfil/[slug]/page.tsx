@@ -64,9 +64,9 @@ export default async function PerfilCulturaPage({
     prisma.worldNotice.findMany({
       where: {
         OR: [
-          { title:  { contains: person.title, mode: "insensitive" } },
-          { body:   { contains: person.title, mode: "insensitive" } },
-          { author: { contains: person.title, mode: "insensitive" } },
+          { title:  { contains: person.title } },
+          { body:   { contains: person.title } },
+          { author: { contains: person.title } },
         ],
       },
       orderBy: { createdAt: "desc" },

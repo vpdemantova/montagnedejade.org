@@ -11,6 +11,7 @@ import { useSolarStore }      from "@/atlas/lib/store"
 import type { AtlasItemWithTags } from "@/atlas/types"
 import { AREA_LABELS, TYPE_LABELS, STATUS_LABELS, AreaType, ItemType, StatusType } from "@/atlas/types"
 import { contentStats, generateMarkdownMirror, resolveContentPath } from "@/atlas/lib/export"
+import { TagLink } from "@/atlas/components/ui/TagLink"
 
 // ── Tipos de Relação ───────────────────────────────────────────────────────────
 
@@ -58,18 +59,11 @@ function TagInput({
   return (
     <div className="flex items-center flex-wrap gap-1">
       {tags.map((tag) => (
-        <span
+        <TagLink
           key={tag}
-          className="flex items-center gap-1 text-[9px] font-mono px-1.5 py-0.5 border border-solar-border/50 text-solar-muted/70 uppercase tracking-widest"
-        >
-          {tag}
-          <button
-            onClick={() => onChange(tags.filter((t) => t !== tag))}
-            className="text-solar-muted/40 hover:text-solar-red transition-solar leading-none"
-          >
-            ×
-          </button>
-        </span>
+          tag={tag}
+          onDelete={() => onChange(tags.filter((t) => t !== tag))}
+        />
       ))}
       <input
         value={input}
@@ -112,15 +106,47 @@ export function AtlasEditor({ item, redirectOnSave }: Props) {
   const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle")
   const [stats,      setStats]      = useState({ words: 0, chars: 0, minutes: 1 })
 
+  // ── Interesse social ────────────────────────────────────────────────────
+  const [myInterest,      setMyInterest]      = useState<number>(0) // 0 = sem interesse, 1-5 = rating
+  const [interestLoading, setInterestLoading] = useState(false)
+
+  useEffect(() => {
+    fetch(`/api/social/interests?atlasItemId=${item.id}`)
+      .then((r) => r.ok ? r.json() : null)
+      .then((data: { rating?: number } | null) => {
+        if (data && typeof data.rating === "number") setMyInterest(data.rating)
+      })
+      .catch(() => {/* não autenticado, ignorar */})
+  }, [item.id])
+
+  const toggleInterest = async () => {
+    setInterestLoading(true)
+    if (myInterest > 0) {
+      await fetch(`/api/social/interests?atlasItemId=${item.id}`, { method: "DELETE" })
+      setMyInterest(0)
+    } else {
+      const res = await fetch("/api/social/interests", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ atlasItemId: item.id, rating: 5 }),
+      })
+      if (res.ok) setMyInterest(5)
+    }
+    setInterestLoading(false)
+  }
+
   // ── IA ──────────────────────────────────────────────────────────────────
   const [aiTagsLoading,  setAiTagsLoading]  = useState(false)
   const [aiImageLoading, setAiImageLoading] = useState(false)
   const [aiImagePrompt,  setAiImagePrompt]  = useState(item.title)
   const [aiImagePreview, setAiImagePreview] = useState<string | null>(null)
   const [aiProvider,     setAiProvider]     = useState<"gemini" | "replicate">("gemini")
+  const [aiTagsError,    setAiTagsError]    = useState<string | null>(null)
+  const [aiImageError,   setAiImageError]   = useState<string | null>(null)
 
   const suggestTags = async () => {
     setAiTagsLoading(true)
+    setAiTagsError(null)
     try {
       const text = editor.document
         .flatMap((b) => ((b.content ?? []) as Array<{ text?: string }>).map((c) => c.text ?? ""))
@@ -131,6 +157,7 @@ export function AtlasEditor({ item, redirectOnSave }: Props) {
         headers: { "Content-Type": "application/json" },
         body:    JSON.stringify({ type: "tags", title, content: text }),
       })
+      if (!res.ok) throw new Error(`Erro ${res.status}`)
       const { result } = await res.json() as { result?: string }
       if (result) {
         const newTags = result.split(/[,\n]+/).map((t) => t.trim().toLowerCase()).filter(Boolean)
@@ -138,21 +165,27 @@ export function AtlasEditor({ item, redirectOnSave }: Props) {
         setTags(merged)
         void save({ tags: merged })
       }
+    } catch (e) {
+      setAiTagsError(e instanceof Error ? e.message : "Falha na IA")
     } finally { setAiTagsLoading(false) }
   }
 
   const generateAiImage = async () => {
     setAiImageLoading(true)
     setAiImagePreview(null)
+    setAiImageError(null)
     try {
       const res  = await fetch("/api/ai/image", {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
         body:    JSON.stringify({ prompt: aiImagePrompt, provider: aiProvider }),
       })
+      if (!res.ok) throw new Error(`Erro ${res.status}`)
       const { url, error } = await res.json() as { url?: string; error?: string }
-      if (error) { console.error("[AI image]", error); return }
+      if (error) throw new Error(error)
       if (url) setAiImagePreview(url)
+    } catch (e) {
+      setAiImageError(e instanceof Error ? e.message : "Falha na geração de imagem")
     } finally { setAiImageLoading(false) }
   }
 
@@ -212,6 +245,16 @@ export function AtlasEditor({ item, redirectOnSave }: Props) {
   }, [sidePanel, relations.length, relLoading, loadRelations])
 
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const isDirty     = useRef(false)
+
+  // Avisa o usuário antes de fechar com mudanças não salvas
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      if (isDirty.current) { e.preventDefault(); e.returnValue = "" }
+    }
+    window.addEventListener("beforeunload", handler)
+    return () => window.removeEventListener("beforeunload", handler)
+  }, [])
 
   // ── Inicializa o editor BlockNote ──────────────────────────────────────
   const initialContent: Block[] | undefined = (() => {
@@ -237,6 +280,7 @@ export function AtlasEditor({ item, redirectOnSave }: Props) {
     title: string; area: string; type: string; status: string
     isFavorite: boolean; tags: string[]; coverImage: string
   }>) => {
+    isDirty.current = false
     setSaveStatus("saving")
     try {
       const blocks        = editor.document
@@ -285,6 +329,7 @@ export function AtlasEditor({ item, redirectOnSave }: Props) {
   }, [editor, title, area, type, status, isFavorite, tags, coverImage, item, redirectOnSave, router])
 
   const scheduleSave = useCallback(() => {
+    isDirty.current = true
     if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(() => void save(), 2000)
   }, [save])
@@ -396,6 +441,16 @@ export function AtlasEditor({ item, redirectOnSave }: Props) {
             >
               {isFavorite ? "★" : "☆"}
             </button>
+
+            {/* Interesse (perfil social) */}
+            <button
+              onClick={toggleInterest}
+              disabled={interestLoading}
+              className={`text-base transition-solar disabled:opacity-40 ${myInterest > 0 ? "text-rose-400" : "text-solar-muted/35 hover:text-solar-muted/70"}`}
+              title={myInterest > 0 ? "Remover do meu perfil" : "Adicionar ao meu perfil"}
+            >
+              {myInterest > 0 ? "♥" : "♡"}
+            </button>
           </div>
 
           {/* Tags */}
@@ -448,14 +503,19 @@ export function AtlasEditor({ item, redirectOnSave }: Props) {
           </div>
           <div className="flex items-center gap-3">
             {/* IA: sugerir tags */}
-            <button
-              onClick={() => void suggestTags()}
-              disabled={aiTagsLoading}
-              className="text-[8px] font-mono uppercase tracking-widest transition-solar px-2 py-0.5 border border-solar-border/20 text-solar-muted/35 hover:text-solar-amber hover:border-solar-amber/30 disabled:opacity-30"
-              title="Sugerir tags com IA"
-            >
-              {aiTagsLoading ? "…" : "✦ Tags"}
-            </button>
+            <div className="flex flex-col gap-1">
+              <button
+                onClick={() => void suggestTags()}
+                disabled={aiTagsLoading}
+                className="text-[8px] font-mono uppercase tracking-widest transition-solar px-2 py-0.5 border border-solar-border/20 text-solar-muted/35 hover:text-solar-amber hover:border-solar-amber/30 disabled:opacity-30"
+                title="Sugerir tags com IA"
+              >
+                {aiTagsLoading ? "…" : "✦ Tags"}
+              </button>
+              {aiTagsError && (
+                <span className="text-[8px] font-mono text-red-400/70">{aiTagsError}</span>
+              )}
+            </div>
 
             {/* Painel lateral — botões */}
             <button
@@ -566,6 +626,9 @@ export function AtlasEditor({ item, redirectOnSave }: Props) {
               >
                 {aiImageLoading ? "Gerando…" : "✦ Gerar imagem"}
               </button>
+              {aiImageError && (
+                <p className="text-[8px] font-mono text-red-400/70">{aiImageError}</p>
+              )}
 
               {/* Preview da imagem gerada */}
               {aiImagePreview && (

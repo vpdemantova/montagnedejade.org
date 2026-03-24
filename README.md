@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portal Solar
 
-## Getting Started
+Sistema privado de gestão de conhecimento — Diamantov.
 
-First, run the development server:
+## Stack
+
+Next.js 14 · Prisma + SQLite (dev) / PostgreSQL (prod) · BlockNote · Zustand · Framer Motion · Three.js · Gemini AI · Replicate Flux
+
+## Setup local
 
 ```bash
+# 1. Instale dependências
+npm install
+
+# 2. Configure as variáveis de ambiente
+cp .env.example .env
+# Edite o .env com seus valores
+
+# 3. Aplique o schema e popule o banco
+npx prisma db push
+npx prisma db seed
+
+# 4. Rode o servidor de desenvolvimento
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Acesse em [http://localhost:3000](http://localhost:3000). A senha é a que você definiu em `AUTH_PASSWORD`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Variáveis de ambiente
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variável | Descrição |
+|---|---|
+| `DATABASE_URL` | URL do banco (`file:./dev.db` para SQLite local) |
+| `DATABASE_PROVIDER` | `sqlite` (local) ou `postgresql` (produção) |
+| `AUTH_SECRET` | String aleatória para sessões (`openssl rand -hex 32`) |
+| `AUTH_PASSWORD` | Senha de acesso ao Portal |
+| `GEMINI_API_KEY` | Chave Google Gemini (opcional — habilita IA) |
+| `REPLICATE_API_TOKEN` | Token Replicate (opcional — imagem alternativa) |
 
-## Learn More
+## Deploy (Vercel + PostgreSQL)
 
-To learn more about Next.js, take a look at the following resources:
+1. Crie banco no [Neon](https://neon.tech) ou [Supabase](https://supabase.com)
+2. `npx prisma migrate dev --name init` → comite `prisma/migrations/`
+3. No Vercel: `DATABASE_PROVIDER=postgresql` + connection string pooled
+4. Após deploy: `npx prisma migrate deploy` contra o banco de produção
+5. Seed: `DATABASE_URL=<prod-url> npx prisma db seed`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Seções
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Seção | Rota |
+|---|---|
+| Home / Dashboard | `/` |
+| Atlas | `/atlas` |
+| Cultura | `/portal/cultura` |
+| Vilas | `/portal/vilas` |
+| Diário | `/compass/diario` |
+| Notas | `/compass/notas` |
+| Estudos | `/compass/estudos` |
+| Metas | `/compass/metas` |
+| Mapa Interior | `/compass/mapa` |
+| Perfil | `/compass/perfil` |
+| World | `/world` |
+| Settings | `/settings` |

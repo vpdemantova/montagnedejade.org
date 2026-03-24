@@ -19,7 +19,7 @@ export default async function AtlasItemPage({ params }: Props) {
 
       {/* Breadcrumb */}
       <div className="border-b border-solar-border/20 bg-solar-void">
-        <div className="max-w-4xl mx-auto px-12 py-2 flex items-center gap-2">
+        <div className="max-w-4xl mx-auto px-4 md:px-12 py-2 flex items-center gap-2">
           <Link href="/atlas" className="text-[9px] font-mono text-solar-muted/50 hover:text-solar-amber transition-solar uppercase tracking-widest">
             Atlas
           </Link>

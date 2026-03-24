@@ -70,56 +70,121 @@ function TextInput({
 
 // ── Perfil tab ────────────────────────────────────────────────────────────────
 
-function PerfilTab() {
-  const { userName, userTagline, setUserProfile } = useSolarStore()
-  const [name,     setName]     = useState(userName)
-  const [tagline,  setTagline]  = useState(userTagline)
-  const [saved,    setSaved]    = useState(false)
+type SocialProfile = {
+  id: string; username: string; displayName: string
+  bio: string | null; avatarUrl: string | null; accentColor: string
+}
 
-  const save = () => {
-    setUserProfile(name.trim() || "Diamantov", tagline.trim())
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
+const ACCENT_PRESETS = [
+  "#C8A45A","#9B59B6","#4A90D9","#2ECC71","#E91E63","#E67E22","#1ABC9C","#F39C12",
+]
+
+function PerfilTab() {
+  const [profile,     setProfile]     = useState<SocialProfile | null>(null)
+  const [displayName, setDisplayName] = useState("")
+  const [bio,         setBio]         = useState("")
+  const [accentColor, setAccentColor] = useState("#C8A45A")
+  const [saving,      setSaving]      = useState(false)
+  const [saved,       setSaved]       = useState(false)
+  const [error,       setError]       = useState<string | null>(null)
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data: SocialProfile | null) => {
+        if (!data) return
+        setProfile(data)
+        setDisplayName(data.displayName)
+        setBio(data.bio ?? "")
+        setAccentColor(data.accentColor)
+      })
+  }, [])
+
+  const save = async () => {
+    if (!profile) return
+    setSaving(true)
+    setError(null)
+    const res = await fetch(`/api/social/profile/${profile.username}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ displayName: displayName.trim() || profile.displayName, bio: bio.trim() || null, accentColor }),
+    })
+    if (res.ok) {
+      setSaved(true)
+      setTimeout(() => setSaved(false), 2500)
+    } else {
+      const d = await res.json() as { error?: string }
+      setError(d.error ?? "Erro ao salvar")
+    }
+    setSaving(false)
+  }
+
+  if (!profile) {
+    return <p className="text-[10px] font-mono text-solar-muted/40">Carregando…</p>
   }
 
   return (
     <div className="flex flex-col gap-4">
-      <Section title="Identidade">
-        <Field label="Nome">
-          <TextInput value={name} onChange={setName} placeholder="Seu nome" />
-        </Field>
-        <Field label="Tagline">
-          <TextInput value={tagline} onChange={setTagline} placeholder="Uma linha sobre você" />
+      <Section title="Conta">
+        <Field label="Usuário">
+          <p className="text-[11px] font-mono text-solar-muted/60">@{profile.username}</p>
         </Field>
       </Section>
 
-      <Section title="Avatar">
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 border border-solar-border/30 bg-solar-surface/20 flex items-center justify-center">
-            <span className="text-solar-amber text-xl font-display">
-              {name.charAt(0).toUpperCase()}
-            </span>
+      <Section title="Identidade">
+        <Field label="Nome de exibição">
+          <TextInput value={displayName} onChange={setDisplayName} placeholder="Seu nome" />
+        </Field>
+        <Field label="Bio">
+          <textarea
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+            placeholder="Uma linha sobre você"
+            rows={2}
+            className="w-full bg-solar-surface/20 border border-solar-border/30 px-3 py-2 text-[11px] font-mono text-solar-text/80 placeholder:text-solar-muted/30 outline-none resize-none focus:border-solar-amber/40 transition-colors"
+          />
+        </Field>
+      </Section>
+
+      <Section title="Cor de destaque">
+        <div className="flex gap-2 flex-wrap">
+          {ACCENT_PRESETS.map((color) => (
+            <button
+              key={color}
+              onClick={() => setAccentColor(color)}
+              className="w-8 h-8 rounded-full border-2 transition-all"
+              style={{
+                background: color,
+                borderColor: accentColor === color ? "white" : "transparent",
+                transform: accentColor === color ? "scale(1.15)" : "scale(1)",
+              }}
+            />
+          ))}
+          <input
+            type="color"
+            value={accentColor}
+            onChange={(e) => setAccentColor(e.target.value)}
+            className="w-8 h-8 rounded-full border border-solar-border/30 cursor-pointer bg-transparent"
+            title="Cor personalizada"
+          />
+        </div>
+        <div className="mt-2 flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
+               style={{ background: `${accentColor}25`, color: accentColor }}>
+            {displayName[0]?.toUpperCase() ?? "?"}
           </div>
-          <div>
-            <p className="text-[10px] font-mono text-solar-muted/50 mb-2">
-              Conecte Google OAuth para usar sua foto. (Módulo 13)
-            </p>
-            <span className="text-[8px] font-mono border border-solar-border/25 px-2 py-1 text-solar-muted/30 uppercase tracking-widest">
-              Auth pendente
-            </span>
-          </div>
+          <p className="text-[9px] font-mono text-solar-muted/40">Prévia do avatar</p>
         </div>
       </Section>
 
+      {error && <p className="text-[9px] font-mono text-red-400/70">{error}</p>}
+
       <button
         onClick={save}
-        className="
-          self-end px-5 py-2 border border-solar-amber/40
-          text-[10px] font-mono uppercase tracking-widest
-          text-solar-amber hover:bg-solar-amber/10 transition-all
-        "
+        disabled={saving}
+        className="self-end px-5 py-2 border border-solar-amber/40 text-[10px] font-mono uppercase tracking-widest text-solar-amber hover:bg-solar-amber/10 transition-all disabled:opacity-40"
       >
-        {saved ? "Salvo ✓" : "Salvar"}
+        {saving ? "Salvando…" : saved ? "Salvo ✓" : "Salvar perfil"}
       </button>
     </div>
   )

@@ -53,8 +53,8 @@ export async function findAll(
       }),
       ...(search && {
         OR: [
-          { title:   { contains: search, mode: "insensitive" } },
-          { content: { contains: search, mode: "insensitive" } },
+          { title:   { contains: search, ...(process.env.DATABASE_PROVIDER !== "sqlite" && { mode: "insensitive" as const }) } },
+          { content: { contains: search, ...(process.env.DATABASE_PROVIDER !== "sqlite" && { mode: "insensitive" as const }) } },
         ],
       }),
     },

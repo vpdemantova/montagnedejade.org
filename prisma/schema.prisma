@@ -1,10 +1,9 @@
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -55,6 +54,8 @@ model AtlasItem {
   tags          Tag[]           @relation("AtlasItemTags")
   relationsFrom AtlasRelation[] @relation("RelationFrom")
   relationsTo   AtlasRelation[] @relation("RelationTo")
+  interests     UserInterest[]
+  posts         Post[]
 }
 
 // Compass — entradas do diário com metadados estruturados
@@ -160,6 +161,114 @@ model RSSItem {
   publishedAt DateTime
   cachedAt    DateTime @default(now())
 }
+
+// ─── SOCIAL ──────────────────────────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  displayName  String
+  passwordHash String
+  bio          String?
+  avatarUrl    String?
+  // Cor de destaque do perfil (hex)
+  accentColor  String   @default("#C8A45A")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  following    Follow[]       @relation("UserFollowing")
+  followers    Follow[]       @relation("UserFollowers")
+  tickets      SolarTicket[]  @relation("TicketOwner")
+  ticketsGiven SolarTicket[]  @relation("TicketGiver")
+  tokens       UserToken[]
+  interests    UserInterest[]
+  posts        Post[]
+  likes        PostLike[]
+}
+
+model Follow {
+  id          String   @id @default(cuid())
+  followerId  String
+  follower    User     @relation("UserFollowing", fields: [followerId], references: [id], onDelete: Cascade)
+  followingId String
+  following   User     @relation("UserFollowers", fields: [followingId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  @@unique([followerId, followingId])
+}
+
+// Tickets Solares — moeda social do Portal Solar
+model SolarTicket {
+  id        String    @id @default(cuid())
+  ownerId   String
+  owner     User      @relation("TicketOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  giverId   String?
+  giver     User?     @relation("TicketGiver", fields: [giverId], references: [id])
+  // STANDARD | GOLDEN | FOUNDER | EVENT
+  type      String    @default("STANDARD")
+  isUsed    Boolean   @default(false)
+  usedAt    DateTime?
+  note      String?
+  createdAt DateTime  @default(now())
+}
+
+// Tokens colecionáveis do metaverso
+model UserToken {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // AVATAR | BADGE | MONUMENT | FRAME | EFFECT | BONECO
+  tokenType   String
+  name        String
+  description String?
+  imageUrl    String?
+  // JSON — configurações de customização (cor, acessórios, etc.)
+  data        String?
+  // COMMON | RARE | EPIC | LEGENDARY
+  rarity      String   @default("COMMON")
+  isEquipped  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+// Interesses — Atlas items vinculados ao perfil do usuário
+model UserInterest {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  atlasItemId String
+  atlasItem   AtlasItem @relation(fields: [atlasItemId], references: [id], onDelete: Cascade)
+  // 1–5
+  rating      Int       @default(5)
+  note        String?
+  createdAt   DateTime  @default(now())
+  @@unique([userId, atlasItemId])
+}
+
+// Feed social — posts, recomendações, descobertas
+model Post {
+  id          String     @id @default(cuid())
+  authorId    String
+  author      User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  content     String
+  // TEXT | RECOMMENDATION | DISCOVERY | REVIEW
+  type        String     @default("TEXT")
+  atlasItemId String?
+  atlasItem   AtlasItem? @relation(fields: [atlasItemId], references: [id])
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  likes       PostLike[]
+}
+
+model PostLike {
+  id        String   @id @default(cuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  @@unique([postId, userId])
+}
+
+// ─── QUADRO MUNDIAL ───────────────────────────────────────────────────────────
 
 // Quadro Mundial — avisos, eventos, obras e descobertas
 model WorldNotice {
