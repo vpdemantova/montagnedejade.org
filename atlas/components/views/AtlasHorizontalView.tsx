@@ -21,10 +21,11 @@ const CARD_STYLES: { id: CardStyle; label: string; icon: string }[] = [
   { id: "tall",     label: "Grande",   icon: "▬"   },
 ]
 
+// Dimensões base; em mobile usamos clamp via CSS para não quebrar o scroll
 const CARD_DIMS: Record<CardStyle, { w: number; h: number; imgW: number }> = {
-  compact:  { w: 220, h: 80,  imgW: 64  },
-  standard: { w: 300, h: 120, imgW: 100 },
-  tall:     { w: 380, h: 180, imgW: 160 },
+  compact:  { w: 200, h: 76,  imgW: 58  },
+  standard: { w: 270, h: 110, imgW: 90  },
+  tall:     { w: 340, h: 160, imgW: 140 },
 }
 
 // ── Ordem e cores das áreas ───────────────────────────────────────────────────
@@ -358,7 +359,7 @@ export function AtlasHorizontalView({ items, onItemClick }: Props) {
     <div className="flex flex-col w-full">
       {/* ── Barra de controle — zero padding lateral ── */}
       <div
-        className="flex items-center gap-2 w-full sticky top-0 z-10"
+        className="flex items-center gap-2 w-full sticky top-0 z-10 flex-wrap"
         style={{
           padding:         "6px 12px",
           background:      "rgb(var(--c-void) / 0.88)",
@@ -367,7 +368,7 @@ export function AtlasHorizontalView({ items, onItemClick }: Props) {
         }}
       >
         <span className="text-[9px] font-mono" style={{ color: "rgb(var(--c-muted) / 0.4)" }}>
-          {orderedAreas.length} grupos · {items.length} itens
+          <span className="hidden sm:inline">{orderedAreas.length} grupos · </span>{items.length} itens
         </span>
 
         <div className="flex-1" />
@@ -375,28 +376,28 @@ export function AtlasHorizontalView({ items, onItemClick }: Props) {
         {/* Toggle estilo de card */}
         <button
           onClick={cycleStyle}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[9px] font-mono uppercase tracking-widest transition-all"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[9px] font-mono uppercase tracking-widest transition-all"
           style={{
             background: "rgb(var(--c-surface) / 0.6)",
             border:     "1px solid rgb(var(--c-border) / 0.3)",
             color:      "rgb(var(--c-text) / 0.7)",
           }}
         >
-          <span className="font-mono text-[11px] tracking-[3px]">{currentStyleIcon}</span>
-          {currentStyleLabel}
+          <span className="font-mono text-[10px] tracking-[2px]">{currentStyleIcon}</span>
+          <span className="hidden sm:inline">{currentStyleLabel}</span>
         </button>
 
         {/* Colapsar / expandir tudo */}
         <button
           onClick={() => setAllCollapsed((c) => !c)}
-          className="px-3 py-1.5 rounded-lg text-[9px] font-mono uppercase tracking-widest transition-all"
+          className="px-2.5 py-1.5 rounded-lg text-[9px] font-mono uppercase tracking-widest transition-all"
           style={{
             background: "rgb(var(--c-surface) / 0.6)",
             border:     "1px solid rgb(var(--c-border) / 0.3)",
             color:      "rgb(var(--c-muted) / 0.55)",
           }}
         >
-          {allCollapsed ? "▼ Expandir" : "▲ Colapsar"}
+          {allCollapsed ? "▼" : "▲"}<span className="hidden sm:inline">{allCollapsed ? " Expandir" : " Colapsar"}</span>
         </button>
       </div>
 

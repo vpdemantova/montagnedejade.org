@@ -7,6 +7,7 @@ const PUBLIC_PATHS = [
   "/register",
   "/api/auth/login",
   "/api/auth/register",
+  "/api/auth/guest",
   "/favicon.ico",
   "/_next",
   "/fonts",
@@ -38,6 +39,7 @@ export async function middleware(req: NextRequest) {
     const res = NextResponse.next()
     res.headers.set("x-user-id",   String(payload.userId ?? ""))
     res.headers.set("x-username",  String(payload.username ?? ""))
+    res.headers.set("x-guest",     payload.guest ? "1" : "0")
     return res
   } catch {
     // Token inválido ou expirado

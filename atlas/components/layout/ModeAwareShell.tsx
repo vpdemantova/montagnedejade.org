@@ -184,39 +184,71 @@ function ContemplationReveal() {
 // ── Public header ─────────────────────────────────────────────────────────────
 
 function PublicHeader() {
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  const NAV = [
+    { href: "/",               label: "Home"    },
+    { href: "/portal/vilas",   label: "Vilas"   },
+    { href: "/portal/cultura", label: "Cultura" },
+    { href: "/atlas",          label: "Atlas"   },
+    { href: "/world",          label: "World"   },
+  ]
+
   return (
     <header className="border-b border-solar-border/30 bg-solar-deep/80 backdrop-blur-sm">
-      <div className="max-w-6xl mx-auto px-12 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-6">
-          <span className="font-display text-[20px] text-solar-text/90 tracking-tight">Portal Solar</span>
-          <span className="text-[9px] font-mono text-solar-muted/40 uppercase tracking-widest">
+      <div className="max-w-6xl mx-auto px-4 sm:px-8 md:px-12 py-3 sm:py-4 flex items-center justify-between">
+
+        {/* Logo */}
+        <div className="flex items-center gap-3 sm:gap-6">
+          <span className="font-display text-[17px] sm:text-[20px] text-solar-text/90 tracking-tight">Portal Solar</span>
+          <span className="hidden md:inline text-[9px] font-mono text-solar-muted/40 uppercase tracking-widest">
             Ecossistema de Conhecimento
           </span>
         </div>
-        <nav className="flex items-center gap-5">
-          {[
-            { href: "/",              label: "Home"    },
-            { href: "/portal/vilas",  label: "Vilas"   },
-            { href: "/portal/cultura",label: "Cultura" },
-            { href: "/atlas",         label: "Atlas"   },
-            { href: "/world",         label: "World"   },
-          ].map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className="text-[10px] font-mono text-solar-muted/60 hover:text-solar-amber transition-solar uppercase tracking-widest"
-            >
+
+        {/* Desktop nav */}
+        <nav className="hidden sm:flex items-center gap-4 lg:gap-5">
+          {NAV.map((item) => (
+            <a key={item.href} href={item.href}
+              className="text-[10px] font-mono text-solar-muted/60 hover:text-solar-amber transition-solar uppercase tracking-widest">
               {item.label}
             </a>
           ))}
-          <a
-            href="/atlas"
-            className="px-3 py-1.5 border border-solar-amber/40 text-[9px] font-mono text-solar-amber hover:bg-solar-amber/10 transition-solar uppercase tracking-widest"
-          >
-            Entrar no Atlas
+          <a href="/atlas"
+            className="px-3 py-1.5 border border-solar-amber/40 text-[9px] font-mono text-solar-amber hover:bg-solar-amber/10 transition-solar uppercase tracking-widest">
+            Entrar
           </a>
         </nav>
+
+        {/* Mobile hamburger */}
+        <button
+          onClick={() => setMenuOpen((v) => !v)}
+          className="sm:hidden flex flex-col gap-1 p-2"
+          aria-label="Menu"
+        >
+          <span className={`w-5 h-px bg-solar-muted/50 transition-all duration-200 ${menuOpen ? "rotate-45 translate-y-1.5" : ""}`} />
+          <span className={`w-5 h-px bg-solar-muted/50 transition-all duration-200 ${menuOpen ? "opacity-0" : ""}`} />
+          <span className={`w-5 h-px bg-solar-muted/50 transition-all duration-200 ${menuOpen ? "-rotate-45 -translate-y-1.5" : ""}`} />
+        </button>
       </div>
+
+      {/* Mobile dropdown */}
+      {menuOpen && (
+        <div className="sm:hidden border-t border-solar-border/20 bg-solar-deep/95">
+          {NAV.map((item) => (
+            <a key={item.href} href={item.href}
+              className="block px-6 py-3 text-[11px] font-mono text-solar-muted/70 hover:text-solar-amber transition-solar uppercase tracking-widest border-b border-solar-border/10 last:border-0">
+              {item.label}
+            </a>
+          ))}
+          <div className="px-6 py-3">
+            <a href="/atlas"
+              className="inline-block px-4 py-2 border border-solar-amber/40 text-[10px] font-mono text-solar-amber hover:bg-solar-amber/10 transition-solar uppercase tracking-widest">
+              Entrar no Atlas →
+            </a>
+          </div>
+        </div>
+      )}
     </header>
   )
 }

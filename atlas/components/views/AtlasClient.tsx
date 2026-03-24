@@ -140,9 +140,9 @@ export function AtlasClient({ items, initialArea, initialTag, defaultView, backH
         }}
       >
         {/* Linha 1 — título + busca + views */}
-        <div className="flex items-center gap-3 px-3 py-2 border-b" style={{ borderColor: "rgb(var(--c-border) / 0.15)" }}>
+        <div className="flex items-center gap-2 sm:gap-3 px-3 py-2 border-b" style={{ borderColor: "rgb(var(--c-border) / 0.15)" }}>
           {backHref && (
-            <Link href={backHref} className="text-[9px] font-mono uppercase tracking-widest flex-shrink-0"
+            <Link href={backHref} className="text-[9px] font-mono uppercase tracking-widest flex-shrink-0 hidden sm:inline"
               style={{ color: "rgb(var(--c-muted) / 0.5)" }}>
               ← {backLabel ?? "Voltar"}
             </Link>
@@ -155,12 +155,12 @@ export function AtlasClient({ items, initialArea, initialTag, defaultView, backH
             Atlas
           </span>
 
-          <span className="text-[9px] font-mono flex-shrink-0" style={{ color: "rgb(var(--c-muted) / 0.45)" }}>
-            {finalItems.length} registros
+          <span className="text-[9px] font-mono flex-shrink-0 hidden xs:inline" style={{ color: "rgb(var(--c-muted) / 0.45)" }}>
+            {finalItems.length}
           </span>
 
           {/* busca */}
-          <div className="flex-1 flex items-center gap-1 max-w-xs">
+          <div className="flex-1 flex items-center gap-1 min-w-0">
             <svg width="11" height="11" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
               style={{ color: "rgb(var(--c-muted) / 0.35)", flexShrink: 0 }}>
               <circle cx="8.5" cy="8.5" r="5.5"/><path d="M17 17l-3.5-3.5"/>
@@ -169,25 +169,26 @@ export function AtlasClient({ items, initialArea, initialTag, defaultView, backH
               type="text"
               onChange={(e) => handleQuery(e.target.value)}
               placeholder="Buscar..."
-              className="bg-transparent text-[11px] font-mono placeholder:text-solar-muted/30 focus:outline-none w-full"
+              className="bg-transparent text-[11px] font-mono placeholder:text-solar-muted/30 focus:outline-none w-full min-w-0"
               style={{ color: "rgb(var(--c-text))" }}
             />
           </div>
 
-          {/* view switcher */}
-          <div className="flex items-center gap-0.5 ml-auto flex-shrink-0">
+          {/* view switcher — scroll horizontal em telas pequenas */}
+          <div className="flex items-center gap-0.5 ml-auto flex-shrink-0 overflow-x-auto scrollbar-hide">
             {VIEW_CHIPS.map((v) => (
               <button
                 key={v.value}
                 onClick={() => handleView(v.value)}
-                className="px-2.5 py-1 text-[9px] font-mono uppercase tracking-widest rounded transition-all duration-150"
+                className="px-2 sm:px-2.5 py-1 text-[9px] font-mono uppercase tracking-widest rounded transition-all duration-150 flex-shrink-0"
                 style={{
                   background: view === v.value ? "rgb(var(--c-accent) / 0.15)" : "transparent",
                   color: view === v.value ? "rgb(var(--c-accent))" : "rgb(var(--c-muted) / 0.45)",
                   border: `1px solid ${view === v.value ? "rgb(var(--c-accent) / 0.3)" : "rgb(var(--c-border) / 0.2)"}`,
                 }}
               >
-                {v.label}
+                <span className="hidden sm:inline">{v.label}</span>
+                <span className="sm:hidden">{v.label.charAt(0)}</span>
               </button>
             ))}
 
@@ -397,7 +398,7 @@ function AtlasKanbanView({ items, onItemClick }: { items: AtlasItemWithTags[]; o
   ]
 
   return (
-    <div className="grid grid-cols-4 gap-3 p-3">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 p-3">
       {columns.map((col) => {
         const colItems = items.filter((i) => i.status === col.key)
         return (

@@ -8,6 +8,7 @@ export type SessionPayload = JWTPayload & {
   userId:      string
   username:    string
   displayName: string
+  guest?:      boolean
 }
 
 export async function signToken(payload: Omit<SessionPayload, keyof JWTPayload>) {

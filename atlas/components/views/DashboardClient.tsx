@@ -30,10 +30,10 @@ function EscolaPlaceholder() {
       {/* Architectural silhouette */}
       <div className="absolute inset-0 flex items-center justify-center">
         <svg
-          width="380" height="220"
+          width="100%" height="100%"
           viewBox="0 0 380 220"
           fill="none"
-          className="opacity-[0.13]"
+          className="opacity-[0.13] max-w-[380px]"
           aria-hidden
         >
           {/* Ground line */}
@@ -159,7 +159,7 @@ function DiscoveryCard({ item }: { item: AtlasItemWithTags }) {
     : null
 
   return (
-    <div className="bg-solar-void p-8 flex flex-col gap-4">
+    <div className="bg-solar-void p-4 sm:p-8 flex flex-col gap-4">
       <p className="text-[9px] font-mono uppercase tracking-[0.18em] text-solar-muted/70">Descoberta do Dia</p>
       <div className="flex-1">
         <p className="text-[9px] font-mono text-solar-muted/55 uppercase tracking-widest mb-2">
@@ -193,7 +193,7 @@ type BoardView = "galeria" | "carrossel" | "mosaico"
 
 function BoardGaleria({ items }: { items: ArtItem[] }) {
   return (
-    <div className="grid grid-cols-3 gap-px bg-solar-border/20">
+    <div className="grid grid-cols-2 sm:grid-cols-3 gap-px bg-solar-border/20">
       {items.slice(0, 9).map((item) => (
         <Link key={item.id} href={`/atlas/${item.slug ?? item.id}`}
           className="group relative bg-solar-void aspect-square flex flex-col justify-end p-4 overflow-hidden hover:bg-solar-surface/30 transition-colors"
@@ -253,7 +253,7 @@ function BoardCarrossel({ items }: { items: ArtItem[] }) {
 function BoardMosaico({ items }: { items: ArtItem[] }) {
   const grid = items.slice(0, 7)
   return (
-    <div className="grid grid-cols-4 grid-rows-2 gap-px bg-solar-border/20" style={{ height: 220 }}>
+    <div className="grid grid-cols-3 sm:grid-cols-4 grid-rows-2 gap-px bg-solar-border/20" style={{ height: "clamp(160px, 30vw, 220px)" }}>
       {/* Big tile */}
       {grid[0] && (
         <Link href={`/atlas/${grid[0].slug ?? grid[0].id}`}
@@ -280,7 +280,7 @@ function BoardMosaico({ items }: { items: ArtItem[] }) {
         </Link>
       ))}
       {grid.length === 0 && (
-        <div className="col-span-4 row-span-2 flex items-center justify-center">
+        <div className="col-span-3 sm:col-span-4 row-span-2 flex items-center justify-center">
           <p className="text-[9px] font-mono text-solar-muted/30">Sem itens</p>
         </div>
       )}
@@ -301,7 +301,7 @@ function BoardArtes() {
 
   return (
     <div className="border border-solar-border/30 bg-solar-border/10">
-      <div className="flex items-center justify-between px-6 py-3 border-b border-solar-border/20 bg-solar-void">
+      <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-solar-border/20 bg-solar-void">
         <p className="text-[9px] font-mono uppercase tracking-[0.18em] text-solar-muted/70">Acervo de Artes</p>
         <div className="flex items-center gap-0">
           {(["galeria", "carrossel", "mosaico"] as BoardView[]).map((v) => (
@@ -428,13 +428,13 @@ function SecaoHub() {
     <div className="border border-solar-border/30 bg-solar-void">
 
       {/* Header — Pitch principal */}
-      <div className="px-8 pt-10 pb-8 border-b border-solar-border/20">
+      <div className="px-4 sm:px-8 pt-6 sm:pt-10 pb-6 sm:pb-8 border-b border-solar-border/20">
         <p className="text-[8px] font-mono uppercase tracking-[0.28em] text-solar-amber/50 mb-5">
           ✦ Hub — O que é o Portal Solar
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-6 sm:gap-8 items-start">
           <div>
-            <h2 className="font-display text-3xl text-solar-text font-semibold leading-tight mb-5 max-w-2xl">
+            <h2 className="font-display text-fluid-4xl text-solar-text font-semibold leading-tight mb-5 max-w-2xl">
               Um sistema vivo de conhecimento para quem leva a sério o estudo da humanidade.
             </h2>
             <p className="text-[12px] font-body text-solar-muted/65 leading-[1.8] max-w-2xl mb-4">
@@ -460,7 +460,7 @@ function SecaoHub() {
       </div>
 
       {/* O problema que resolve */}
-      <div className="px-8 py-7 border-b border-solar-border/20 grid md:grid-cols-3 gap-6">
+      <div className="px-4 sm:px-8 py-6 sm:py-7 border-b border-solar-border/20 grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
         {[
           {
             titulo: "O problema",
@@ -483,7 +483,7 @@ function SecaoHub() {
       </div>
 
       {/* Os 4 Pilares */}
-      <div className="px-8 py-7 border-b border-solar-border/20">
+      <div className="px-4 sm:px-8 py-6 sm:py-7 border-b border-solar-border/20">
         <p className="text-[8px] font-mono uppercase tracking-[0.2em] text-solar-muted/50 mb-6">
           Os 4 Pilares
         </p>
@@ -512,11 +512,11 @@ function SecaoHub() {
       </div>
 
       {/* Como funciona */}
-      <div className="px-8 py-7 border-b border-solar-border/20">
+      <div className="px-4 sm:px-8 py-6 sm:py-7 border-b border-solar-border/20">
         <p className="text-[8px] font-mono uppercase tracking-[0.2em] text-solar-muted/50 mb-6">
           Como Funciona
         </p>
-        <div className="grid md:grid-cols-3 gap-0 border border-solar-border/15 divide-x divide-solar-border/15">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border border-solar-border/15 divide-y md:divide-y-0 md:divide-x divide-solar-border/15">
           {[
             {
               passo: "01",
@@ -534,7 +534,7 @@ function SecaoHub() {
               desc: "Explora o que você construiu — filtrando por área, buscando por texto, revisitando recentes, descobrindo conexões esquecidas. O painel inicial reúne tudo numa visão integrada do seu universo.",
             },
           ].map(({ passo, titulo, desc }) => (
-            <div key={passo} className="px-6 py-6">
+            <div key={passo} className="px-4 sm:px-6 py-5 sm:py-6">
               <p className="text-[8px] font-mono text-solar-amber/30 mb-3 tracking-[0.2em]">PASSO {passo}</p>
               <p className="text-[11px] font-mono text-solar-text/75 mb-2 font-medium">{titulo}</p>
               <p className="text-[10px] font-body text-solar-muted/50 leading-[1.7]">{desc}</p>
@@ -544,7 +544,7 @@ function SecaoHub() {
       </div>
 
       {/* Módulos implementados */}
-      <div className="px-8 py-7 border-b border-solar-border/20">
+      <div className="px-4 sm:px-8 py-6 sm:py-7 border-b border-solar-border/20">
         <div className="flex items-baseline justify-between mb-6">
           <p className="text-[8px] font-mono uppercase tracking-[0.2em] text-solar-muted/50">
             Módulos Implementados
@@ -565,9 +565,9 @@ function SecaoHub() {
       </div>
 
       {/* Planos de operação */}
-      <div className="px-8 py-7 border-b border-solar-border/20">
+      <div className="px-4 sm:px-8 py-6 sm:py-7 border-b border-solar-border/20">
         <p className="text-[8px] font-mono uppercase tracking-[0.2em] text-solar-muted/50 mb-6">Planos de Operação</p>
-        <div className="grid md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[
             {
               plano: "Local · Solo",
@@ -613,7 +613,7 @@ function SecaoHub() {
       </div>
 
       {/* Rodapé — Manifesto */}
-      <div className="px-8 py-8">
+      <div className="px-4 sm:px-8 py-6 sm:py-8">
         <div className="max-w-2xl mx-auto text-center">
           <p className="text-[9px] font-mono uppercase tracking-[0.3em] text-solar-amber/30 mb-5">Manifesto</p>
           <blockquote className="text-[13px] font-body text-solar-muted/55 leading-[1.9] italic mb-6">
@@ -639,10 +639,10 @@ function SecaoHub() {
 function SecaoPlataforma() {
   return (
     <div className="border border-solar-border/30 bg-solar-void">
-      <div className="px-8 py-8 border-b border-solar-border/20 flex items-start justify-between gap-12">
+      <div className="px-4 sm:px-8 py-6 sm:py-8 border-b border-solar-border/20 flex items-start justify-between gap-6 sm:gap-12">
         <div className="flex-1 min-w-0">
           <p className="text-[9px] font-mono uppercase tracking-[0.18em] text-solar-muted/60 mb-4">Sobre a Plataforma</p>
-          <h2 className="font-display text-2xl text-solar-text font-semibold leading-tight mb-4">
+          <h2 className="font-display text-fluid-3xl text-solar-text font-semibold leading-tight mb-4">
             Portal Solar — um sistema vivo de conhecimento
           </h2>
           <p className="text-[11px] font-body text-solar-muted/65 leading-relaxed max-w-xl">
@@ -657,13 +657,13 @@ function SecaoPlataforma() {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-3 divide-x divide-solar-border/15">
+      <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-solar-border/15">
         {[
           { label: "Atlas",    desc: "Catálogo enciclopédico de tudo que você estuda",  symbol: "◎" },
           { label: "Compass",  desc: "Diário interior, metas e mapa pessoal",           symbol: "◈" },
           { label: "Cultura",  desc: "Rede social minimalista de estudantes",           symbol: "⊕" },
         ].map(({ label, desc, symbol }) => (
-          <div key={label} className="px-6 py-5">
+          <div key={label} className="px-4 sm:px-6 py-4 sm:py-5">
             <p className="text-[10px] font-mono text-solar-amber/50 mb-1">{symbol} {label}</p>
             <p className="text-[9px] font-mono text-solar-muted/45 leading-relaxed">{desc}</p>
           </div>
@@ -716,7 +716,7 @@ function SecaoConsciencia() {
 
   return (
     <div className="border border-solar-border/30 bg-solar-void">
-      <div className="px-8 py-6 border-b border-solar-border/20">
+      <div className="px-4 sm:px-8 py-5 sm:py-6 border-b border-solar-border/20">
         <p className="text-[9px] font-mono uppercase tracking-[0.18em] text-solar-muted/60 mb-2">Consciência</p>
         <p className="text-[11px] font-mono text-solar-muted/45 leading-relaxed">
           Algumas perguntas para nos sintonizarmos — seus estudos, suas visões, sua trajetória.
@@ -740,7 +740,7 @@ function SecaoConsciencia() {
         <>
           <div className="divide-y divide-solar-border/15">
             {QUESTOES.map((q) => (
-              <div key={q.id} className="px-8 py-6">
+              <div key={q.id} className="px-4 sm:px-8 py-5 sm:py-6">
                 <p className="text-[8px] font-mono uppercase tracking-widest text-solar-amber/40 mb-1">{q.tema}</p>
                 <p className="text-[11px] font-mono text-solar-text/75 mb-4">{q.pergunta}</p>
                 <div className="flex flex-wrap gap-2">
@@ -762,7 +762,7 @@ function SecaoConsciencia() {
               </div>
             ))}
           </div>
-          <div className="px-8 py-4 border-t border-solar-border/15 flex items-center justify-between">
+          <div className="px-4 sm:px-8 py-4 border-t border-solar-border/15 flex items-center justify-between">
             <p className="text-[9px] font-mono text-solar-muted/30">
               {Object.keys(answers).length} / {QUESTOES.length} respondidas
             </p>
@@ -840,19 +840,19 @@ export function DashboardClient({ recentItems, discoveryItem, areaCounts, totalI
     monument: null, // rendered in app/page.tsx as hero
 
     saudacao: vis("saudacao") ? (
-      <div key="saudacao" data-gsap="greeting" className="pb-6 flex items-start justify-between gap-8">
+      <div key="saudacao" data-gsap="greeting" className="pb-6 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-8">
         <div className="flex-1 min-w-0">
-          <div className="flex items-baseline gap-x-3 mb-1">
-            <h1 className="font-display text-[22px] leading-none text-solar-text font-semibold tracking-tight whitespace-nowrap">
+          <div className="flex flex-wrap items-baseline gap-x-2 sm:gap-x-3 gap-y-1 mb-1">
+            <h1 className="font-display text-fluid-3xl leading-none text-solar-text font-semibold tracking-tight">
               {getGreeting()}, {userName}.
             </h1>
-            <span className="font-display text-[22px] text-solar-amber/60 leading-none font-semibold tracking-tight whitespace-nowrap">
+            <span className="font-display text-fluid-3xl text-solar-amber/60 leading-none font-semibold tracking-tight">
               Bem-vindo ao Portal Solar.
             </span>
           </div>
           <p className="text-[8px] font-mono text-solar-muted/30 mt-3 capitalize tracking-wide">{today}</p>
         </div>
-        <div className="flex-shrink-0 text-right max-w-[372px]">
+        <div className="hidden sm:block flex-shrink-0 text-right max-w-[320px] lg:max-w-[372px]">
           <p className="text-[11px] font-mono text-solar-muted/45 leading-relaxed italic">
             O conhecimento que você acumula hoje é o mapa que vai guiar quem você se tornará amanhã.
           </p>
@@ -872,8 +872,8 @@ export function DashboardClient({ recentItems, discoveryItem, areaCounts, totalI
     artes: vis("artes") ? <div key="artes" data-gsap="artes"><BoardArtes /></div> : null,
 
     recentes: vis("recentes") ? (
-      <div key="recentes" data-gsap="recentes" className="grid grid-cols-3 border border-solar-border/30 bg-solar-border/10">
-        <div className="col-span-2 bg-solar-void p-8 border-r border-solar-border/20">
+      <div key="recentes" data-gsap="recentes" className="grid grid-cols-1 sm:grid-cols-3 border border-solar-border/30 bg-solar-border/10">
+        <div className="sm:col-span-2 bg-solar-void p-4 sm:p-8 border-b sm:border-b-0 sm:border-r border-solar-border/20">
           <p className="text-[9px] font-mono uppercase tracking-[0.18em] text-solar-muted/70 mb-5">
             Continuar de onde parou
           </p>
@@ -896,7 +896,7 @@ export function DashboardClient({ recentItems, discoveryItem, areaCounts, totalI
         {discoveryItem ? (
           <DiscoveryCard item={discoveryItem} />
         ) : (
-          <div className="bg-solar-void p-8">
+          <div className="bg-solar-void p-4 sm:p-8">
             <p className="text-[9px] font-mono uppercase tracking-[0.18em] text-solar-muted/70 mb-5">Descoberta do Dia</p>
             <p className="text-[10px] font-mono text-solar-muted/35">Adicione itens ao Atlas para ver uma descoberta diária.</p>
           </div>
@@ -907,13 +907,13 @@ export function DashboardClient({ recentItems, discoveryItem, areaCounts, totalI
     rss: vis("rss") ? <div key="rss" data-gsap="rss"><RSSPanel /></div> : null,
 
     stats: vis("stats") ? (
-      <div key="stats" data-gsap="stats" className="grid grid-cols-3 border border-solar-border/30 bg-solar-border/10">
-        <div className="col-span-2 bg-solar-void p-8 border-r border-solar-border/20">
+      <div key="stats" data-gsap="stats" className="grid grid-cols-1 sm:grid-cols-3 border border-solar-border/30 bg-solar-border/10">
+        <div className="sm:col-span-2 bg-solar-void p-4 sm:p-8 border-b sm:border-b-0 sm:border-r border-solar-border/20">
           <div className="flex items-baseline justify-between mb-5">
             <p className="text-[9px] font-mono uppercase tracking-[0.18em] text-solar-muted/70">Atlas · Por área</p>
             <span className="font-display text-solar-amber text-xl leading-none">{totalItems}</span>
           </div>
-          <div className="grid grid-cols-2 gap-x-8 gap-y-3">
+          <div className="grid grid-cols-1 xs:grid-cols-2 gap-x-8 gap-y-3">
             {Object.entries(areaCounts)
               .filter(([, v]) => v > 0)
               .sort(([, a], [, b]) => b - a)
@@ -930,7 +930,7 @@ export function DashboardClient({ recentItems, discoveryItem, areaCounts, totalI
               ))}
           </div>
         </div>
-        <div className="bg-solar-void p-8">
+        <div className="bg-solar-void p-4 sm:p-8">
           <p className="text-[9px] font-mono uppercase tracking-[0.18em] text-solar-muted/70 mb-5">Acesso rápido</p>
           <nav className="space-y-2">
             {[
@@ -958,7 +958,7 @@ export function DashboardClient({ recentItems, discoveryItem, areaCounts, totalI
   }
 
   return (
-    <div ref={containerRef} className="relative z-10 max-w-6xl mx-auto px-12 py-6 space-y-px">
+    <div ref={containerRef} className="relative z-10 max-w-6xl mx-auto px-4 sm:px-8 md:px-12 py-6 space-y-px">
       {homeSections.map((s) => sectionMap[s.id])}
     </div>
   )

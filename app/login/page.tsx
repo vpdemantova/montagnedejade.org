@@ -10,10 +10,21 @@ function LoginForm() {
   const searchParams = useSearchParams()
   const from         = searchParams.get("from") ?? "/"
 
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-  const [error,    setError]    = useState("")
-  const [loading,  setLoading]  = useState(false)
+  const [username,      setUsername]      = useState("")
+  const [password,      setPassword]      = useState("")
+  const [error,         setError]         = useState("")
+  const [loading,       setLoading]       = useState(false)
+  const [loadingGuest,  setLoadingGuest]  = useState(false)
+
+  async function handleGuest() {
+    setLoadingGuest(true)
+    const res = await fetch("/api/auth/guest", { method: "POST" })
+    if (res.ok) {
+      router.replace("/")
+    } else {
+      setLoadingGuest(false)
+    }
+  }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -92,6 +103,20 @@ function LoginForm() {
             </Link>
           </div>
         </form>
+
+        {/* Acesso como visitante */}
+        <div className="mt-6 flex flex-col items-center gap-2">
+          <button
+            onClick={handleGuest}
+            disabled={loadingGuest}
+            className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#444] hover:text-[#C8A45A]/40 disabled:cursor-not-allowed transition-colors py-1"
+          >
+            {loadingGuest ? "Carregando…" : "Explorar sem login →"}
+          </button>
+          <p className="font-mono text-[8px] text-[#333] tracking-wide">
+            Acesso somente leitura · 4 horas
+          </p>
+        </div>
       </div>
     </div>
   )
