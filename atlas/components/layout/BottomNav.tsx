@@ -118,7 +118,7 @@ export function BottomNav() {
   const cycleSection = () => {
     const idx  = NAV_SECTIONS.findIndex((s) => s.id === navSection)
     const next = NAV_SECTIONS[(idx + 1) % NAV_SECTIONS.length]
-    setNavSection(next.id)
+    if (next) setNavSection(next.id)
   }
 
   const handleLogout = async () => {
