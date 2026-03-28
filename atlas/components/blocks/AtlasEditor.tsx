@@ -366,7 +366,7 @@ export function AtlasEditor({ item, redirectOnSave }: Props) {
 
       {/* ── Cabeçalho de propriedades ─────────────────────────────────── */}
       <div className="border-b border-solar-border/30 bg-solar-void">
-        <div className="max-w-4xl mx-auto px-12 pt-10 pb-6 space-y-5">
+        <div className="max-w-4xl mx-auto px-4 sm:px-8 md:px-12 pt-6 sm:pt-10 pb-4 sm:pb-6 space-y-5">
           {/* Cover image banner */}
           {coverImage && (
             <div className="relative w-full aspect-[16/5] overflow-hidden -mx-0">
@@ -383,7 +383,7 @@ export function AtlasEditor({ item, redirectOnSave }: Props) {
             placeholder="Sem título"
             className="
               w-full bg-transparent border-none outline-none
-              font-display text-[36px] leading-tight text-solar-text
+              font-display text-[24px] sm:text-[32px] md:text-[36px] leading-tight text-solar-text
               placeholder:text-solar-muted/25
             "
           />
@@ -469,7 +469,7 @@ export function AtlasEditor({ item, redirectOnSave }: Props) {
 
       {/* ── Editor BlockNote ──────────────────────────────────────────────── */}
       <div
-        className="flex-1 max-w-4xl mx-auto w-full px-12 py-8"
+        className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-8 md:px-12 py-6 sm:py-8"
         style={{
           // Segue as variáveis CSS do tema ativo (claro ou escuro)
           "--bn-colors-editor-background":          "rgb(var(--c-void))",
@@ -490,12 +490,13 @@ export function AtlasEditor({ item, redirectOnSave }: Props) {
           editor={editor}
           theme={bnTheme}
           onChange={scheduleSave}
+          sideMenu={false}
         />
       </div>
 
       {/* ── Rodapé ────────────────────────────────────────────────────────── */}
       <div className="border-t border-solar-border/20 bg-solar-void">
-        <div className="max-w-4xl mx-auto px-12 py-2 flex items-center justify-between">
+        <div className="max-w-4xl mx-auto px-4 sm:px-8 md:px-12 py-2 flex items-center justify-between gap-2 flex-wrap">
           <div className="flex items-center gap-5">
             <span className="text-[8px] font-mono text-solar-muted/40">{stats.words} palavras</span>
             <span className="text-[8px] font-mono text-solar-muted/30">{stats.chars} chars</span>
@@ -545,8 +546,12 @@ export function AtlasEditor({ item, redirectOnSave }: Props) {
 
       {/* ── Painel lateral: Cover Image ────────────────────────────────── */}
       {sidePanel === "meta" && (
-        <div className="fixed right-0 top-0 bottom-0 w-72 z-40 border-l border-solar-border/30 bg-solar-void flex flex-col pb-14">
-          <div className="px-5 py-4 border-b border-solar-border/20 flex items-center justify-between">
+        <div className="fixed bottom-0 left-0 right-0 sm:bottom-auto sm:top-0 sm:left-auto sm:right-0 sm:w-72 max-h-[80vh] sm:max-h-none h-auto sm:h-full z-40 border-t sm:border-t-0 sm:border-l border-solar-border/30 bg-solar-void flex flex-col pb-14 rounded-t-2xl sm:rounded-none overflow-hidden">
+          {/* Handle mobile */}
+          <div className="sm:hidden flex justify-center pt-3 pb-1">
+            <div className="w-10 h-1 rounded-full bg-solar-border/40" />
+          </div>
+          <div className="px-5 py-3 sm:py-4 border-b border-solar-border/20 flex items-center justify-between">
             <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-solar-muted/60">Cover Image</span>
             <button onClick={() => setSidePanel("none")} className="text-solar-muted/30 hover:text-solar-muted text-sm">×</button>
           </div>
@@ -651,8 +656,12 @@ export function AtlasEditor({ item, redirectOnSave }: Props) {
 
       {/* ── Painel lateral: Relações ───────────────────────────────────── */}
       {sidePanel === "relations" && (
-        <div className="fixed right-0 top-0 bottom-0 w-80 z-40 border-l border-solar-border/30 bg-solar-void flex flex-col pb-14">
-          <div className="px-5 py-4 border-b border-solar-border/20 flex items-center justify-between">
+        <div className="fixed bottom-0 left-0 right-0 sm:bottom-auto sm:top-0 sm:left-auto sm:right-0 sm:w-80 max-h-[80vh] sm:max-h-none h-auto sm:h-full z-40 border-t sm:border-t-0 sm:border-l border-solar-border/30 bg-solar-void flex flex-col pb-14 rounded-t-2xl sm:rounded-none overflow-hidden">
+          {/* Handle mobile */}
+          <div className="sm:hidden flex justify-center pt-3 pb-1">
+            <div className="w-10 h-1 rounded-full bg-solar-border/40" />
+          </div>
+          <div className="px-5 py-3 sm:py-4 border-b border-solar-border/20 flex items-center justify-between">
             <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-solar-muted/60">Relações</span>
             <button onClick={() => setSidePanel("none")} className="text-solar-muted/30 hover:text-solar-muted text-sm">×</button>
           </div>
@@ -664,7 +673,7 @@ export function AtlasEditor({ item, redirectOnSave }: Props) {
                 value={relType}
                 onChange={(e) => setRelType(e.target.value)}
                 className="w-full bg-solar-deep/60 border border-solar-border/30 px-2 py-1.5 text-[10px] font-mono text-solar-text/80 focus:outline-none"
-                style={{ background: "#0D0D0F" }}
+                style={{ background: "rgb(var(--c-deep))" }}
               >
                 {RELATION_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
               </select>

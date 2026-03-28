@@ -2,6 +2,7 @@
 
 import { useState, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
+import Image from "next/image"
 import { AREA_LABELS, TYPE_LABELS } from "@/atlas/types"
 
 function NovoItemForm() {
@@ -57,18 +58,18 @@ function NovoItemForm() {
     <div className="relative min-h-screen pb-20">
       <div className="fixed inset-0 pointer-events-none z-0 bg-grid-aligned" />
 
-      <header className="page-header relative z-10 border-b border-solar-border/40 pt-12 pb-6">
-        <div className="max-w-3xl mx-auto px-8">
+      <header className="page-header relative z-10 border-b border-solar-border/40 pt-8 sm:pt-12 pb-5 sm:pb-6">
+        <div className="max-w-3xl mx-auto px-4 sm:px-8">
           <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-solar-muted/70 mb-3">
             Atlas · Novo item
           </p>
-          <h1 className="font-display text-[36px] leading-none text-solar-text font-semibold tracking-tight">
+          <h1 className="font-display text-[28px] sm:text-[36px] leading-none text-solar-text font-semibold tracking-tight">
             Criar
           </h1>
         </div>
       </header>
 
-      <div className="relative z-10 max-w-3xl mx-auto px-8 py-10 space-y-6">
+      <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-8 py-6 sm:py-10 space-y-6">
 
         {/* Título */}
         <div>
@@ -129,8 +130,8 @@ function NovoItemForm() {
             className="w-full bg-solar-deep/50 border border-solar-border/30 px-3 py-2 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40 transition-solar"
           />
           {coverImage && (
-            <div className="mt-2 border border-solar-border/20">
-              <img src={coverImage} alt="Preview" className="max-h-40 object-cover" />
+            <div className="mt-2 border border-solar-border/20 relative h-40">
+              <Image src={coverImage} alt="Preview" fill className="object-cover" unoptimized />
             </div>
           )}
         </div>
@@ -149,7 +150,7 @@ function NovoItemForm() {
         </div>
 
         {/* Período e Localização */}
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label className="block text-[9px] font-mono uppercase tracking-[0.15em] text-solar-muted/60 mb-2">
               Ano início

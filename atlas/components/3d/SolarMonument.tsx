@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react"
 import useSWR      from "swr"
 import { useRouter } from "next/navigation"
 import { useSolarStore } from "@/atlas/lib/store"
+import { ThreeDErrorBoundary } from "./ThreeDErrorBoundary"
 import type { MonumentData, MonumentItem } from "./MonumentScene"
 
 // SSR-safe R3F import
@@ -185,18 +186,20 @@ export function SolarMonument({
 
   return (
     <div className={containerClass}>
-      <Canvas
-        camera={{ position: [0, 8, 22], fov: 55 }}
-        gl={{ antialias: true, alpha: false }}
-        dpr={[1, isMobile ? 1.5 : 2]}
-      >
-        <MonumentScene
-          data={data}
-          isMobile={isMobile}
-          onItemClick={handleItemClick}
-          onEnterAtlas={handleEnterAtlas}
-        />
-      </Canvas>
+      <ThreeDErrorBoundary fallback={<MonumentSkeleton className="w-full h-full" />}>
+        <Canvas
+          camera={{ position: [0, 8, 22], fov: 55 }}
+          gl={{ antialias: true, alpha: false }}
+          dpr={[1, isMobile ? 1.5 : 2]}
+        >
+          <MonumentScene
+            data={data}
+            isMobile={isMobile}
+            onItemClick={handleItemClick}
+            onEnterAtlas={handleEnterAtlas}
+          />
+        </Canvas>
+      </ThreeDErrorBoundary>
 
       {/* Overlay UI */}
       {showStats && <StatsOverlay data={data} />}

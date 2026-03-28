@@ -67,7 +67,7 @@ export function JournalMetaBar({ date }: { date: string }) {
   const current = ENERGY.find((e) => e.value === energy) ?? ENERGY[2]!
 
   return (
-    <div className="border-b border-compass-neon/10 bg-compass-neon/3 px-12 py-4">
+    <div className="border-b border-compass-neon/10 bg-compass-neon/3 px-4 sm:px-12 py-4">
       <div className="max-w-4xl mx-auto flex flex-wrap items-start gap-8">
 
         {/* Energy selector */}

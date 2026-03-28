@@ -17,7 +17,8 @@
     "db:rebuild": "tsx atlas/scripts/rebuild-from-content.ts",
     "seed:eras": "tsx prisma/seed-eras.ts",
     "media:download": "tsx scripts/download-media.ts",
-    "media:download:dry": "tsx scripts/download-media.ts --dry-run"
+    "media:download:dry": "tsx scripts/download-media.ts --dry-run",
+    "paintings:download": "node scripts/download-paintings.mjs"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

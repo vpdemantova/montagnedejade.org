@@ -162,7 +162,7 @@ export function WorldMapView({
                   r={isHov ? 9 : 5}
                   fill={color}
                   fillOpacity={isHov ? 1 : 0.75}
-                  stroke="#0D0D0F"
+                  stroke="rgb(232, 224, 208)"
                   strokeWidth={1.5}
                   onClick={() => onItemClick(item)}
                   onMouseEnter={() => setHovered(item.id)}

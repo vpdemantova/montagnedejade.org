@@ -66,49 +66,49 @@ const MODE_VARS: Record<string, React.CSSProperties> = {
     "--mode-font":        "var(--font-sans)",
   } as React.CSSProperties,
 
-  // ── ATLAS — default dark cosmos ───────────────────────────────────────────
+  // ── ATLAS — papel quente (padrão claro) ──────────────────────────────────
   ATLAS: {
-    // Palette — same as global :root defaults, explicit so switching back works
-    "--c-void":       "13 13 15",
-    "--c-deep":       "19 19 26",
-    "--c-surface":    "28 28 38",
-    "--c-border":     "42 42 58",
-    "--c-text":       "232 228 220",
-    "--c-muted":      "138 134 120",
-    "--c-accent":     "110 86 207",
-    "--c-accent-lt":  "150 120 230",
-    "--c-teal":       "0 200 180",
-    "--c-teal-lt":    "0 230 210",
+    // Paleta papel: fundo off-white quente, texto marrom-escuro, âmbar accent
+    "--c-void":       "250 246 238",  // papel off-white quente
+    "--c-deep":       "242 236 226",  // cards levemente mais escuros
+    "--c-surface":    "232 224 208",  // superfícies e painéis
+    "--c-border":     "195 178 148",  // bordas bege-dourado
+    "--c-text":       "28 20 8",      // texto marrom-escuro
+    "--c-muted":      "105 82 52",    // texto secundário marrom-médio
+    "--c-accent":     "140 90 20",    // âmbar quente
+    "--c-accent-lt":  "175 118 42",   // âmbar claro hover
+    "--c-teal":       "45 125 80",    // verde-floresta
+    "--c-teal-lt":    "65 150 100",   // verde claro
     // Layout
     "--mode-bg":          "rgb(var(--c-void))",
     "--mode-text":        "rgb(var(--c-text))",
     "--mode-accent":      "rgb(var(--c-accent))",
     "--mode-muted":       "rgb(var(--c-muted))",
-    "--mode-border":      "rgb(var(--c-border) / 0.3)",
+    "--mode-border":      "rgb(var(--c-border) / 0.5)",
     "--mode-max-width":   "72rem",
     "--mode-font-size":   "14px",
     "--mode-line-height": "1.6",
     "--mode-font":        "var(--font-sans)",
   } as React.CSSProperties,
 
-  // ── PUBLIC — same as ATLAS ────────────────────────────────────────────────
+  // ── PUBLIC — mesmo que ATLAS ──────────────────────────────────────────────
   PUBLIC: {
-    "--c-void":       "13 13 15",
-    "--c-deep":       "19 19 26",
-    "--c-surface":    "28 28 38",
-    "--c-border":     "42 42 58",
-    "--c-text":       "232 228 220",
-    "--c-muted":      "138 134 120",
-    "--c-accent":     "110 86 207",
-    "--c-accent-lt":  "150 120 230",
-    "--c-teal":       "0 200 180",
-    "--c-teal-lt":    "0 230 210",
+    "--c-void":       "250 246 238",
+    "--c-deep":       "242 236 226",
+    "--c-surface":    "232 224 208",
+    "--c-border":     "195 178 148",
+    "--c-text":       "28 20 8",
+    "--c-muted":      "105 82 52",
+    "--c-accent":     "140 90 20",
+    "--c-accent-lt":  "175 118 42",
+    "--c-teal":       "45 125 80",
+    "--c-teal-lt":    "65 150 100",
     // Layout
     "--mode-bg":          "rgb(var(--c-void))",
     "--mode-text":        "rgb(var(--c-text))",
     "--mode-accent":      "rgb(var(--c-accent))",
     "--mode-muted":       "rgb(var(--c-muted))",
-    "--mode-border":      "rgb(var(--c-border) / 0.3)",
+    "--mode-border":      "rgb(var(--c-border) / 0.5)",
     "--mode-max-width":   "72rem",
     "--mode-font-size":   "14px",
     "--mode-line-height": "1.6",

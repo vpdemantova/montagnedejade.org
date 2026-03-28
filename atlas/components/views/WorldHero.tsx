@@ -12,7 +12,7 @@ const GlobeView = dynamic(
     ssr: false,
     loading: () => (
       <div
-        className="w-full flex items-center justify-center bg-[#07090e]"
+        className="w-full flex items-center justify-center bg-solar-void"
         style={{ height: "60vh" }}
       >
         <div className="w-8 h-8 border border-solar-amber/20 rounded-full animate-pulse" />
@@ -56,7 +56,7 @@ function MapView2D({ items }: { items: GlobeItem[] }) {
 
   return (
     <div
-      className="w-full bg-[#07090e] border-b border-solar-border/10 overflow-hidden"
+      className="w-full bg-solar-deep border-b border-solar-border/10 overflow-hidden"
       style={{ height: "60vh", minHeight: 460 }}
     >
       <ComposableMap
@@ -71,8 +71,8 @@ function MapView2D({ items }: { items: GlobeItem[] }) {
               <Geography
                 key={geo.rsmKey}
                 geography={geo}
-                fill="#111820"
-                stroke="#1a2a3a"
+                fill="#DDD4C0"
+                stroke="#C3B294"
                 strokeWidth={0.4}
                 style={{
                   default: { outline: "none" },
@@ -114,7 +114,7 @@ function MapView2D({ items }: { items: GlobeItem[] }) {
                 y={-r - 14}
                 textAnchor="middle"
                 fontSize={9}
-                fill="#ffffff"
+                fill="rgb(28, 20, 8)"
                 fontFamily="IBM Plex Mono, monospace"
                 opacity={0.5}
               >

@@ -6,7 +6,19 @@ import Link     from "next/link"
 
 const ForceGraph2D = dynamic(
   () => import("react-force-graph-2d").then((m) => m.default),
-  { ssr: false }
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        className="flex items-center justify-center border border-dashed border-solar-border/15"
+        style={{ height: 500 }}
+      >
+        <p className="text-[9px] font-mono text-solar-muted/30 animate-pulse uppercase tracking-widest">
+          Carregando grafo…
+        </p>
+      </div>
+    ),
+  }
 )
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -54,6 +66,7 @@ export function RelationGraphClient() {
   const [nodes,    setNodes]    = useState<GraphNode[]>([])
   const [links,    setLinks]    = useState<GraphLink[]>([])
   const [loading,  setLoading]  = useState(true)
+  const [error,    setError]    = useState(false)
   const [hovered,  setHovered]  = useState<GraphNode | null>(null)
   const [selected, setSelected] = useState<GraphNode | null>(null)
   const containerRef            = useRef<HTMLDivElement>(null)
@@ -85,7 +98,7 @@ export function RelationGraphClient() {
       setNodes(connectedNodes)
       setLinks(validLinks)
       setLoading(false)
-    }).catch(() => setLoading(false))
+    }).catch(() => { setLoading(false); setError(true) })
   }, [])
 
   useEffect(() => {
@@ -102,7 +115,7 @@ export function RelationGraphClient() {
     <div className="relative min-h-screen">
       {/* Header */}
       <header className="page-header relative z-10 border-b border-solar-border/40 pt-12 pb-0">
-        <div className="max-w-6xl mx-auto px-12">
+        <div className="max-w-6xl mx-auto px-4 sm:px-8 md:px-12">
           <div className="flex items-center gap-2 mb-3">
             <Link href="/atlas" className="text-[9px] font-mono uppercase tracking-[0.2em] text-solar-muted/50 hover:text-solar-amber transition-solar">
               Atlas
@@ -114,7 +127,7 @@ export function RelationGraphClient() {
           </div>
           <div className="flex items-end justify-between pb-5">
             <div>
-              <h1 className="font-display text-[44px] leading-none text-solar-text font-semibold tracking-tight">
+              <h1 className="font-display text-[28px] sm:text-[36px] md:text-[44px] leading-none text-solar-text font-semibold tracking-tight">
                 Grafo
               </h1>
               <p className="text-solar-muted/70 text-xs font-mono mt-2">
@@ -135,7 +148,7 @@ export function RelationGraphClient() {
 
       {/* Selected item panel */}
       {selected && (
-        <div className="relative z-10 max-w-6xl mx-auto px-12 py-3">
+        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-8 md:px-12 py-3">
           <div className="flex items-center gap-4 px-4 py-3 border border-solar-amber/20 bg-solar-amber/5">
             <div
               className="w-2 h-2 rounded-full flex-shrink-0"
@@ -162,7 +175,7 @@ export function RelationGraphClient() {
       )}
 
       {/* Graph */}
-      <div ref={containerRef} className="relative z-10 max-w-6xl mx-auto px-12 pb-24">
+      <div ref={containerRef} className="relative z-10 max-w-6xl mx-auto px-4 sm:px-8 md:px-12 pb-24">
         {loading ? (
           <div
             className="flex items-center justify-center border border-dashed border-solar-border/15"
@@ -171,6 +184,19 @@ export function RelationGraphClient() {
             <p className="text-[9px] font-mono text-solar-muted/30 animate-pulse uppercase tracking-widest">
               Carregando grafo...
             </p>
+          </div>
+        ) : error ? (
+          <div
+            className="flex flex-col items-center justify-center gap-2 border border-dashed border-solar-border/15"
+            style={{ height: 500 }}
+          >
+            <p className="text-[9px] font-mono text-solar-muted/30 uppercase tracking-widest">Erro ao carregar grafo</p>
+            <button
+              onClick={() => { setError(false); setLoading(true); window.location.reload() }}
+              className="text-[8px] font-mono text-solar-amber/40 hover:text-solar-amber/70 transition-solar uppercase tracking-widest"
+            >
+              Tentar novamente →
+            </button>
           </div>
         ) : nodes.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-3 border border-dashed border-solar-border/15" style={{ height: 500 }}>
@@ -191,7 +217,7 @@ export function RelationGraphClient() {
               width={dims.w}
               height={dims.h}
               graphData={{ nodes, links }}
-              backgroundColor="#0D0D0F"
+              backgroundColor="rgb(250, 246, 238)"
               nodeLabel="title"
               nodeColor={(node) => AREA_COLORS[(node as GraphNode).area] ?? "#C8A45A"}
               nodeVal={4}
@@ -222,7 +248,7 @@ export function RelationGraphClient() {
                 if (isHov || isSel || globalScale > 1.8) {
                   const fontSize = 9 / globalScale
                   ctx.font      = `${fontSize}px IBM Plex Mono, monospace`
-                  ctx.fillStyle = isHov || isSel ? "#E8E4DC" : "#8A8678"
+                  ctx.fillStyle = isHov || isSel ? "#1C1408" : "#695234"
                   ctx.textAlign = "center"
                   ctx.fillText(n.title.slice(0, 22), x, y + r + fontSize + 1)
                 }

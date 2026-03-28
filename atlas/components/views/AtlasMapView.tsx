@@ -8,7 +8,16 @@ import { AREA_COLORS, AREA_LABELS } from "@/atlas/types"
 // react-force-graph-2d usa APIs de browser — carregamento dinâmico obrigatório
 const ForceGraph2D = dynamic(
   () => import("react-force-graph-2d").then((m) => m.default),
-  { ssr: false }
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex items-center justify-center" style={{ height: 520 }}>
+        <p className="text-[9px] font-mono text-solar-muted/35 uppercase tracking-widest animate-pulse">
+          Carregando grafo…
+        </p>
+      </div>
+    ),
+  }
 )
 
 type Node = { id: string; name: string; area: string; val: number }
@@ -118,14 +127,14 @@ export function AtlasMapView({ items, onItemClick }: Props) {
           width={dimensions.w}
           height={520}
           graphData={graph}
-          backgroundColor="#0D0D0F"
+          backgroundColor="rgb(250, 246, 238)"
           nodeColor={(node) => {
             const n = node as Node
             return (AREA_COLORS[n.area] ?? "#C8A45A") + "CC"
           }}
           nodeVal={(node) => (node as Node).val}
           nodeLabel={(node) => (node as Node).name}
-          linkColor={() => "rgba(42,42,58,0.6)"}
+          linkColor={() => "rgba(140,90,20,0.25)"}
           linkWidth={1}
           onNodeClick={handleNodeClick}
           nodeCanvasObjectMode={() => "after"}
@@ -134,7 +143,7 @@ export function AtlasMapView({ items, onItemClick }: Props) {
             const label = n.name
             const fontSize = Math.max(8, 12 / globalScale)
             ctx.font = `${fontSize}px IBM Plex Mono`
-            ctx.fillStyle = "rgba(232,228,220,0.55)"
+            ctx.fillStyle = "rgba(28,20,8,0.55)"
             ctx.textAlign = "center"
             ctx.textBaseline = "middle"
             ctx.fillText(

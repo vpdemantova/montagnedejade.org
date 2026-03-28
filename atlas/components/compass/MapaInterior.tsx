@@ -230,7 +230,7 @@ export function MapaInterior() {
           width={dims.w}
           height={dims.h}
           graphData={graphData}
-          backgroundColor="#0D0D0F"
+          backgroundColor="rgb(250, 246, 238)"
           nodeLabel="label"
           nodeVal={(node) => (node as ThemeNode).count * 2}
           nodeColor={(node) => (node as ThemeNode).color}
@@ -261,7 +261,7 @@ export function MapaInterior() {
             // Label
             const fontSize = Math.max(8, Math.min(13, r * 1.4)) / globalScale
             ctx.font = `${fontSize}px IBM Plex Mono, monospace`
-            ctx.fillStyle = isHov ? "#E8E4DC" : "#8A8678"
+            ctx.fillStyle = isHov ? "#1C1408" : "#695234"
             ctx.textAlign = "center"
             ctx.fillText(n.label, x, y + r + fontSize + 1)
           }}

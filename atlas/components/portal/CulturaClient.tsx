@@ -124,11 +124,11 @@ export function CulturaClient({
       <div className="fixed inset-0 pointer-events-none z-0 bg-grid-aligned" />
 
       <header className="page-header relative z-10 border-b border-solar-border/40 pt-12 pb-6">
-        <div className="max-w-6xl mx-auto px-12">
+        <div className="max-w-6xl mx-auto px-4 sm:px-8 md:px-12">
           <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-solar-muted/70 mb-3">
             Portal Solar · Cultura
           </p>
-          <h1 className="font-display text-[44px] leading-none text-solar-text font-semibold tracking-tight">
+          <h1 className="font-display text-[28px] sm:text-[36px] md:text-[44px] leading-none text-solar-text font-semibold tracking-tight">
             Radar de Inteligência
           </h1>
           <p className="text-[11px] font-mono text-solar-muted/50 mt-3 max-w-xl">
@@ -137,7 +137,7 @@ export function CulturaClient({
         </div>
       </header>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-12 py-6">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-8 md:px-12 py-6">
 
         {/* WorldBoard — 5 views */}
         <div className="mb-10">

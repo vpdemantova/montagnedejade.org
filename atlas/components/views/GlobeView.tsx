@@ -5,6 +5,7 @@ import { Canvas, useFrame } from "@react-three/fiber"
 import { OrbitControls } from "@react-three/drei"
 import { EffectComposer, Bloom } from "@react-three/postprocessing"
 import * as THREE from "three"
+import { ThreeDErrorBoundary } from "@/atlas/components/3d/ThreeDErrorBoundary"
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -238,14 +239,16 @@ function GlobeScene({ items }: { items: GlobeItem[] }) {
 export function GlobeView({ items, height = "60vh" }: { items: GlobeItem[]; height?: string }) {
   return (
     <div style={{ width: "100%", height, minHeight: 460 }} className="bg-[#07090e]">
-      <Canvas
-        camera={{ position: [0, 3, 12], fov: 45 }}
-        gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
-        dpr={[1, 1.5]}
-        performance={{ min: 0.5 }}
-      >
-        <GlobeScene items={items} />
-      </Canvas>
+      <ThreeDErrorBoundary>
+        <Canvas
+          camera={{ position: [0, 3, 12], fov: 45 }}
+          gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
+          dpr={[1, 1.5]}
+          performance={{ min: 0.5 }}
+        >
+          <GlobeScene items={items} />
+        </Canvas>
+      </ThreeDErrorBoundary>
     </div>
   )
 }

@@ -15,7 +15,7 @@ export default async function NotaPage({ params }: Props) {
 
       {/* Breadcrumb Compass */}
       <div className="border-b border-solar-border/20 bg-solar-void">
-        <div className="max-w-4xl mx-auto px-12 py-2 flex items-center gap-2">
+        <div className="max-w-4xl mx-auto px-4 sm:px-12 py-2 flex items-center gap-2">
           <Link href="/compass/notas" className="text-[9px] font-mono text-compass-neon-dim/50 hover:text-compass-neon transition-solar uppercase tracking-widest">
             Notas
           </Link>

@@ -280,7 +280,18 @@ export const useSolarStore = create<SolarStore>()(
             .filter((s): s is HomeSectionConfig => Boolean(s)),
         })),
     }),
-    { name: "solaris-store" }
+    {
+      name:    "solaris-store",
+      version: 2,
+      migrate: (persisted: unknown, fromVersion: number) => {
+        const s = persisted as Partial<SolarStore> & { _version?: number }
+        // v0→v1: force light paper theme for users that had dark cosmos stored
+        if (fromVersion < 2) {
+          return { ...s, theme: "papel-amarelo" as const, mode: "ATLAS" as const }
+        }
+        return s
+      },
+    }
   )
 )
 

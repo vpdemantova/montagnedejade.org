@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 import { prisma } from "@/atlas/lib/db"
 import { AREA_LABELS, TYPE_LABELS } from "@/atlas/types"
 import type { AtlasRelation, WorldNotice } from "@prisma/client"
@@ -89,14 +90,14 @@ export default async function PerfilCulturaPage({
       <div className="relative border-b border-solar-border/30">
         {person.coverImage ? (
           <div className="relative h-[40vh] min-h-64 overflow-hidden">
-            <img src={person.coverImage} alt={person.title} className="w-full h-full object-cover object-top" />
+            <Image src={person.coverImage} alt={person.title} fill className="object-cover object-top" unoptimized />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-solar-void/60 to-solar-void" />
           </div>
         ) : (
           <div className="h-32 bg-gradient-to-b from-solar-deep to-solar-void" />
         )}
 
-        <div className="max-w-4xl mx-auto px-12 pb-8 -mt-16 relative z-10">
+        <div className="max-w-4xl mx-auto px-4 sm:px-8 md:px-12 pb-8 -mt-16 relative z-10">
           {/* Avatar placeholder */}
           {!person.coverImage && (
             <div className="w-20 h-20 border border-solar-border/40 bg-solar-surface/30 flex items-center justify-center mb-4">
@@ -112,7 +113,7 @@ export default async function PerfilCulturaPage({
                 <Link href="/portal/cultura" className="hover:text-solar-amber transition-solar">Cultura</Link>
                 {" "}· Perfil
               </p>
-              <h1 className="font-display text-[44px] leading-none text-solar-text font-semibold tracking-tight mb-3">
+              <h1 className="font-display text-[28px] sm:text-[36px] md:text-[44px] leading-none text-solar-text font-semibold tracking-tight mb-3">
                 {person.title}
               </h1>
 
@@ -159,11 +160,11 @@ export default async function PerfilCulturaPage({
       </div>
 
       {/* ── Conteúdo ── */}
-      <div className="max-w-4xl mx-auto px-12 py-10">
-        <div className="grid grid-cols-3 gap-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-8 md:px-12 py-10">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
 
           {/* Coluna principal */}
-          <div className="col-span-2 space-y-10">
+          <div className="md:col-span-2 space-y-10">
 
             {/* Biografia */}
             {paragraphs.length > 0 && (
@@ -195,8 +196,8 @@ export default async function PerfilCulturaPage({
                       className="group flex gap-3 p-3 border border-solar-border/20 hover:border-solar-amber/30 transition-solar"
                     >
                       {item.coverImage ? (
-                        <div className="w-12 h-12 overflow-hidden flex-shrink-0 border border-solar-border/20">
-                          <img src={item.coverImage} alt="" className="w-full h-full object-cover" />
+                        <div className="w-12 h-12 overflow-hidden flex-shrink-0 border border-solar-border/20 relative">
+                          <Image src={item.coverImage} alt="" fill className="object-cover" unoptimized />
                         </div>
                       ) : (
                         <div className="w-12 h-12 flex-shrink-0 border border-solar-border/15 bg-solar-deep/30 flex items-center justify-center">

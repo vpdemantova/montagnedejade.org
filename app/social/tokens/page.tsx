@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react"
 import Link from "next/link"
+import Image from "next/image"
 
 type UserToken = {
   id:          string
@@ -95,7 +96,7 @@ export default function TokensPage() {
                   }}
                 >
                   {t.imageUrl
-                    ? <img src={t.imageUrl} alt={t.name} className="w-6 h-6 object-contain" />
+                    ? <Image src={t.imageUrl} alt={t.name} width={24} height={24} className="object-contain" unoptimized />
                     : <span className="text-base">{TOKEN_EMOJI[t.tokenType] ?? "✦"}</span>
                   }
                   <span className="text-[10px] font-mono" style={{ color: RARITY_COLORS[t.rarity] }}>
@@ -154,7 +155,7 @@ export default function TokensPage() {
                 <span className="absolute top-1 right-1 text-[8px] font-mono" style={{ color: RARITY_COLORS[t.rarity] }}>✓</span>
               )}
               {t.imageUrl ? (
-                <img src={t.imageUrl} alt={t.name} className="w-10 h-10 object-contain" />
+                <Image src={t.imageUrl} alt={t.name} width={40} height={40} className="object-contain" unoptimized />
               ) : (
                 <span className="text-2xl">{TOKEN_EMOJI[t.tokenType] ?? "✦"}</span>
               )}

@@ -61,7 +61,7 @@ export default async function DashboardPage() {
       />
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-solar-border/15 mt-12 px-12 py-10">
+      <footer className="relative z-10 border-t border-solar-border/15 mt-12 px-4 sm:px-12 py-10">
         <div className="max-w-6xl mx-auto flex flex-col items-center gap-3 text-center">
           <p className="text-[10px] font-mono text-solar-muted/30 tracking-widest uppercase">
             Made with love by{" "}

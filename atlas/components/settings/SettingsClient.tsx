@@ -8,10 +8,11 @@ import { ViewSwitcher } from "@/atlas/components/ui/ViewSwitcher"
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-type TabId = "perfil" | "interface" | "home" | "categorias" | "rss" | "exportacao" | "sobre"
+type TabId = "perfil" | "senha" | "interface" | "home" | "categorias" | "rss" | "exportacao" | "sobre"
 
 const TABS: { id: TabId; label: string; symbol: string }[] = [
   { id: "perfil",     label: "Perfil",     symbol: "◉" },
+  { id: "senha",      label: "Senha",      symbol: "⚿" },
   { id: "interface",  label: "Interface",  symbol: "⬡" },
   { id: "home",       label: "Home",       symbol: "⊞" },
   { id: "categorias", label: "Categorias", symbol: "◈" },
@@ -65,6 +66,83 @@ function TextInput({
         transition-all duration-150
       "
     />
+  )
+}
+
+// ── Senha tab ─────────────────────────────────────────────────────────────────
+
+function SenhaTab() {
+  const [current,  setCurrent]  = useState("")
+  const [next,     setNext]     = useState("")
+  const [confirm,  setConfirm]  = useState("")
+  const [saving,   setSaving]   = useState(false)
+  const [msg,      setMsg]      = useState<{ ok: boolean; text: string } | null>(null)
+
+  const save = async () => {
+    if (!current || !next || !confirm) { setMsg({ ok: false, text: "Preencha todos os campos" }); return }
+    if (next !== confirm) { setMsg({ ok: false, text: "As senhas não coincidem" }); return }
+    setSaving(true)
+    setMsg(null)
+    const res = await fetch("/api/auth/password", {
+      method:  "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify({ currentPassword: current, newPassword: next }),
+    })
+    const data = await res.json() as { ok?: boolean; error?: string }
+    if (res.ok) {
+      setCurrent(""); setNext(""); setConfirm("")
+      setMsg({ ok: true, text: "Senha alterada com sucesso" })
+    } else {
+      setMsg({ ok: false, text: data.error ?? "Erro ao alterar senha" })
+    }
+    setSaving(false)
+  }
+
+  return (
+    <div className="flex flex-col gap-4 max-w-sm">
+      <Section title="Alterar senha">
+        <Field label="Senha atual">
+          <input
+            type="password"
+            value={current}
+            onChange={(e) => setCurrent(e.target.value)}
+            className="w-full bg-solar-deep/50 border border-solar-border/30 px-3 py-1.5 text-xs font-mono text-solar-text focus:outline-none focus:border-solar-amber/40 transition-all duration-150"
+          />
+        </Field>
+        <Field label="Nova senha">
+          <input
+            type="password"
+            value={next}
+            onChange={(e) => setNext(e.target.value)}
+            className="w-full bg-solar-deep/50 border border-solar-border/30 px-3 py-1.5 text-xs font-mono text-solar-text focus:outline-none focus:border-solar-amber/40 transition-all duration-150"
+          />
+        </Field>
+        <Field label="Confirmar nova senha">
+          <input
+            type="password"
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter") void save() }}
+            className="w-full bg-solar-deep/50 border border-solar-border/30 px-3 py-1.5 text-xs font-mono text-solar-text focus:outline-none focus:border-solar-amber/40 transition-all duration-150"
+          />
+        </Field>
+      </Section>
+
+      <div className="flex items-center gap-4">
+        <button
+          onClick={() => void save()}
+          disabled={saving}
+          className="px-5 py-2 bg-solar-amber/10 border border-solar-amber/40 text-[10px] font-mono text-solar-amber uppercase tracking-widest hover:bg-solar-amber/20 transition-solar disabled:opacity-30"
+        >
+          {saving ? "Salvando…" : "Alterar senha →"}
+        </button>
+        {msg && (
+          <p className={`text-[10px] font-mono ${msg.ok ? "text-solar-green" : "text-solar-red"}`}>
+            {msg.text}
+          </p>
+        )}
+      </div>
+    </div>
   )
 }
 
@@ -1102,16 +1180,16 @@ export function SettingsClient({
   return (
     <div className="relative min-h-screen">
       <header className="relative z-10 border-b border-solar-border/40 pt-12 pb-0">
-        <div className="max-w-4xl mx-auto px-12">
+        <div className="max-w-4xl mx-auto px-4 sm:px-8 md:px-12">
           <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-solar-muted/70 mb-3">
             Portal Solar · Configurações
           </p>
-          <h1 className="font-display text-[44px] leading-none text-solar-text font-semibold tracking-tight mb-5">
+          <h1 className="font-display text-[28px] sm:text-[36px] md:text-[44px] leading-none text-solar-text font-semibold tracking-tight mb-5">
             Configurações
           </h1>
 
           {/* Tab nav */}
-          <div className="flex items-center gap-0 border-b border-solar-border/0">
+          <div className="flex items-center gap-0 border-b border-solar-border/0 overflow-x-auto scrollbar-hide">
             {TABS.map((t) => (
               <button
                 key={t.id}
@@ -1133,7 +1211,7 @@ export function SettingsClient({
         </div>
       </header>
 
-      <main className="relative z-10 max-w-4xl mx-auto px-12 py-8">
+      <main className="relative z-10 max-w-4xl mx-auto px-4 sm:px-8 md:px-12 py-8">
         <AnimatePresence mode="wait">
           <motion.div
             key={tab}
@@ -1143,6 +1221,7 @@ export function SettingsClient({
             transition={{ duration: 0.15 }}
           >
             {tab === "perfil"      && <PerfilTab />}
+            {tab === "senha"       && <SenhaTab />}
             {tab === "interface"   && <InterfaceTab />}
             {tab === "home"        && <HomeSectionsTab />}
             {tab === "categorias"  && <CategoriasTab />}

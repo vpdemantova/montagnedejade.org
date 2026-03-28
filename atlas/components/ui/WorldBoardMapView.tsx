@@ -70,7 +70,7 @@ export function WorldBoardMapView({
               r={notice.isPinned ? 7 : 4}
               fill={TYPE_COLORS[notice.type] ?? "#4A4A5A"}
               fillOpacity={0.85}
-              stroke="#0D0D0F"
+              stroke="rgb(232, 224, 208)"
               strokeWidth={1}
               onClick={() => onSelect(notice)}
               style={{ cursor: "pointer" }}

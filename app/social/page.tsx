@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react"
 import Link from "next/link"
+import Image from "next/image"
 
 type UserToken = {
   id: string; tokenType: string; name: string
@@ -141,11 +142,11 @@ export default function SocialPage() {
             <div className="flex items-start gap-3">
               <Link href={`/perfil/${me.username}`}>
                 <div
-                  className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold"
+                  className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold overflow-hidden relative"
                   style={{ background: `${me.accentColor}25`, color: me.accentColor }}
                 >
                   {me.avatarUrl
-                    ? <img src={me.avatarUrl} alt="" className="w-full h-full rounded-full object-cover" />
+                    ? <Image src={me.avatarUrl} alt="" fill className="rounded-full object-cover" unoptimized />
                     : me.displayName[0]?.toUpperCase()}
                 </div>
               </Link>
@@ -218,11 +219,11 @@ export default function SocialPage() {
                 <div className="flex items-center gap-3">
                   <Link href={`/perfil/${post.author.username}`}>
                     <div
-                      className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 overflow-hidden relative"
                       style={{ background: `${post.author.accentColor}25`, color: post.author.accentColor }}
                     >
                       {post.author.avatarUrl
-                        ? <img src={post.author.avatarUrl} alt="" className="w-full h-full rounded-full object-cover" />
+                        ? <Image src={post.author.avatarUrl} alt="" fill className="rounded-full object-cover" unoptimized />
                         : post.author.displayName[0]?.toUpperCase()}
                     </div>
                   </Link>
@@ -285,11 +286,11 @@ export default function SocialPage() {
               >
                 <Link href={`/perfil/${u.username}`}>
                   <div
-                    className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0"
+                    className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0 overflow-hidden relative"
                     style={{ background: `${u.accentColor}25`, color: u.accentColor }}
                   >
                     {u.avatarUrl
-                      ? <img src={u.avatarUrl} alt="" className="w-full h-full rounded-full object-cover" />
+                      ? <Image src={u.avatarUrl} alt="" fill className="rounded-full object-cover" unoptimized />
                       : u.displayName[0]?.toUpperCase()}
                   </div>
                 </Link>
@@ -345,7 +346,7 @@ export default function SocialPage() {
                 >
                   {t.isEquipped && <span className="absolute top-1 right-1 text-[7px]" style={{ color: RARITY_COLORS[t.rarity] }}>✓</span>}
                   {t.imageUrl
-                    ? <img src={t.imageUrl} alt={t.name} className="w-8 h-8 object-contain" />
+                    ? <Image src={t.imageUrl} alt={t.name} width={32} height={32} className="object-contain" unoptimized />
                     : <span className="text-xl">{TOKEN_EMOJI[t.tokenType] ?? "✦"}</span>
                   }
                   <p className="text-[7px] font-mono text-center line-clamp-1" style={{ color: RARITY_COLORS[t.rarity] }}>{t.name}</p>

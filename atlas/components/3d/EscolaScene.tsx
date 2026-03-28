@@ -329,28 +329,25 @@ function Roof() {
   return <>{beams}</>
 }
 
-// ── Real paintings — Wikimedia Commons public-domain textures ─────────────────
-
-const WC = (f: string) =>
-  `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(f)}?width=512`
+// ── Real paintings — local public/paintings/ assets ───────────────────────────
 
 const PAINTINGS_DATA: { url: string; fallback: string }[] = [
-  { url: WC("The_Starry_Night_-_Van_Gogh_(1889).jpg"),                                                     fallback: "#1a3570" },
-  { url: WC("Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.jpg"),                                  fallback: "#8a7040" },
-  { url: WC("Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg"),                 fallback: "#c09080" },
-  { url: WC("The_Scream_by_Edvard_Munch,_1893_-_Nasjonalgalleriet.png"),                                   fallback: "#e05020" },
-  { url: WC("Girl_with_a_Pearl_Earring.jpg"),                                                               fallback: "#2a4860" },
-  { url: WC("Tsunami_by_hokusai_19th_century.jpg"),                                                         fallback: "#284080" },
-  { url: WC("Claude_Monet_-_Water_Lilies_-_1906,_Ryerson_(1).jpg"),                                        fallback: "#406880" },
-  { url: WC("The_Night_Watch_-_HD.jpg"),                                                                    fallback: "#503820" },
-  { url: WC("Leonardo_da_Vinci_(1452-1519)_-_The_Last_Supper_(1495-1498).jpg"),                            fallback: "#605040" },
-  { url: WC("Vincent_van_Gogh_-_Sunflowers_(1888,_National_Gallery_London).jpg"),                          fallback: "#d09020" },
-  { url: WC("Gustav_Klimt_016.jpg"),                                                                        fallback: "#c08020" },
-  { url: WC("Las_Meninas,_by_Diego_Velázquez,_from_Prado_in_Google_Earth.jpg"),                            fallback: "#503028" },
-  { url: WC("Raphael_School_of_Athens.jpg"),                                                                fallback: "#7080a0" },
-  { url: WC("Grant_DeVolson_Wood_-_American_Gothic.jpg"),                                                   fallback: "#607048" },
-  { url: WC("Eugène_Delacroix_-_La_liberté_guidant_le_peuple.jpg"),                                        fallback: "#c06030" },
-  { url: WC("Caspar_David_Friedrich_-_Wanderer_above_the_sea_of_fog.jpg"),                                 fallback: "#90a0b0" },
+  { url: "/paintings/starry-night.jpg",       fallback: "#1a3570" },
+  { url: "/paintings/mona-lisa.jpg",           fallback: "#8a7040" },
+  { url: "/paintings/birth-of-venus.jpg",      fallback: "#c09080" },
+  { url: "/paintings/the-scream.jpg",          fallback: "#e05020" },
+  { url: "/paintings/girl-pearl-earring.jpg",  fallback: "#2a4860" },
+  { url: "/paintings/great-wave.jpg",          fallback: "#284080" },
+  { url: "/paintings/water-lilies.jpg",        fallback: "#406880" },
+  { url: "/paintings/night-watch.jpg",         fallback: "#503820" },
+  { url: "/paintings/last-supper.jpg",         fallback: "#605040" },
+  { url: "/paintings/sunflowers.jpg",          fallback: "#d09020" },
+  { url: "/paintings/klimt-kiss.jpg",          fallback: "#c08020" },
+  { url: "/paintings/las-meninas.jpg",         fallback: "#503028" },
+  { url: "/paintings/school-of-athens.jpg",    fallback: "#7080a0" },
+  { url: "/paintings/american-gothic.jpg",     fallback: "#607048" },
+  { url: "/paintings/liberty-leading.jpg",     fallback: "#c06030" },
+  { url: "/paintings/wanderer.jpg",            fallback: "#90a0b0" },
 ]
 
 // Painting positions on the 4 inner wall faces (4 paintings per side, avoiding doorway zone)

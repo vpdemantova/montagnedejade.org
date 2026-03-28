@@ -83,11 +83,11 @@ export function VilasClient({
       <div className="fixed inset-0 pointer-events-none z-0 bg-grid-aligned" />
 
       <header className="page-header relative z-10 border-b border-solar-border/40 pt-12 pb-6">
-        <div className="max-w-6xl mx-auto px-12">
+        <div className="max-w-6xl mx-auto px-4 sm:px-8 md:px-12">
           <p className="vila-header text-[9px] font-mono uppercase tracking-[0.2em] text-solar-muted/70 mb-3">
             Portal Solar · Vilas
           </p>
-          <h1 className="vila-header font-display text-[44px] leading-none text-solar-text font-semibold tracking-tight">
+          <h1 className="vila-header font-display text-[28px] sm:text-[36px] md:text-[44px] leading-none text-solar-text font-semibold tracking-tight">
             Vilas do Conhecimento
           </h1>
           <p className="vila-header text-[11px] font-mono text-solar-muted/50 mt-3 max-w-xl">
@@ -96,8 +96,8 @@ export function VilasClient({
         </div>
       </header>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-12 py-10">
-        <div className="grid grid-cols-2 gap-6">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-8 md:px-12 py-6 sm:py-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
           {VILAS.map((vila) => {
             const count = counts[vila.area] ?? 0
             const last  = lastByArea[vila.area]

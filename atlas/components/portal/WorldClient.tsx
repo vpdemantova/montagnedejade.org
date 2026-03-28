@@ -149,7 +149,7 @@ function MosaicView({ items, onItemClick }: { items: AtlasItemWithTags[]; onItem
   const sizePattern = ["large", "small", "small", "medium", "small", "small", "large", "medium"]
 
   return (
-    <div className="grid grid-cols-4 grid-rows-[auto] gap-3 auto-rows-[180px]">
+    <div className="grid grid-cols-2 sm:grid-cols-4 grid-rows-[auto] gap-3 auto-rows-[180px]">
       {items.map((item, i) => {
         const size     = sizePattern[i % sizePattern.length]!
         const cover    = getCoverImage(item)
@@ -237,13 +237,13 @@ export function WorldClient({ items }: { items: AtlasItemWithTags[] }) {
 
       {/* Header */}
       <header className="page-header relative z-10 border-b border-solar-border/40 pt-12 pb-0">
-        <div className="max-w-6xl mx-auto px-12">
+        <div className="max-w-6xl mx-auto px-4 sm:px-8 md:px-12">
           <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-solar-muted/70 mb-3">
             Portal Solar · Mundo
           </p>
-          <div className="flex items-end justify-between gap-8 pb-5">
+          <div className="flex items-end justify-between gap-4 sm:gap-8 pb-5 flex-wrap sm:flex-nowrap">
             <div>
-              <h1 className="font-display text-[44px] leading-none text-solar-text font-semibold tracking-tight">
+              <h1 className="font-display text-[28px] sm:text-[36px] md:text-[44px] leading-none text-solar-text font-semibold tracking-tight">
                 Mundo
               </h1>
               <p className="text-solar-muted/70 text-xs font-mono mt-2">
@@ -271,7 +271,7 @@ export function WorldClient({ items }: { items: AtlasItemWithTags[] }) {
       </header>
 
       {/* Content */}
-      <main className="relative z-10 max-w-6xl mx-auto px-12 py-8">
+      <main className="relative z-10 max-w-6xl mx-auto px-4 sm:px-8 md:px-12 py-8">
         <AnimatePresence mode="wait">
           <motion.div
             key={view}

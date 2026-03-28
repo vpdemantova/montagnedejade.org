@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react"
 import { useParams, useRouter } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 
 type UserProfile = {
   id:          string
@@ -123,14 +124,14 @@ export default function ProfilePage() {
         <div className="relative -mt-12 mb-6 flex items-end justify-between">
           {/* Avatar */}
           <div
-            className="w-24 h-24 rounded-full border-4 flex items-center justify-center overflow-hidden"
+            className="w-24 h-24 rounded-full border-4 flex items-center justify-center overflow-hidden relative"
             style={{
               borderColor: profile.accentColor,
               background:  `${profile.accentColor}20`,
             }}
           >
             {profile.avatarUrl ? (
-              <img src={profile.avatarUrl} alt={profile.displayName} className="w-full h-full object-cover" />
+              <Image src={profile.avatarUrl} alt={profile.displayName} fill className="object-cover" unoptimized />
             ) : (
               <span className="font-display text-3xl font-bold" style={{ color: profile.accentColor }}>
                 {profile.displayName[0]?.toUpperCase()}
@@ -254,11 +255,13 @@ export default function ProfilePage() {
                 className="p-3 border border-solar-border/30 bg-solar-surface/30 hover:border-solar-accent/40 transition-colors group"
               >
                 {i.atlasItem.coverImage && (
-                  <div className="aspect-[3/2] overflow-hidden mb-2">
-                    <img
+                  <div className="aspect-[3/2] overflow-hidden mb-2 relative">
+                    <Image
                       src={i.atlasItem.coverImage}
                       alt={i.atlasItem.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      unoptimized
                     />
                   </div>
                 )}
@@ -310,7 +313,7 @@ export default function ProfilePage() {
                 }}
               >
                 {t.imageUrl ? (
-                  <img src={t.imageUrl} alt={t.name} className="w-12 h-12 object-contain" />
+                  <Image src={t.imageUrl} alt={t.name} width={48} height={48} className="object-contain" unoptimized />
                 ) : (
                   <div className="w-12 h-12 rounded-full flex items-center justify-center text-2xl"
                        style={{ background: `${RARITY_COLORS[t.rarity] ?? "#888"}20` }}>

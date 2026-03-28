@@ -8,7 +8,16 @@ import { NOTICE_LABELS, AREA_LABELS } from "@/atlas/types"
 
 // ── Dynamic imports ───────────────────────────────────────────────────────────
 
-const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), { ssr: false })
+const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
+  ssr: false,
+  loading: () => (
+    <div className="h-[500px] flex items-center justify-center border border-solar-border/15">
+      <p className="text-[10px] font-mono text-solar-muted/40 uppercase tracking-widest animate-pulse">
+        Carregando constelação…
+      </p>
+    </div>
+  ),
+})
 
 const MapaViewInner = dynamic(
   () => import("./WorldBoardMapView").then((m) => m.WorldBoardMapView),
@@ -175,14 +184,14 @@ function TimelineView({ notices, onSelect }: { notices: WorldNotice[]; onSelect:
                   <p className="text-[10px] font-mono text-solar-text/80 line-clamp-2">{n.title}</p>
                 </div>
                 <div className="w-2 h-2 rounded-full flex-shrink-0"
-                  style={{ background: TYPE_COLORS[n.type] ?? "#4A4A5A", border: "2px solid #0D0D0F" }} />
+                  style={{ background: TYPE_COLORS[n.type] ?? "#4A4A5A", border: "2px solid rgb(232, 224, 208)" }} />
                 <div className="h-14" />
               </>
             ) : (
               <>
                 <div className="h-14" />
                 <div className="w-2 h-2 rounded-full flex-shrink-0"
-                  style={{ background: TYPE_COLORS[n.type] ?? "#4A4A5A", border: "2px solid #0D0D0F" }} />
+                  style={{ background: TYPE_COLORS[n.type] ?? "#4A4A5A", border: "2px solid rgb(232, 224, 208)" }} />
                 <div
                   className="w-36 mt-3 border border-solar-border/20 p-3 cursor-pointer hover:border-solar-amber/30 transition-solar bg-solar-deep/60"
                   onClick={() => onSelect(n)}
@@ -277,7 +286,7 @@ function ConstellationView({ notices, onSelect }: { notices: WorldNotice[]; onSe
     <div className="border border-solar-border/15 overflow-hidden" style={{ height: 500 }}>
       <ForceGraph2D
         graphData={{ nodes, links }}
-        backgroundColor="#0D0D0F"
+        backgroundColor="rgb(250, 246, 238)"
         nodeColor={(n) => (n as GraphNode).color}
         nodeVal={(n)   => (n as GraphNode).val}
         linkColor={() => "rgba(200,164,90,0.12)"}
@@ -291,7 +300,7 @@ function ConstellationView({ notices, onSelect }: { notices: WorldNotice[]; onSe
           if (globalScale > 1.5) {
             const fontSize = Math.max(3, 4 / globalScale)
             ctx.font = `${fontSize}px monospace`
-            ctx.fillStyle = "rgba(232,228,220,0.7)"
+            ctx.fillStyle = "rgba(28,20,8,0.7)"
             ctx.textAlign = "center"
             ctx.fillText(n.name.slice(0, 20), node.x!, node.y! - r - 1)
           }
@@ -371,9 +380,9 @@ function NewNoticePanel({
           <div>
             <label className={labelClass}>Tipo</label>
             <select value={type} onChange={(e) => setType(e.target.value)}
-              className={inputClass} style={{ background: "#0D0D0F" }}>
+              className={inputClass} style={{ background: "rgb(var(--c-deep))" }}>
               {NOTICE_TYPES.map((t) => (
-                <option key={t} value={t} style={{ background: "#0D0D0F" }}>
+                <option key={t} value={t} style={{ background: "rgb(var(--c-deep))" }}>
                   {NOTICE_LABELS[t] ?? t}
                 </option>
               ))}
@@ -382,9 +391,9 @@ function NewNoticePanel({
           <div>
             <label className={labelClass}>Área</label>
             <select value={area} onChange={(e) => setArea(e.target.value)}
-              className={inputClass} style={{ background: "#0D0D0F" }}>
+              className={inputClass} style={{ background: "rgb(var(--c-deep))" }}>
               {NOTICE_AREAS.map((a) => (
-                <option key={a} value={a} style={{ background: "#0D0D0F" }}>
+                <option key={a} value={a} style={{ background: "rgb(var(--c-deep))" }}>
                   {AREA_LABELS[a] ?? a}
                 </option>
               ))}
