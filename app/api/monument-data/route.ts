@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server"
 import { prisma }       from "@/atlas/lib/db"
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   const [items, relations, areaCounts] = await Promise.all([
     prisma.atlasItem.findMany({

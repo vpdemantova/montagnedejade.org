@@ -3,6 +3,8 @@ import { findAll } from "@/atlas/lib/db"
 import { buildMirrorContent } from "@/atlas/lib/mirror"
 import JSZip from "jszip"
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   const items = await findAll({ limit: 50000 })
 

@@ -1,4 +1,6 @@
 import { findRecent, findAll, countByArea, findAllNotices } from "@/atlas/lib/db"
+
+export const dynamic = 'force-dynamic'
 import { DashboardClient } from "@/atlas/components/views/DashboardClient"
 import { WorldHero }       from "@/atlas/components/views/WorldHero"
 

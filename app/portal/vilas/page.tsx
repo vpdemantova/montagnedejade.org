@@ -1,6 +1,8 @@
 import { countByArea, findAll } from "@/atlas/lib/db"
 import { VilasClient } from "@/atlas/components/portal/VilasClient"
 
+export const dynamic = 'force-dynamic'
+
 export default async function VilasPage() {
   const [counts, recents] = await Promise.all([
     countByArea(),

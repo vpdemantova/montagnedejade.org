@@ -1,6 +1,7 @@
 import { SettingsClient } from "@/atlas/components/settings/SettingsClient"
 import { countByArea } from "@/atlas/lib/db"
 
+export const dynamic = 'force-dynamic'
 export const metadata = { title: "Configurações — Portal Solar" }
 
 export default async function SettingsPage() {

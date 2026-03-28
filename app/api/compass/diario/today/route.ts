@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server"
 import { findAll, create } from "@/atlas/lib/db"
 
+export const dynamic = 'force-dynamic'
+
 // GET → retorna ou cria a entrada do diário de hoje
 export async function GET() {
   const hoje = new Date().toISOString().split("T")[0]!    // "2026-03-16"

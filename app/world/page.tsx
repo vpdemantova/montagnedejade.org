@@ -1,6 +1,7 @@
 import { findAll } from "@/atlas/lib/db"
 import { WorldClient } from "@/atlas/components/portal/WorldClient"
 
+export const dynamic = 'force-dynamic'
 export const metadata = {
   title: "Mundo — Portal Solar",
 }
