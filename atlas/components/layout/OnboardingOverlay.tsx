@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useRouter } from "next/navigation"
-import { useSolarStore } from "@/atlas/lib/store"
 
 const STORAGE_KEY = "solaris-onboarded"
 
@@ -44,8 +43,6 @@ export function OnboardingOverlay() {
   const [show,   setShow]   = useState(false)
   const [step,   setStep]   = useState(0)
   const router              = useRouter()
-  const setMode             = useSolarStore((s) => s.setMode)
-
   useEffect(() => {
     const done = localStorage.getItem(STORAGE_KEY)
     if (!done) setShow(true)
@@ -57,7 +54,6 @@ export function OnboardingOverlay() {
     } else {
       localStorage.setItem(STORAGE_KEY, "1")
       setShow(false)
-      setMode("ATLAS")
       router.push("/atlas")
     }
   }

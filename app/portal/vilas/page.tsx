@@ -5,8 +5,8 @@ export const dynamic = 'force-dynamic'
 
 export default async function VilasPage() {
   const [counts, recents] = await Promise.all([
-    countByArea(),
-    findAll({ limit: 200 }),
+    countByArea().catch(() => ({} as Record<string, number>)),
+    findAll({ limit: 200 }).catch(() => []),
   ])
 
   // Último item adicionado por área

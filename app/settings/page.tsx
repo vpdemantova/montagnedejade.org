@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 export const metadata = { title: "Configurações — Portal Solar" }
 
 export default async function SettingsPage() {
-  const areaCounts = await countByArea()
+  const areaCounts = await countByArea().catch(() => ({} as Record<string, number>))
   const total = Object.values(areaCounts).reduce((a, b) => a + b, 0)
 
   return (

@@ -6,6 +6,7 @@ import { GlobalSearch }         from "@/atlas/components/ui/GlobalSearch"
 import { ModeAwareShell }       from "@/atlas/components/layout/ModeAwareShell"
 import { OnboardingOverlay }    from "@/atlas/components/layout/OnboardingOverlay"
 import { ThemeApplier }         from "@/atlas/components/layout/ThemeApplier"
+
 import "./globals.css"
 
 // ── Fontes ─────────────────────────────────────────────────────────────────────

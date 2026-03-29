@@ -4,7 +4,7 @@ import { DiarioClient } from "@/atlas/components/compass/DiarioClient"
 export const dynamic = 'force-dynamic'
 
 export default async function DiarioPage() {
-  const entries = await findAll({ area: "DIARIO", limit: 365 })
+  const entries = await findAll({ area: "DIARIO", limit: 365 }).catch(() => [])
 
   return (
     <div className="relative min-h-screen">

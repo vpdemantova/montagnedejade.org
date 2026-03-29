@@ -1,8 +1,8 @@
 import { findRecent, findAll, countByArea, findAllNotices } from "@/atlas/lib/db"
-
-export const dynamic = 'force-dynamic'
 import { DashboardClient } from "@/atlas/components/views/DashboardClient"
 import { WorldHero }       from "@/atlas/components/views/WorldHero"
+
+export const dynamic = 'force-dynamic'
 
 // Seleciona um item com seed = data atual — mesmo item o dia todo
 function getDailyDiscovery<T>(items: T[]): T | null {
@@ -16,10 +16,10 @@ function getDailyDiscovery<T>(items: T[]): T | null {
 
 export default async function DashboardPage() {
   const [recentItems, allItems, areaCounts, notices] = await Promise.all([
-    findRecent(5),
-    findAll({ limit: 200 }),
-    countByArea(),
-    findAllNotices(20),
+    findRecent(5).catch(() => []),
+    findAll({ limit: 200 }).catch(() => []),
+    countByArea().catch(() => ({} as Record<string, number>)),
+    findAllNotices(20).catch(() => []),
   ])
 
   // Filtra apenas itens do Portal (hemisphere PORTAL) para a descoberta

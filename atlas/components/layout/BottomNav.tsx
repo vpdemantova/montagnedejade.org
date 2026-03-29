@@ -3,7 +3,6 @@
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { useState } from "react"
-import { useSolarStore, type InterfaceMode } from "@/atlas/lib/store"
 import { Plus, LogOut } from "lucide-react"
 
 // ── Seções de navegação ───────────────────────────────────────────────────────
@@ -74,13 +73,6 @@ const ALL_NAV = [
 
 const DRAWER_SECTIONS = ["Portal Solar", "Atlas", "Numita Compass", "Sistema"]
 
-const MODES: { id: InterfaceMode; label: string }[] = [
-  { id: "ATLAS",         label: "Atlas"        },
-  { id: "FOCUS",         label: "Foco"         },
-  { id: "CONTEMPLATION", label: "Contemplação"  },
-  { id: "PUBLIC",        label: "Público"      },
-]
-
 // ── NavTab ────────────────────────────────────────────────────────────────────
 
 function NavTab({ item, active }: { item: NavItem; active: boolean }) {
@@ -106,9 +98,8 @@ function NavTab({ item, active }: { item: NavItem; active: boolean }) {
 // ── Componente ────────────────────────────────────────────────────────────────
 
 export function BottomNav() {
-  const pathname          = usePathname()
-  const router            = useRouter()
-  const { mode, setMode } = useSolarStore()
+  const pathname = usePathname()
+  const router   = useRouter()
   const [open, setOpen]   = useState(false)
   const [navSection, setNavSection] = useState<NavSection>("GERAL")
 
@@ -170,25 +161,6 @@ export function BottomNav() {
                 </div>
               )
             })}
-
-            {/* Mode switcher */}
-            <div>
-              <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-solar-muted/40 px-6 pt-5 pb-2">
-                Modo
-              </p>
-              <div className="grid grid-cols-4 border-t border-solar-border/10">
-                {MODES.map((m) => (
-                  <button
-                    key={m.id}
-                    onClick={() => { setMode(m.id); setOpen(false) }}
-                    className={`flex items-center justify-center py-5 transition-colors border-b border-solar-border/10
-                      ${mode === m.id ? "text-solar-accent" : "text-solar-muted/50 hover:text-solar-text"}`}
-                  >
-                    <span className="text-[11px] font-mono uppercase tracking-wide">{m.label}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
 
             {/* Logout */}
             <button

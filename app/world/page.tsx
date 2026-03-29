@@ -8,9 +8,9 @@ export const metadata = {
 
 export default async function WorldPage() {
   const [obras, artes, pessoas] = await Promise.all([
-    findAll({ area: "OBRAS",   limit: 500 }),
-    findAll({ area: "ARTES",   limit: 500 }),
-    findAll({ area: "PESSOAS", limit: 500 }),
+    findAll({ area: "OBRAS",   limit: 500 }).catch(() => []),
+    findAll({ area: "ARTES",   limit: 500 }).catch(() => []),
+    findAll({ area: "PESSOAS", limit: 500 }).catch(() => []),
   ])
 
   const items = [...obras, ...artes, ...pessoas]

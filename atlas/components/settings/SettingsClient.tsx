@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useSolarStore, useViewStore } from "@/atlas/lib/store"
-import type { InterfaceMode, SolarTheme, CssVar, PatternId, HomeSectionId } from "@/atlas/lib/store"
+import type { SolarTheme, CssVar, PatternId, HomeSectionId } from "@/atlas/lib/store"
 import { ViewSwitcher } from "@/atlas/components/ui/ViewSwitcher"
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -268,9 +268,9 @@ function PerfilTab() {
   )
 }
 
-// ── Themes metadata ───────────────────────────────────────────────────────────
+// ── (themes removed — single paper theme) ────────────────────────────────────
 
-const THEMES: { id: SolarTheme; label: string; bg: string; accent: string; light?: boolean }[] = [
+const _UNUSED_THEMES: { id: SolarTheme; label: string; bg: string; accent: string; light?: boolean }[] = [
   { id: "default",        label: "Cosmos Escuro",         bg: "#0D0D0F", accent: "#C8A45A" },
   { id: "papel-amarelo",  label: "Papel & Tinta",         bg: "#F5EDBB", accent: "#783C19", light: true },
   { id: "terminal",       label: "Terminal Fósforo",      bg: "#000000", accent: "#33FF33" },
@@ -589,137 +589,35 @@ function ThemeCard({
 
 // ── Interface tab ─────────────────────────────────────────────────────────────
 
-const MODE_INFO: Record<InterfaceMode, { symbol: string; label: string; hint: string }> = {
-  ATLAS:         { symbol: "⬡", label: "Atlas",       hint: "Interface completa de exploração" },
-  FOCUS:         { symbol: "✍", label: "Foco",         hint: "Editor limpo e centralizado" },
-  CONTEMPLATION: { symbol: "◎", label: "Contemplação", hint: "Leitura imersiva, tipografia ampliada" },
-  PUBLIC:        { symbol: "⊕", label: "Público",      hint: "Visão de visitante, sem ferramentas" },
-}
-
 function InterfaceTab() {
-  const { mode, setMode, theme, setTheme } = useSolarStore()
   const { getViewForRoute, setViewForRoute } = useViewStore()
-  const atlasView     = getViewForRoute("/atlas", "GALLERY")
-  const activeTheme   = THEMES.find((t) => t.id === theme)
-  const [colorsOpen, setColorsOpen] = useState(false)
+  const atlasView = getViewForRoute("/atlas", "GALLERY")
 
   return (
     <div className="flex flex-col gap-5">
 
-      {/* ── TEMAS ── */}
-      <div className="border border-solar-border/25 bg-solar-deep/20">
-
-        {/* Header with active theme pill */}
-        <div className="px-5 py-3 border-b border-solar-border/20 flex items-center justify-between">
-          <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-solar-muted/50">Tema Visual</p>
-          {activeTheme && (
-            <div className="flex items-center gap-2">
-              <div
-                className="w-2.5 h-2.5 rounded-full"
-                style={{ background: activeTheme.accent }}
-              />
-              <span className="text-[8px] font-mono text-solar-text/60">
-                {activeTheme.label}
-              </span>
-            </div>
-          )}
+      <Section title="Tema">
+        <div className="flex items-center gap-4 py-2">
+          <div
+            className="w-10 h-10 rounded border border-solar-border/40 flex-shrink-0"
+            style={{ background: "rgb(250 246 238)" }}
+          />
+          <div>
+            <p className="text-[11px] font-mono text-solar-text/80 mb-0.5">Papel &amp; Tinta</p>
+            <p className="text-[9px] font-mono text-solar-muted/50">
+              Tema claro com fundo off-white quente e tipografia escura de alto contraste.
+              Tema único e permanente do Portal Solar.
+            </p>
+          </div>
         </div>
-
-        <div className="p-5 flex flex-col gap-6">
-          {THEME_GROUPS.map((group) => (
-            <div key={group.id}>
-              {/* Group label */}
-              <div className="flex items-center gap-2.5 mb-3">
-                <span className="text-[8px] font-mono uppercase tracking-[0.18em] text-solar-muted/45">
-                  {group.symbol} {group.label}
-                </span>
-                <div className="flex-1 h-px bg-solar-border/15" />
-                <span className="text-[7px] font-mono text-solar-muted/25">
-                  {group.themes.length}
-                </span>
-              </div>
-              {/* Cards */}
-              <div className="grid gap-2" style={{ gridTemplateColumns: "repeat(4, 1fr)" }}>
-                {group.themes.map((t) => (
-                  <ThemeCard
-                    key={t.id}
-                    t={t}
-                    active={theme === t.id}
-                    onSelect={() => setTheme(t.id)}
-                  />
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* ── MODO DE INTERFACE ── */}
-      <Section title="Modo de Interface">
-        <div className="grid grid-cols-2 gap-2">
-          {(Object.keys(MODE_INFO) as InterfaceMode[]).map((m) => {
-            const info   = MODE_INFO[m]
-            const active = mode === m
-            return (
-              <button
-                key={m}
-                onClick={() => setMode(m)}
-                className={`
-                  flex items-start gap-3 p-3.5 border text-left transition-all duration-150
-                  ${active
-                    ? "border-solar-accent/50 bg-solar-accent/8"
-                    : "border-solar-border/25 hover:border-solar-border/50 bg-solar-deep/20"
-                  }
-                `}
-              >
-                <span className={`text-base mt-0.5 ${active ? "text-solar-accent" : "text-solar-muted/40"}`}>
-                  {info.symbol}
-                </span>
-                <div>
-                  <p className={`text-[10px] font-mono uppercase tracking-widest mb-0.5 ${active ? "text-solar-accent" : "text-solar-text/70"}`}>
-                    {info.label}
-                  </p>
-                  <p className="text-[9px] font-mono text-solar-muted/40 leading-snug">{info.hint}</p>
-                </div>
-              </button>
-            )
-          })}
-        </div>
-        <p className="text-[8px] font-mono text-solar-muted/25 mt-3">Atalhos: ⌘⇧F · ⌘⇧C · ⌘⇧A · ⌘⇧P</p>
       </Section>
 
-      {/* ── VISUALIZAÇÃO PADRÃO DO ATLAS ── */}
       <Section title="Atlas — Visualização Padrão">
-        <p className="text-[9px] font-mono text-solar-muted/40 mb-4">
-          Escolha como os itens são exibidos por padrão no Atlas.
+        <p className="text-[9px] font-mono text-solar-muted/60 mb-4">
+          Como os itens são exibidos por padrão no Atlas.
         </p>
         <ViewSwitcher current={atlasView} onChange={(v) => setViewForRoute("/atlas", v)} />
       </Section>
-
-      {/* ── EDITOR DE CORES — colapsável ── */}
-      <div className="border border-solar-border/25 bg-solar-deep/20">
-        <button
-          onClick={() => setColorsOpen((o) => !o)}
-          className="w-full flex items-center justify-between px-5 py-3 hover:bg-solar-surface/10 transition-colors"
-        >
-          <div className="flex items-center gap-2.5">
-            <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-solar-muted/50">
-              Editor de Cores
-            </p>
-            <span className="text-[7px] font-mono text-solar-muted/25 uppercase tracking-widest">
-              Personalização granular
-            </span>
-          </div>
-          <span className="text-[9px] font-mono text-solar-muted/30">
-            {colorsOpen ? "▲" : "▼"}
-          </span>
-        </button>
-        {colorsOpen && (
-          <div className="px-5 pb-5 border-t border-solar-border/20 pt-4">
-            <ColorEditor />
-          </div>
-        )}
-      </div>
 
     </div>
   )

@@ -6,8 +6,8 @@ export const dynamic = 'force-dynamic'
 
 export default async function CulturaPage() {
   const [notices, eventos] = await Promise.all([
-    findAllNotices(50),
-    findAll({ area: "CULTURA", limit: 100 }),
+    findAllNotices(50).catch(() => []),
+    findAll({ area: "CULTURA", limit: 100 }).catch(() => []),
   ])
 
   return <CulturaClient notices={notices} eventos={eventos} />

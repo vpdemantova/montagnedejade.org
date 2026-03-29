@@ -1,11 +1,18 @@
 /**
  * Ajusta o provider do schema Prisma antes do build.
- * Usa DATABASE_PROVIDER=postgresql em produção (Vercel),
- * ou mantém sqlite para desenvolvimento local.
+ * Detecta automaticamente pelo formato da DATABASE_URL:
+ *   - postgresql:// ou postgres:// → postgresql
+ *   - DATABASE_PROVIDER explícito tem prioridade
+ *   - fallback → sqlite
  */
 import { readFileSync, writeFileSync } from "fs"
 
-const provider = process.env.DATABASE_PROVIDER ?? "sqlite"
+const dbUrl = process.env.DATABASE_URL ?? ""
+const autoProvider = (dbUrl.startsWith("postgresql://") || dbUrl.startsWith("postgres://"))
+  ? "postgresql"
+  : "sqlite"
+
+const provider = process.env.DATABASE_PROVIDER ?? autoProvider
 const schemaPath = new URL("../prisma/schema.prisma", import.meta.url).pathname
 
 const schema = readFileSync(schemaPath, "utf8")
