@@ -35,6 +35,10 @@ export default function NovaNotaPage() {
           hemisphere: "COMPASS",
           status:    "ACTIVE",
           tagNames:  [],
+          metadata:  JSON.stringify({
+            noteType: mode,
+            ...(mode === "link" && url.trim() ? { url: url.trim() } : {}),
+          }),
         }),
       })
       if (!res.ok) {
