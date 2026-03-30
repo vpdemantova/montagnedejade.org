@@ -1,9 +1,9 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { useState } from "react"
-import { Plus, LogOut } from "lucide-react"
+import { Plus } from "lucide-react"
 
 // ── Seções de navegação ───────────────────────────────────────────────────────
 
@@ -99,7 +99,6 @@ function NavTab({ item, active }: { item: NavItem; active: boolean }) {
 
 export function BottomNav() {
   const pathname = usePathname()
-  const router   = useRouter()
   const [open, setOpen]   = useState(false)
   const [navSection, setNavSection] = useState<NavSection>("GERAL")
 
@@ -110,12 +109,6 @@ export function BottomNav() {
     const idx  = NAV_SECTIONS.findIndex((s) => s.id === navSection)
     const next = NAV_SECTIONS[(idx + 1) % NAV_SECTIONS.length]
     if (next) setNavSection(next.id)
-  }
-
-  const handleLogout = async () => {
-    setOpen(false)
-    await fetch("/api/auth/logout", { method: "POST" })
-    router.push("/login")
   }
 
   return (
@@ -162,14 +155,6 @@ export function BottomNav() {
               )
             })}
 
-            {/* Logout */}
-            <button
-              onClick={handleLogout}
-              className="w-full flex items-center justify-center gap-2 py-4 text-[11px] font-mono uppercase tracking-wider text-solar-muted/40 hover:text-solar-muted/80 transition-colors border-t border-solar-border/15"
-            >
-              <LogOut size={14} strokeWidth={1.5} />
-              Sair da conta
-            </button>
           </div>
         </div>
       )}

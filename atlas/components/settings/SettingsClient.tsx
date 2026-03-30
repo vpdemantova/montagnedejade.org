@@ -1,6 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, type FormEvent } from "react"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { useSolarStore, useViewStore } from "@/atlas/lib/store"
 import type { SolarTheme, CssVar, PatternId, HomeSectionId } from "@/atlas/lib/store"
@@ -8,9 +10,10 @@ import { ViewSwitcher } from "@/atlas/components/ui/ViewSwitcher"
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-type TabId = "perfil" | "senha" | "interface" | "home" | "categorias" | "rss" | "exportacao" | "sobre"
+type TabId = "conta" | "perfil" | "senha" | "interface" | "home" | "categorias" | "rss" | "exportacao" | "sobre"
 
 const TABS: { id: TabId; label: string; symbol: string }[] = [
+  { id: "conta",      label: "Conta",      symbol: "◎" },
   { id: "perfil",     label: "Perfil",     symbol: "◉" },
   { id: "senha",      label: "Senha",      symbol: "⚿" },
   { id: "interface",  label: "Interface",  symbol: "⬡" },
@@ -66,6 +69,133 @@ function TextInput({
         transition-all duration-150
       "
     />
+  )
+}
+
+// ── Conta tab ─────────────────────────────────────────────────────────────────
+
+type UserBasic = { username: string; displayName: string }
+
+function ContaTab() {
+  const router = useRouter()
+  const [authState, setAuthState] = useState<"loading" | "in" | "out">("loading")
+  const [user,      setUser]      = useState<UserBasic | null>(null)
+  const [username,  setUsername]  = useState("")
+  const [password,  setPassword]  = useState("")
+  const [error,     setError]     = useState("")
+  const [loading,   setLoading]   = useState(false)
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then(async (r) => {
+        if (r.ok) {
+          const data = await r.json() as UserBasic
+          setUser(data)
+          setAuthState("in")
+        } else {
+          setAuthState("out")
+        }
+      })
+      .catch(() => setAuthState("out"))
+  }, [])
+
+  const handleLogin = async (e: FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setError("")
+    const res = await fetch("/api/auth/login", {
+      method:  "POST",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify({ username, password }),
+    })
+    if (res.ok) {
+      const me = await fetch("/api/auth/me")
+      if (me.ok) {
+        const data = await me.json() as UserBasic
+        setUser(data)
+        setAuthState("in")
+        router.refresh()
+      }
+    } else {
+      const data = await res.json() as { error?: string }
+      setError(data.error ?? "Erro ao entrar")
+      setLoading(false)
+    }
+  }
+
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" })
+    setUser(null)
+    setAuthState("out")
+    setUsername("")
+    setPassword("")
+    router.refresh()
+  }
+
+  if (authState === "loading") {
+    return <p className="text-[10px] font-mono text-solar-muted/40">Verificando…</p>
+  }
+
+  if (authState === "in" && user) {
+    return (
+      <div className="flex flex-col gap-4 max-w-sm">
+        <Section title="Sessão ativa">
+          <Field label="Usuário">
+            <p className="text-[11px] font-mono text-solar-text/80">@{user.username}</p>
+          </Field>
+          <Field label="Nome">
+            <p className="text-[11px] font-mono text-solar-text/80">{user.displayName}</p>
+          </Field>
+        </Section>
+        <p className="text-[10px] font-mono text-solar-muted/40">
+          Use as abas <strong className="text-solar-muted/60">Perfil</strong> e <strong className="text-solar-muted/60">Senha</strong> para editar sua conta.
+        </p>
+        <button
+          onClick={() => void handleLogout()}
+          className="self-start px-5 py-2 border border-solar-border/30 text-[10px] font-mono text-solar-muted/60 uppercase tracking-widest hover:border-solar-red/40 hover:text-solar-red/60 transition-solar"
+        >
+          Sair da conta →
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-col gap-4 max-w-sm">
+      <Section title="Entrar na sua conta">
+        <form onSubmit={(e) => void handleLogin(e)} className="flex flex-col">
+          <Field label="Usuário">
+            <TextInput value={username} onChange={setUsername} placeholder="seu_usuario" />
+          </Field>
+          <Field label="Senha">
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full bg-solar-deep/50 border border-solar-border/30 px-3 py-1.5 text-xs font-mono text-solar-text focus:outline-none focus:border-solar-amber/40 transition-all duration-150"
+            />
+          </Field>
+          {error && (
+            <p className="text-[10px] font-mono text-solar-red mt-1">{error}</p>
+          )}
+          <div className="flex items-center gap-4 mt-4">
+            <button
+              type="submit"
+              disabled={loading || !username || !password}
+              className="px-5 py-2 bg-solar-amber/10 border border-solar-amber/40 text-[10px] font-mono text-solar-amber uppercase tracking-widest hover:bg-solar-amber/20 transition-solar disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              {loading ? "Entrando…" : "Entrar →"}
+            </button>
+            <Link
+              href="/register"
+              className="text-[9px] font-mono text-solar-muted/40 hover:text-solar-muted/70 transition-colors"
+            >
+              Criar conta
+            </Link>
+          </div>
+        </form>
+      </Section>
+    </div>
   )
 }
 
@@ -159,6 +289,7 @@ const ACCENT_PRESETS = [
 
 function PerfilTab() {
   const [profile,     setProfile]     = useState<SocialProfile | null>(null)
+  const [notAuthed,   setNotAuthed]   = useState(false)
   const [displayName, setDisplayName] = useState("")
   const [bio,         setBio]         = useState("")
   const [accentColor, setAccentColor] = useState("#C8A45A")
@@ -168,7 +299,10 @@ function PerfilTab() {
 
   useEffect(() => {
     fetch("/api/auth/me")
-      .then((r) => r.ok ? r.json() : null)
+      .then(async (r) => {
+        if (!r.ok) { setNotAuthed(true); return null }
+        return r.json() as Promise<SocialProfile>
+      })
       .then((data: SocialProfile | null) => {
         if (!data) return
         setProfile(data)
@@ -195,6 +329,14 @@ function PerfilTab() {
       setError(d.error ?? "Erro ao salvar")
     }
     setSaving(false)
+  }
+
+  if (notAuthed) {
+    return (
+      <p className="text-[10px] font-mono text-solar-muted/40">
+        Faça login na aba <strong className="text-solar-muted/60">Conta</strong> para editar seu perfil.
+      </p>
+    )
   }
 
   if (!profile) {
@@ -1073,7 +1215,7 @@ export function SettingsClient({
   areaCounts: Record<string, number>
   total:      number
 }) {
-  const [tab, setTab] = useState<TabId>("perfil")
+  const [tab, setTab] = useState<TabId>("conta")
 
   return (
     <div className="relative min-h-screen">
@@ -1118,6 +1260,7 @@ export function SettingsClient({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
           >
+            {tab === "conta"       && <ContaTab />}
             {tab === "perfil"      && <PerfilTab />}
             {tab === "senha"       && <SenhaTab />}
             {tab === "interface"   && <InterfaceTab />}
