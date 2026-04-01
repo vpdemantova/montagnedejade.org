@@ -412,7 +412,7 @@ function PerfilTab() {
 
 // ── (themes removed — single paper theme) ────────────────────────────────────
 
-const _UNUSED_THEMES: { id: SolarTheme; label: string; bg: string; accent: string; light?: boolean }[] = [
+const THEMES: { id: SolarTheme; label: string; bg: string; accent: string; light?: boolean }[] = [
   { id: "default",        label: "Cosmos Escuro",         bg: "#0D0D0F", accent: "#C8A45A" },
   { id: "papel-amarelo",  label: "Papel & Tinta",         bg: "#F5EDBB", accent: "#783C19", light: true },
   { id: "terminal",       label: "Terminal Fósforo",      bg: "#000000", accent: "#33FF33" },
