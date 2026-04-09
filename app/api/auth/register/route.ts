@@ -2,9 +2,20 @@ import { NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import { prisma } from "@/atlas/lib/db"
 import { signToken } from "@/atlas/lib/jwt"
+import { rateLimit, getIp } from "@/atlas/lib/rate-limit"
 
 export async function POST(req: Request) {
   try {
+    // 5 registros por IP a cada hora
+    const ip = getIp(req)
+    const rl = rateLimit(`register:${ip}`, 5, 60 * 60_000)
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { error: "Limite de registros atingido. Tente novamente em uma hora." },
+        { status: 429, headers: { "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } },
+      )
+    }
+
     const { username, displayName, password } = await req.json() as {
       username:    string
       displayName: string

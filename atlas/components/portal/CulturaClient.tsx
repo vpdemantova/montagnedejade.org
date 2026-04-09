@@ -7,6 +7,175 @@ import { NOTICE_LABELS } from "@/atlas/types"
 import Link from "next/link"
 import { WorldBoard } from "@/atlas/components/ui/WorldBoard"
 
+// ── Notice types for creation form ────────────────────────────────────────────
+
+const NOTICE_TYPE_OPTIONS = Object.entries(NOTICE_LABELS) as [string, string][]
+
+// ── Create notice form ────────────────────────────────────────────────────────
+
+function CreateNoticeForm({ onCreated }: { onCreated: (n: WorldNotice) => void }) {
+  const [open,      setOpen]      = useState(false)
+  const [saving,    setSaving]    = useState(false)
+  const [error,     setError]     = useState("")
+  const [title,     setTitle]     = useState("")
+  const [body,      setBody]      = useState("")
+  const [type,      setType]      = useState("AVISO")
+  const [area,      setArea]      = useState("ATLAS")
+  const [author,    setAuthor]    = useState("")
+  const [sourceUrl, setSourceUrl] = useState("")
+  const [isPinned,  setIsPinned]  = useState(false)
+
+  const reset = () => {
+    setTitle(""); setBody(""); setType("AVISO"); setArea("ATLAS")
+    setAuthor(""); setSourceUrl(""); setIsPinned(false); setError("")
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!title.trim()) { setError("Título obrigatório"); return }
+    setSaving(true)
+    setError("")
+    try {
+      const res = await fetch("/api/notices", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: title.trim(), body: body.trim(), type, area, author: author.trim() || undefined, sourceUrl: sourceUrl.trim() || undefined, isPinned }),
+      })
+      if (!res.ok) {
+        const d = await res.json() as { error?: string }
+        setError(d.error ?? "Erro ao criar entrada")
+        return
+      }
+      const notice = await res.json() as WorldNotice
+      onCreated(notice)
+      reset()
+      setOpen(false)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  if (!open) {
+    return (
+      <button
+        onClick={() => setOpen(true)}
+        className="text-[8px] font-mono uppercase tracking-widest px-3 py-1.5 border border-solar-amber/30 text-solar-amber/60 hover:text-solar-amber hover:border-solar-amber/60 transition-solar"
+      >
+        + Nova entrada
+      </button>
+    )
+  }
+
+  return (
+    <form
+      onSubmit={(e) => void handleSubmit(e)}
+      className="border border-solar-border/30 bg-solar-deep/30 p-5 space-y-4 mb-6"
+    >
+      <div className="flex items-center justify-between mb-1">
+        <p className="text-[9px] font-mono uppercase tracking-widest text-solar-muted/50">Nova entrada</p>
+        <button type="button" onClick={() => { setOpen(false); reset() }} className="text-[9px] font-mono text-solar-muted/40 hover:text-solar-text transition-solar">✕ cancelar</button>
+      </div>
+
+      {/* Título */}
+      <div>
+        <label className="block text-[8px] font-mono uppercase tracking-widest text-solar-muted/40 mb-1">Título *</label>
+        <input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Título da entrada"
+          className="w-full bg-solar-void/60 border border-solar-border/30 px-3 py-1.5 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40"
+        />
+      </div>
+
+      {/* Tipo + Área */}
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="block text-[8px] font-mono uppercase tracking-widest text-solar-muted/40 mb-1">Tipo</label>
+          <select
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            className="w-full bg-solar-void/60 border border-solar-border/30 px-2 py-1.5 text-[10px] font-mono text-solar-text focus:outline-none focus:border-solar-amber/40"
+          >
+            {NOTICE_TYPE_OPTIONS.map(([k, v]) => (
+              <option key={k} value={k}>{v}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="block text-[8px] font-mono uppercase tracking-widest text-solar-muted/40 mb-1">Área</label>
+          <select
+            value={area}
+            onChange={(e) => setArea(e.target.value)}
+            className="w-full bg-solar-void/60 border border-solar-border/30 px-2 py-1.5 text-[10px] font-mono text-solar-text focus:outline-none focus:border-solar-amber/40"
+          >
+            {["ATLAS","ACADEMIA","ARTES","CULTURA","OBRAS","PESSOAS","STUDIO","COMPUTACAO","AULAS"].map((a) => (
+              <option key={a} value={a}>{a}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Corpo */}
+      <div>
+        <label className="block text-[8px] font-mono uppercase tracking-widest text-solar-muted/40 mb-1">Corpo</label>
+        <textarea
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
+          placeholder="Descrição ou conteúdo da entrada…"
+          rows={3}
+          className="w-full bg-solar-void/60 border border-solar-border/30 px-3 py-1.5 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40 resize-none"
+        />
+      </div>
+
+      {/* Autor + URL */}
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="block text-[8px] font-mono uppercase tracking-widest text-solar-muted/40 mb-1">Autor</label>
+          <input
+            value={author}
+            onChange={(e) => setAuthor(e.target.value)}
+            placeholder="opcional"
+            className="w-full bg-solar-void/60 border border-solar-border/30 px-3 py-1.5 text-[10px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40"
+          />
+        </div>
+        <div>
+          <label className="block text-[8px] font-mono uppercase tracking-widest text-solar-muted/40 mb-1">URL fonte</label>
+          <input
+            value={sourceUrl}
+            onChange={(e) => setSourceUrl(e.target.value)}
+            placeholder="https://…"
+            className="w-full bg-solar-void/60 border border-solar-border/30 px-3 py-1.5 text-[10px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40"
+          />
+        </div>
+      </div>
+
+      {/* Fixar */}
+      <label className="flex items-center gap-2 cursor-pointer select-none">
+        <button
+          type="button"
+          onClick={() => setIsPinned((v) => !v)}
+          className={`w-4 h-4 border transition-solar flex items-center justify-center ${isPinned ? "border-solar-amber bg-solar-amber/20" : "border-solar-border/40"}`}
+        >
+          {isPinned && <span className="text-[8px] text-solar-amber">✓</span>}
+        </button>
+        <span className="text-[9px] font-mono text-solar-muted/50">Fixar no topo</span>
+      </label>
+
+      {error && <p className="text-[9px] font-mono text-solar-red/70">{error}</p>}
+
+      <div className="flex justify-end">
+        <button
+          type="submit"
+          disabled={saving || !title.trim()}
+          className="px-5 py-2 border border-solar-amber/40 text-[9px] font-mono uppercase tracking-widest text-solar-amber hover:bg-solar-amber/10 transition-solar disabled:opacity-40"
+        >
+          {saving ? "Publicando…" : "Publicar →"}
+        </button>
+      </div>
+    </form>
+  )
+}
+
 // ── Notice type colors ─────────────────────────────────────────────────────────
 
 const TYPE_STYLE: Record<string, { text: string; border: string; bg: string }> = {
@@ -112,12 +281,16 @@ export function CulturaClient({
   notices: WorldNotice[]
   eventos: AtlasItemWithTags[]
 }) {
-  const [typeFilter, setTypeFilter] = useState("Todos")
+  const [typeFilter,    setTypeFilter]    = useState("Todos")
+  const [localNotices,  setLocalNotices]  = useState<WorldNotice[]>(notices)
 
-  const pinned  = notices.filter((n) => n.isPinned)
   const filtered = typeFilter === "Todos"
-    ? notices
-    : notices.filter((n) => n.type === typeFilter)
+    ? localNotices
+    : localNotices.filter((n) => n.type === typeFilter)
+
+  const handleCreated = (n: WorldNotice) => {
+    setLocalNotices((prev) => n.isPinned ? [n, ...prev] : [...prev, n])
+  }
 
   return (
     <div className="relative min-h-screen">
@@ -141,7 +314,7 @@ export function CulturaClient({
 
         {/* WorldBoard — 5 views */}
         <div className="mb-10">
-          <WorldBoard notices={notices} />
+          <WorldBoard notices={localNotices} />
         </div>
 
         <div className="flex gap-8">
@@ -164,9 +337,12 @@ export function CulturaClient({
                 </button>
               ))}
               <div className="flex-1" />
-              <span className="text-[8px] font-mono text-solar-muted/25 pb-2">
-                {filtered.length} {filtered.length === 1 ? "entrada" : "entradas"}
-              </span>
+              <div className="flex items-center gap-3 pb-2">
+                <span className="text-[8px] font-mono text-solar-muted/25">
+                  {filtered.length} {filtered.length === 1 ? "entrada" : "entradas"}
+                </span>
+                <CreateNoticeForm onCreated={handleCreated} />
+              </div>
             </div>
 
             {/* Grade de notices */}

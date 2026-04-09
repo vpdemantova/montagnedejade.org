@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react"
 import Link from "next/link"
 import type { AtlasItemWithTags } from "@/atlas/types"
+import { openQuickCapture } from "@/atlas/components/ui/QuickCapture"
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -161,21 +162,28 @@ export default function NotasPage() {
     <div className="relative min-h-screen">
       <div className="fixed inset-0 pointer-events-none z-0 bg-grid-aligned" />
 
-      <header className="page-header relative z-10 border-b border-solar-border/40 pt-12 pb-6">
-        <div className="max-w-6xl mx-auto px-4 md:px-12">
-          <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-compass-neon-dim/60 mb-3">
-            Numita Compass · Notas
-          </p>
+      <header className="relative z-10 border-b border-solar-border/30 px-4 md:px-12 pt-10 pb-6">
+        <div className="max-w-6xl mx-auto">
+          <p className="editorial-label text-solar-muted/35 mb-3">COMPASS / NOTAS</p>
           <div className="flex items-end justify-between gap-6">
-            <h1 className="font-display text-[44px] leading-none text-solar-text font-semibold tracking-tight">
-              Notas
-            </h1>
-            <Link
-              href="/compass/notas/novo"
-              className="flex-shrink-0 px-4 py-2 border border-compass-neon/40 bg-compass-neon/8 text-[10px] font-mono uppercase tracking-widest text-compass-neon hover:bg-compass-neon/15 transition-solar"
-            >
-              + Nova nota
-            </Link>
+            <div>
+              <h1 className="page-hero text-solar-text leading-none">{notes.length > 0 ? `${notes.length}` : ""}</h1>
+              <p className="font-mono text-[11px] text-solar-muted/40 mt-1">notas · idéias · links</p>
+            </div>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <button
+                onClick={() => openQuickCapture("nota")}
+                className="px-4 py-2 border border-solar-accent/35 text-[9px] font-mono uppercase tracking-[0.2em] text-solar-accent/70 hover:bg-solar-accent/10 hover:text-solar-accent transition-colors"
+              >
+                ⌘N Capturar
+              </button>
+              <Link
+                href="/compass/notas/novo"
+                className="px-4 py-2 bg-solar-text text-solar-void text-[9px] font-mono uppercase tracking-[0.2em] hover:opacity-80 transition-opacity"
+              >
+                + Nota completa
+              </Link>
+            </div>
           </div>
         </div>
       </header>
@@ -263,17 +271,25 @@ export default function NotasPage() {
         {loading ? (
           <p className="text-[10px] font-mono text-solar-muted/40">Carregando…</p>
         ) : filtered.length === 0 ? (
-          <div className="py-16 text-center">
-            <p className="text-[10px] font-mono text-solar-muted/40">
-              {search || activeTag || typeFilter !== "todas" ? "Nenhuma nota encontrada." : "Nenhuma nota ainda."}
+          <div className="py-20 border-t border-solar-border/15">
+            <p className="editorial-label text-solar-muted/30 mb-4">
+              {search || activeTag || typeFilter !== "todas" ? "NENHUMA NOTA ENCONTRADA" : "NENHUMA NOTA AINDA"}
             </p>
             {!search && !activeTag && typeFilter === "todas" && (
-              <Link
-                href="/compass/notas/novo"
-                className="block mt-3 text-[10px] font-mono text-compass-neon/60 hover:text-compass-neon transition-solar"
-              >
-                Criar primeira nota →
-              </Link>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => openQuickCapture("nota")}
+                  className="px-5 py-2 bg-solar-text text-solar-void text-[9px] font-mono uppercase tracking-[0.2em] hover:opacity-80 transition-opacity"
+                >
+                  + Capturar nota (⌘N)
+                </button>
+                <Link
+                  href="/compass/notas/novo"
+                  className="px-5 py-2 border border-solar-border/30 text-[9px] font-mono uppercase tracking-[0.2em] text-solar-muted/50 hover:text-solar-text transition-colors"
+                >
+                  Editor completo
+                </Link>
+              </div>
             )}
           </div>
         ) : (

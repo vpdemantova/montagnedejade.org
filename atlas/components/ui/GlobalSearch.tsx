@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { AnimatePresence, motion } from "framer-motion"
 import { useGlobalSearch } from "@/atlas/hooks/useGlobalSearch"
+import { openQuickCapture } from "./QuickCapture"
 import type { SearchResult } from "@/atlas/types"
 import { AREA_LABELS } from "@/atlas/types"
 
@@ -132,7 +133,7 @@ export function GlobalSearch() {
         <>
           {/* Backdrop */}
           <motion.div
-            className="fixed inset-0 bg-solar-void/70 backdrop-blur-sm z-[100]"
+            className="fixed inset-0 bg-solar-void/80 z-[100]"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
             onClick={close}
@@ -217,24 +218,52 @@ export function GlobalSearch() {
                 </div>
               )}
 
-              {/* Footer shortcuts */}
+              {/* Empty state: quick actions */}
               {!query.trim() && (
-                <div className="px-4 py-3 flex items-center gap-4 border-t border-solar-border/20">
-                  {[
-                    { key: "›",  hint: "notas" },
-                    { key: "@",  hint: "autores" },
-                    { key: "#",  hint: "tag" },
-                    { key: "↑↓", hint: "navegar" },
-                    { key: "↵",  hint: "abrir" },
-                    { key: "Esc",hint: "fechar" },
-                  ].map(({ key, hint }) => (
-                    <div key={key} className="flex items-center gap-1">
-                      <kbd className="text-[8px] font-mono px-1 py-0.5 bg-solar-surface/50 border border-solar-border/40 text-solar-muted/60">
-                        {key}
-                      </kbd>
-                      <span className="text-[8px] font-mono text-solar-muted/35">{hint}</span>
+                <div>
+                  {/* Quick actions */}
+                  <div className="px-4 pt-3 pb-2">
+                    <p className="editorial-label text-solar-muted/30 mb-2">AÇÕES RÁPIDAS</p>
+                    <div className="grid grid-cols-2 gap-1">
+                      {[
+                        { label: "Nova nota",      shortcut: "⌘N",  action: () => { close(); openQuickCapture("nota")   } },
+                        { label: "Novo no diário",  shortcut: "⌘J",  action: () => { close(); openQuickCapture("diario") } },
+                        { label: "Nova ideia",      shortcut: "⌘I",  action: () => { close(); openQuickCapture("ideia")  } },
+                        { label: "Nova meta",       shortcut: "⌘M",  action: () => { close(); openQuickCapture("meta")   } },
+                        { label: "Ir para Atlas",   shortcut: "⌘G",  action: () => { close(); router.push("/atlas")             } },
+                        { label: "Configurações",   shortcut: "⌘,",  action: () => { close(); router.push("/settings")          } },
+                      ].map(({ label, shortcut, action }) => (
+                        <button
+                          key={label}
+                          onClick={action}
+                          className="flex items-center justify-between gap-2 px-3 py-2 text-left hover:bg-solar-surface/40 transition-colors"
+                        >
+                          <span className="font-mono text-[10px] text-solar-text/70">{label}</span>
+                          <kbd className="font-mono text-[8px] text-solar-muted/35 bg-solar-surface/40 border border-solar-border/20 px-1.5 py-0.5">
+                            {shortcut}
+                          </kbd>
+                        </button>
+                      ))}
                     </div>
-                  ))}
+                  </div>
+
+                  {/* Search hints */}
+                  <div className="px-4 py-2.5 flex items-center gap-3 border-t border-solar-border/15">
+                    {[
+                      { key: "›",  hint: "notas" },
+                      { key: "@",  hint: "pessoas" },
+                      { key: "#",  hint: "tag" },
+                      { key: "↑↓", hint: "navegar" },
+                      { key: "↵",  hint: "abrir" },
+                    ].map(({ key, hint }) => (
+                      <div key={key} className="flex items-center gap-1">
+                        <kbd className="text-[7px] font-mono px-1 py-0.5 bg-solar-surface/50 border border-solar-border/30 text-solar-muted/50">
+                          {key}
+                        </kbd>
+                        <span className="text-[7px] font-mono text-solar-muted/30">{hint}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>

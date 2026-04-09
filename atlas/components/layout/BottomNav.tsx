@@ -116,7 +116,7 @@ export function BottomNav() {
       {/* ── Drawer ───────────────────────────────────────────────────────── */}
       {open && (
         <div
-          className="fixed inset-0 z-40 bg-solar-void/70 backdrop-blur-sm"
+          className="fixed inset-0 z-40 bg-solar-void/85"
           onClick={() => setOpen(false)}
         >
           <div
@@ -167,11 +167,10 @@ export function BottomNav() {
         <div
           className="flex items-stretch h-12 overflow-hidden"
           style={{
-            background: "rgb(var(--c-deep) / 0.92)",
-            backdropFilter: "blur(20px)",
-            WebkitBackdropFilter: "blur(20px)",
+            background: "rgb(var(--c-deep))",
+            borderTop: "2px solid rgb(var(--c-accent) / 0.15)",
             border: "1px solid rgb(var(--c-border) / 0.35)",
-            boxShadow: "0 8px 32px rgb(0 0 0 / 0.5)",
+            boxShadow: "0 4px 24px rgb(0 0 0 / 0.18)",
           }}
         >
           {/* Itens — variam conforme seção */}

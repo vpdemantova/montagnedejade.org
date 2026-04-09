@@ -2,9 +2,20 @@ import { NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import { prisma } from "@/atlas/lib/db"
 import { signToken } from "@/atlas/lib/jwt"
+import { rateLimit, getIp } from "@/atlas/lib/rate-limit"
 
 export async function POST(req: Request) {
   try {
+    // 10 tentativas por IP a cada 15 minutos
+    const ip = getIp(req)
+    const rl = rateLimit(`login:${ip}`, 10, 15 * 60_000)
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { error: "Muitas tentativas. Tente novamente em alguns minutos." },
+        { status: 429, headers: { "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } },
+      )
+    }
+
     const { username, password } = await req.json() as {
       username: string
       password: string

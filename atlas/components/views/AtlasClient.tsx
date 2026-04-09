@@ -130,6 +130,19 @@ export function AtlasClient({ items, initialArea, initialTag, defaultView, backH
   return (
     <div className="relative min-h-screen flex flex-col">
 
+      {/* ── Editorial header ── */}
+      <div className="border-b border-solar-border/30 px-6 pt-10 pb-6">
+        <p className="editorial-label text-solar-muted/35 mb-3">
+          PORTAL SOLAR / {new Date().getFullYear()}
+        </p>
+        <h1 className="page-hero text-solar-text leading-none mb-4">ATLAS</h1>
+        <p className="font-mono text-[10px] text-solar-muted/35">
+          {finalItems.length.toLocaleString("pt-BR")} itens
+          {areaFilter ? ` · ${AREA_LABELS[areaFilter as keyof typeof AREA_LABELS] ?? areaFilter}` : ""}
+          {query ? ` · "${query}"` : ""}
+        </p>
+      </div>
+
       {/* ── Toolbar unificada ── */}
       <div
         className="sticky top-0 z-20 flex flex-col"

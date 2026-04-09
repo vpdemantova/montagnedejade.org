@@ -9,9 +9,6 @@ type UserToken = {
   imageUrl: string | null; rarity: string; isEquipped: boolean
 }
 
-const RARITY_COLORS: Record<string, string> = {
-  COMMON: "#666", RARE: "#4A90D9", EPIC: "#9B59B6", LEGENDARY: "#C8A45A",
-}
 const TOKEN_EMOJI: Record<string, string> = {
   BADGE: "🏅", MONUMENT: "🗿", BONECO: "🤖", AVATAR: "👤", FRAME: "🖼", EFFECT: "✨",
 }
@@ -24,6 +21,7 @@ type Post = {
   author:    { id: string; username: string; displayName: string; avatarUrl: string | null; accentColor: string }
   atlasItem: { id: string; slug: string | null; title: string; type: string; area: string; coverImage: string | null } | null
   _count:    { likes: number }
+  liked?:    boolean
 }
 
 type MatchUser = {
@@ -45,35 +43,41 @@ type Me = {
   accentColor: string
 }
 
-const AREA_COLORS: Record<string, string> = {
-  ACADEMIA: "#C8A45A", ARTES: "#9B59B6", CULTURA: "#E91E63",
-  OBRAS: "#3498DB", PESSOAS: "#2ECC71", STUDIO: "#E67E22",
-  COMPUTACAO: "#1ABC9C", AULAS: "#F39C12", ATLAS: "#C8A45A",
+// Area labels for posts — use monochrome accent instead of per-area colors
+const AREA_LABELS_MAP: Record<string, string> = {
+  ACADEMIA: "Academia", ARTES: "Artes", CULTURA: "Cultura",
+  OBRAS: "Obras", PESSOAS: "Pessoas", STUDIO: "Studio",
+  COMPUTACAO: "Computação", AULAS: "Aulas", ATLAS: "Atlas",
+  COMPASS: "Compass",
 }
 
 export default function SocialPage() {
-  const [feed,      setFeed]      = useState<Post[]>([])
-  const [matches,   setMatches]   = useState<MatchUser[]>([])
-  const [me,        setMe]        = useState<Me | null>(null)
-  const [loading,   setLoading]   = useState(true)
-  const [posting,   setPosting]   = useState(false)
-  const [postText,  setPostText]  = useState("")
-  const [tab,       setTab]       = useState<"feed" | "descobrir" | "tokens">("feed")
-  const [tokens,    setTokens]    = useState<UserToken[]>([])
+  const [feed,         setFeed]         = useState<Post[]>([])
+  const [nextCursor,   setNextCursor]   = useState<string | null>(null)
+  const [loadingMore,  setLoadingMore]  = useState(false)
+  const [matches,      setMatches]      = useState<MatchUser[]>([])
+  const [me,           setMe]           = useState<Me | null>(null)
+  const [loading,      setLoading]      = useState(true)
+  const [posting,      setPosting]      = useState(false)
+  const [postText,     setPostText]     = useState("")
+  const [tab,          setTab]          = useState<"feed" | "descobrir" | "tokens">("feed")
+  const [tokens,       setTokens]       = useState<UserToken[]>([])
   const [tokensLoaded, setTokensLoaded] = useState(false)
+  const [likingIds,    setLikingIds]    = useState<Set<string>>(new Set())
 
   const loadData = useCallback(async () => {
     const [feedRes, matchRes, meRes] = await Promise.all([
-      fetch("/api/social/feed"),
+      fetch("/api/social/feed?limit=20"),
       fetch("/api/social/match"),
       fetch("/api/auth/me"),
     ])
     const [feedData, matchData, meData] = await Promise.all([
-      feedRes.json() as Promise<{ posts: Post[] }>,
+      feedRes.json() as Promise<{ posts: Post[]; nextCursor: string | null }>,
       matchRes.json() as Promise<MatchUser[]>,
       meRes.json() as Promise<Me>,
     ])
     setFeed(feedData.posts ?? [])
+    setNextCursor(feedData.nextCursor ?? null)
     setMatches(Array.isArray(matchData) ? matchData : [])
     if (meData.id) setMe(meData)
     setLoading(false)
@@ -89,6 +93,46 @@ export default function SocialPage() {
       })
     }
   }, [tab, tokensLoaded])
+
+  const loadMore = async () => {
+    if (!nextCursor || loadingMore) return
+    setLoadingMore(true)
+    const res  = await fetch(`/api/social/feed?limit=20&cursor=${nextCursor}`)
+    const data = await res.json() as { posts: Post[]; nextCursor: string | null }
+    setFeed((prev) => [...prev, ...(data.posts ?? [])])
+    setNextCursor(data.nextCursor ?? null)
+    setLoadingMore(false)
+  }
+
+  const toggleLike = async (post: Post) => {
+    if (likingIds.has(post.id)) return
+    setLikingIds((s) => new Set(s).add(post.id))
+
+    // Optimistic update
+    const wasLiked = post.liked ?? false
+    setFeed((prev) =>
+      prev.map((p) =>
+        p.id === post.id
+          ? { ...p, liked: !wasLiked, _count: { likes: p._count.likes + (wasLiked ? -1 : 1) } }
+          : p,
+      ),
+    )
+
+    try {
+      await fetch(`/api/social/feed/${post.id}/like`, { method: "POST" })
+    } catch {
+      // revert on error
+      setFeed((prev) =>
+        prev.map((p) =>
+          p.id === post.id
+            ? { ...p, liked: wasLiked, _count: { likes: p._count.likes + (wasLiked ? 1 : -1) } }
+            : p,
+        ),
+      )
+    } finally {
+      setLikingIds((s) => { const next = new Set(s); next.delete(post.id); return next })
+    }
+  }
 
   const toggleEquip = async (t: UserToken) => {
     const next = !t.isEquipped
@@ -125,12 +169,10 @@ export default function SocialPage() {
 
   return (
     <div className="min-h-screen pb-24">
-      <header className="page-header border-b border-solar-border/40 pt-8 pb-5">
-        <div className="max-w-2xl mx-auto px-4 md:px-6">
-          <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-solar-muted/40 mb-2">
-            Portal Solar · Social
-          </p>
-          <h1 className="font-display text-3xl font-semibold text-solar-text">Rede Solar</h1>
+      <header className="border-b border-solar-border/30 px-4 md:px-6 pt-10 pb-6">
+        <div className="max-w-2xl mx-auto">
+          <p className="editorial-label text-solar-muted/35 mb-3">PORTAL SOLAR / REDE</p>
+          <h1 className="page-hero text-solar-text leading-none">REDE<br/>SOLAR</h1>
         </div>
       </header>
 
@@ -142,11 +184,11 @@ export default function SocialPage() {
             <div className="flex items-start gap-3">
               <Link href={`/perfil/${me.username}`}>
                 <div
-                  className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold overflow-hidden relative"
+                  className="w-9 h-9 flex items-center justify-center flex-shrink-0 text-sm font-bold overflow-hidden relative border border-solar-border/25"
                   style={{ background: `${me.accentColor}25`, color: me.accentColor }}
                 >
                   {me.avatarUrl
-                    ? <Image src={me.avatarUrl} alt="" fill className="rounded-full object-cover" unoptimized />
+                    ? <Image src={me.avatarUrl} alt="" fill className="object-cover" unoptimized />
                     : me.displayName[0]?.toUpperCase()}
                 </div>
               </Link>
@@ -210,6 +252,7 @@ export default function SocialPage() {
                 </p>
               </div>
             )}
+
             {feed.map((post) => (
               <div
                 key={post.id}
@@ -219,11 +262,11 @@ export default function SocialPage() {
                 <div className="flex items-center gap-3">
                   <Link href={`/perfil/${post.author.username}`}>
                     <div
-                      className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 overflow-hidden relative"
+                      className="w-8 h-8 flex items-center justify-center text-sm font-bold flex-shrink-0 overflow-hidden relative border border-solar-border/20"
                       style={{ background: `${post.author.accentColor}25`, color: post.author.accentColor }}
                     >
                       {post.author.avatarUrl
-                        ? <Image src={post.author.avatarUrl} alt="" fill className="rounded-full object-cover" unoptimized />
+                        ? <Image src={post.author.avatarUrl} alt="" fill className="object-cover" unoptimized />
                         : post.author.displayName[0]?.toUpperCase()}
                     </div>
                   </Link>
@@ -241,22 +284,51 @@ export default function SocialPage() {
                 {post.atlasItem && (
                   <Link
                     href={`/atlas/${post.atlasItem.slug ?? post.atlasItem.id}`}
-                    className="flex items-center gap-2 text-[9px] font-mono uppercase tracking-widest hover:opacity-80"
-                    style={{ color: AREA_COLORS[post.atlasItem.area] ?? "#C8A45A" }}
+                    className="flex items-center gap-2 text-[9px] font-mono uppercase tracking-widest text-solar-accent/60 hover:text-solar-accent transition-colors"
                   >
-                    <span>{post.atlasItem.area}</span>
-                    <span className="text-solar-muted/30">·</span>
+                    <span>{AREA_LABELS_MAP[post.atlasItem.area] ?? post.atlasItem.area}</span>
+                    <span className="text-solar-muted/20">·</span>
                     <span className="text-solar-text/50 normal-case tracking-normal text-[10px]">{post.atlasItem.title}</span>
                   </Link>
                 )}
 
                 <p className="text-sm text-solar-text/80 leading-relaxed">{post.content}</p>
 
-                <div className="flex items-center gap-4 text-[8px] font-mono text-solar-muted/30">
-                  <span>{post._count.likes} curtidas</span>
+                {/* Actions */}
+                <div className="flex items-center gap-4 pt-1">
+                  {me && (
+                    <button
+                      onClick={() => toggleLike(post)}
+                      disabled={likingIds.has(post.id)}
+                      className={`flex items-center gap-1.5 text-[9px] font-mono transition-all disabled:opacity-40 ${
+                        post.liked
+                          ? "text-solar-accent"
+                          : "text-solar-muted/35 hover:text-solar-muted"
+                      }`}
+                    >
+                      <span>{post.liked ? "♥" : "♡"}</span>
+                      <span>{post._count.likes}</span>
+                    </button>
+                  )}
+                  {!me && (
+                    <span className="text-[8px] font-mono text-solar-muted/30">{post._count.likes} curtidas</span>
+                  )}
                 </div>
               </div>
             ))}
+
+            {/* Load more */}
+            {nextCursor && (
+              <div className="pt-2 text-center">
+                <button
+                  onClick={loadMore}
+                  disabled={loadingMore}
+                  className="px-6 py-2 border border-solar-border/30 text-[9px] font-mono uppercase tracking-widest text-solar-muted/50 hover:text-solar-text hover:border-solar-border/60 transition-all disabled:opacity-40"
+                >
+                  {loadingMore ? "Carregando…" : "Carregar mais →"}
+                </button>
+              </div>
+            )}
           </div>
         )}
 
@@ -286,11 +358,11 @@ export default function SocialPage() {
               >
                 <Link href={`/perfil/${u.username}`}>
                   <div
-                    className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0 overflow-hidden relative"
+                    className="w-12 h-12 flex items-center justify-center font-bold text-lg flex-shrink-0 overflow-hidden relative border border-solar-border/20"
                     style={{ background: `${u.accentColor}25`, color: u.accentColor }}
                   >
                     {u.avatarUrl
-                      ? <Image src={u.avatarUrl} alt="" fill className="rounded-full object-cover" unoptimized />
+                      ? <Image src={u.avatarUrl} alt="" fill className="object-cover" unoptimized />
                       : u.displayName[0]?.toUpperCase()}
                   </div>
                 </Link>
@@ -302,10 +374,7 @@ export default function SocialPage() {
                   {u.bio && <p className="text-xs text-solar-muted/60 mt-0.5 line-clamp-1">{u.bio}</p>}
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <div
-                    className="text-[9px] font-mono px-2 py-1"
-                    style={{ background: `${u.accentColor}15`, color: u.accentColor }}
-                  >
+                  <div className="text-[9px] font-mono px-2 py-1 border border-solar-border/25 text-solar-muted/50">
                     {u.commonInterests} em comum
                   </div>
                   <p className="text-[8px] font-mono text-solar-muted/30 mt-1">{u._count.followers} seguidores</p>
@@ -337,19 +406,20 @@ export default function SocialPage() {
                   key={t.id}
                   onClick={() => toggleEquip(t)}
                   title={t.isEquipped ? "Desequipar" : "Equipar"}
-                  className={`aspect-square border flex flex-col items-center justify-center gap-1.5 p-2 transition-all ${t.isEquipped ? "" : "opacity-60 hover:opacity-90"}`}
-                  style={{
-                    borderColor: `${RARITY_COLORS[t.rarity] ?? "#666"}${t.isEquipped ? "60" : "25"}`,
-                    background:  `${RARITY_COLORS[t.rarity] ?? "#666"}${t.isEquipped ? "15" : "08"}`,
-                    outline: t.isEquipped ? `1px solid ${RARITY_COLORS[t.rarity] ?? "#666"}40` : undefined,
-                  }}
+                  className={`relative aspect-square border flex flex-col items-center justify-center gap-1.5 p-2 transition-all ${
+                    t.isEquipped
+                      ? "border-solar-accent/40 bg-solar-surface/40"
+                      : "border-solar-border/20 hover:border-solar-border/40 opacity-60 hover:opacity-90"
+                  }`}
                 >
-                  {t.isEquipped && <span className="absolute top-1 right-1 text-[7px]" style={{ color: RARITY_COLORS[t.rarity] }}>✓</span>}
+                  {t.isEquipped && (
+                    <span className="absolute top-1 right-1 font-mono text-[7px] text-solar-accent/60">✓</span>
+                  )}
                   {t.imageUrl
                     ? <Image src={t.imageUrl} alt={t.name} width={32} height={32} className="object-contain" unoptimized />
                     : <span className="text-xl">{TOKEN_EMOJI[t.tokenType] ?? "✦"}</span>
                   }
-                  <p className="text-[7px] font-mono text-center line-clamp-1" style={{ color: RARITY_COLORS[t.rarity] }}>{t.name}</p>
+                  <p className="text-[7px] font-mono text-solar-muted/50 text-center line-clamp-1">{t.name}</p>
                 </button>
               ))}
             </div>

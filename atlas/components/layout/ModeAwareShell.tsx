@@ -4,37 +4,34 @@ import { useEffect } from "react"
 import { usePathname } from "next/navigation"
 import { useSolarStore } from "@/atlas/lib/store"
 import { BottomNav } from "./BottomNav"
+import { SidebarNav } from "./SidebarNav"
 
-// Tema único: Papel & Tinta — claro, quente, contrastante
-const PAPER_VARS: React.CSSProperties = {
-  "--c-void":       "250 246 238",
-  "--c-deep":       "242 236 224",
-  "--c-surface":    "230 222 206",
-  "--c-border":     "180 160 120",
-  "--c-text":       "22 16 6",
-  "--c-muted":      "90 68 40",
-  "--c-accent":     "120 60 25",
-  "--c-accent-lt":  "160 90 42",
-  "--c-teal":       "40 110 70",
-  "--c-teal-lt":    "55 135 88",
+// SSR fallback vars for editorial theme (prevents flash before hydration)
+const EDITORIAL_FALLBACK: React.CSSProperties = {
+  "--c-void":    "252 252 250",
+  "--c-deep":    "244 242 238",
+  "--c-surface": "232 229 224",
+  "--c-border":  "165 160 153",
+  "--c-text":    "12 10 8",
+  "--c-muted":   "95 90 85",
+  "--c-accent":  "12 10 8",
+  "--c-teal":    "12 10 8",
 } as React.CSSProperties
 
 export function ModeAwareShell({ children }: { children: React.ReactNode }) {
-  const { pushVisited } = useSolarStore()
+  const { pushVisited, theme } = useSolarStore()
   const pathname = usePathname()
 
   useEffect(() => { pushVisited(pathname) }, [pathname, pushVisited])
 
   return (
     <div
-      style={{
-        ...PAPER_VARS,
-        background: "rgb(var(--c-void))",
-        color:      "rgb(var(--c-text))",
-        minHeight:  "100vh",
-      }}
+      data-theme={theme}
+      style={EDITORIAL_FALLBACK}
+      className="min-h-screen bg-solar-void text-solar-text"
     >
-      <div data-mode-shell className="pb-24">
+      <SidebarNav />
+      <div className="md:pl-16 lg:pl-52 pb-20 min-h-screen">
         {children}
       </div>
       <BottomNav />

@@ -1,18 +1,31 @@
 "use client"
 
 import { useEffect } from "react"
+import { useSolarStore } from "@/atlas/lib/store"
 
-// Garante que nenhum data-theme antigo (salvo no localStorage) sobrescreva o tema papel
 export function ThemeApplier() {
+  const theme        = useSolarStore((s) => s.theme)
+  const customColors = useSolarStore((s) => s.customColors)
+
   useEffect(() => {
-    document.documentElement.removeAttribute("data-theme")
-    // Remove quaisquer CSS vars customizadas salvas anteriormente
+    // Apply theme via data-theme attribute on <html>
+    document.documentElement.setAttribute("data-theme", theme)
+
+    // Apply / remove custom color overrides as inline CSS vars
     const vars = [
       "--c-void", "--c-deep", "--c-surface", "--c-border",
       "--c-text", "--c-muted", "--c-accent", "--c-teal",
-    ]
-    vars.forEach((v) => document.documentElement.style.removeProperty(v))
-  }, [])
+    ] as const
+
+    vars.forEach((v) => {
+      const val = customColors[v]
+      if (val) {
+        document.documentElement.style.setProperty(v, val)
+      } else {
+        document.documentElement.style.removeProperty(v)
+      }
+    })
+  }, [theme, customColors])
 
   return null
 }

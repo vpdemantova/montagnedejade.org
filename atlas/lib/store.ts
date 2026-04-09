@@ -14,7 +14,7 @@ export type PatternId = "none" | "grid" | "dots" | "horizontal" | "diagonal" | "
 export type InterfaceMode = "FOCUS" | "CONTEMPLATION" | "ATLAS" | "PUBLIC"
 
 export type SolarTheme =
-  | "default" | "papel-amarelo" | "terminal" | "blueprint" | "academia"
+  | "editorial" | "default" | "papel-amarelo" | "terminal" | "blueprint" | "academia"
   | "azulejo" | "floresta" | "aurora" | "jazz" | "manuscrito"
   | "neon-tokyo" | "mercurio" | "vulcao" | "gelo" | "carvao"
   | "museu" | "submarino" | "botanica" | "cosmos-violeta" | "mapa-antigo"
@@ -218,7 +218,7 @@ export const useSolarStore = create<SolarStore>()(
       mode:     "ATLAS",
       setMode:  (mode) => set({ mode }),
 
-      theme:    "papel-amarelo",
+      theme:    "editorial",
       setTheme: (theme) => set({ theme }),
 
       sidebarExpanded: { portal: true, compass: true },
@@ -282,12 +282,11 @@ export const useSolarStore = create<SolarStore>()(
     }),
     {
       name:    "solaris-store",
-      version: 2,
+      version: 3,
       migrate: (persisted: unknown, fromVersion: number) => {
         const s = persisted as Partial<SolarStore> & { _version?: number }
-        // v0→v1: force light paper theme for users that had dark cosmos stored
-        if (fromVersion < 2) {
-          return { ...s, theme: "papel-amarelo" as const, mode: "ATLAS" as const }
+        if (fromVersion < 3) {
+          return { ...s, theme: "editorial" as const, mode: "ATLAS" as const }
         }
         return s
       },

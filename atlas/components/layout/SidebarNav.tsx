@@ -2,18 +2,14 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useFavorites } from "@/atlas/hooks/useFavorites"
 import { useSolarStore, type InterfaceMode } from "@/atlas/lib/store"
 import { useState } from "react"
 import {
-  Home, Globe2, Building2, Drama, Users,
-  BookOpen, Plus,
-  BookHeart, FileText, Target, GraduationCap, MapPin, User,
-  Settings2, LogOut,
-  Star,
+  Home, Globe2, Drama, Users,
+  BookOpen, BookHeart, FileText, Target, GraduationCap, MapPin,
+  Settings2, LogOut, Sun, ChevronRight, Search, Plus,
 } from "lucide-react"
-
-// ── Tipos ─────────────────────────────────────────────────────────────────────
+import { openQuickCapture } from "@/atlas/components/ui/QuickCapture"
 
 type NavItem = {
   key:   string
@@ -22,252 +18,209 @@ type NavItem = {
   icon:  React.ReactNode
 }
 
-// ── Seções de navegação ───────────────────────────────────────────────────────
-
 const PORTAL_ITEMS: NavItem[] = [
-  { key: "home",    label: "Home",       href: "/",               icon: <Home           size={15} strokeWidth={1.5} /> },
-  { key: "world",   label: "World",      href: "/world",          icon: <Globe2         size={15} strokeWidth={1.5} /> },
-  { key: "vilas",   label: "Vilas",      href: "/portal/vilas",   icon: <Building2      size={15} strokeWidth={1.5} /> },
-  { key: "cultura", label: "Cultura",    href: "/portal/cultura", icon: <Drama          size={15} strokeWidth={1.5} /> },
-  { key: "social",  label: "Rede Solar", href: "/social",         icon: <Users          size={15} strokeWidth={1.5} /> },
+  { key: "home",    label: "Home",       href: "/",               icon: <Home         size={14} strokeWidth={1.5} /> },
+  { key: "world",   label: "Mundo",      href: "/world",          icon: <Globe2       size={14} strokeWidth={1.5} /> },
+  { key: "cultura", label: "Cultura",    href: "/portal/cultura", icon: <Drama        size={14} strokeWidth={1.5} /> },
+  { key: "social",  label: "Rede",       href: "/social",         icon: <Users        size={14} strokeWidth={1.5} /> },
 ]
 
 const ATLAS_ITEMS: NavItem[] = [
-  { key: "atlas",   label: "Atlas",      href: "/atlas",          icon: <BookOpen       size={15} strokeWidth={1.5} /> },
+  { key: "atlas",   label: "Atlas",      href: "/atlas",          icon: <BookOpen     size={14} strokeWidth={1.5} /> },
 ]
 
 const COMPASS_ITEMS: NavItem[] = [
-  { key: "diario",  label: "Diário",     href: "/compass/diario", icon: <BookHeart      size={15} strokeWidth={1.5} /> },
-  { key: "notas",   label: "Notas",      href: "/compass/notas",  icon: <FileText       size={15} strokeWidth={1.5} /> },
-  { key: "metas",   label: "Metas",      href: "/compass/metas",  icon: <Target         size={15} strokeWidth={1.5} /> },
-  { key: "estudos", label: "Estudos",    href: "/compass/estudos",icon: <GraduationCap  size={15} strokeWidth={1.5} /> },
-  { key: "mapa",    label: "Mapa",       href: "/compass/mapa",   icon: <MapPin         size={15} strokeWidth={1.5} /> },
-  { key: "perfil",  label: "Perfil",     href: "/compass/perfil", icon: <User           size={15} strokeWidth={1.5} /> },
+  { key: "diario",  label: "Diário",     href: "/compass/diario", icon: <BookHeart    size={14} strokeWidth={1.5} /> },
+  { key: "notas",   label: "Notas",      href: "/compass/notas",  icon: <FileText     size={14} strokeWidth={1.5} /> },
+  { key: "metas",   label: "Metas",      href: "/compass/metas",  icon: <Target       size={14} strokeWidth={1.5} /> },
+  { key: "estudos", label: "Estudos",    href: "/compass/estudos",icon: <GraduationCap size={14} strokeWidth={1.5} /> },
+  { key: "mapa",    label: "Mapa",       href: "/compass/mapa",   icon: <MapPin       size={14} strokeWidth={1.5} /> },
 ]
 
-// ── Modos de interface ────────────────────────────────────────────────────────
-
-const MODES: { id: InterfaceMode; symbol: string; label: string; shortcut: string }[] = [
-  { id: "ATLAS",        symbol: "⬡", label: "Atlas",       shortcut: "⌘⇧A" },
-  { id: "FOCUS",        symbol: "✍", label: "Foco",        shortcut: "⌘⇧F" },
-  { id: "CONTEMPLATION",symbol: "📖",label: "Contemplação", shortcut: "⌘⇧C" },
-  { id: "PUBLIC",       symbol: "🌐",label: "Público",     shortcut: "⌘⇧P" },
+const MODES: { id: InterfaceMode; label: string }[] = [
+  { id: "ATLAS",         label: "Atlas"        },
+  { id: "FOCUS",         label: "Foco"         },
+  { id: "CONTEMPLATION", label: "Contemplação" },
+  { id: "PUBLIC",        label: "Público"      },
 ]
 
-// ── SidebarItem ───────────────────────────────────────────────────────────────
+// ── Nav item ─────────────────────────────────────────────────────────────────
 
-function SidebarItem({ item, isActive, accent = "amber" }: { item: NavItem; isActive: boolean; accent?: "amber" | "teal" }) {
-  const activeClass = accent === "teal" ? "text-solar-teal" : "text-solar-amber"
-
+function NavRow({ item, isActive }: { item: NavItem; isActive: boolean }) {
   return (
     <Link
       href={item.href}
-      className="relative group flex items-center justify-center w-full h-10"
+      className={`
+        relative flex items-center gap-3 py-2.5 pl-4 pr-2
+        text-[11px] font-mono transition-colors duration-150
+        ${isActive
+          ? "text-solar-text border-l-2 border-solar-accent -ml-px pl-[15px] bg-solar-surface/30"
+          : "text-solar-text/50 hover:text-solar-text hover:bg-solar-surface/20 border-l-2 border-transparent -ml-px pl-[15px]"
+        }
+      `}
     >
-      {isActive && (
-        <span
-          className={`absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-5 rounded-r-full ${accent === "teal" ? "bg-solar-teal" : "bg-solar-amber"}`}
-        />
-      )}
-      <span
-        className={`
-          flex items-center justify-center w-8 h-8 rounded-sm transition-all duration-150
-          ${isActive
-            ? `${activeClass} bg-solar-surface/60`
-            : "text-solar-muted/40 hover:text-solar-muted/80 group-hover:bg-solar-surface/30"
-          }
-        `}
-      >
-        {item.icon}
-      </span>
-      {/* Tooltip */}
-      <span className="absolute left-[52px] top-1/2 -translate-y-1/2 px-2.5 py-1 bg-solar-deep border border-solar-border/40 text-[9px] font-mono text-solar-text/80 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-[100] shadow-lg">
-        {item.label}
-      </span>
+      <span className="flex-shrink-0 opacity-70">{item.icon}</span>
+      <span className="hidden lg:block truncate">{item.label}</span>
     </Link>
   )
 }
 
-// ── SectionLabel ─────────────────────────────────────────────────────────────
+// ── Section label ─────────────────────────────────────────────────────────────
 
 function SectionLabel({ label }: { label: string }) {
   return (
-    <span className="text-[7px] font-mono uppercase tracking-[0.2em] text-solar-muted/25 px-1 mt-1 mb-0.5 select-none">
-      {label}
-    </span>
+    <div className="flex items-center gap-1.5 px-4 pt-5 pb-1">
+      <ChevronRight size={8} className="text-solar-muted/30 hidden lg:block" />
+      <span className="text-[8px] font-mono uppercase tracking-[0.25em] text-solar-muted/35 hidden lg:block select-none">
+        {label}
+      </span>
+      <div className="lg:hidden w-5 border-t border-solar-border/20 mx-auto mt-1" />
+    </div>
   )
 }
 
-// ── Divider ───────────────────────────────────────────────────────────────────
-
-function Divider() {
-  return <div className="w-8 border-t border-solar-border/15 my-1 mx-auto flex-shrink-0" />
-}
-
-// ── Componente principal ──────────────────────────────────────────────────────
+// ── Main component ────────────────────────────────────────────────────────────
 
 export function SidebarNav() {
   const pathname          = usePathname()
-  const { favorites }     = useFavorites()
   const { mode, setMode } = useSolarStore()
   const [modeOpen, setModeOpen] = useState(false)
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href)
 
-  const currentMode = MODES.find((m) => m.id === mode)!
+  const currentMode = MODES.find((m) => m.id === mode)?.label ?? "Atlas"
 
   return (
     <aside className="
       hidden md:flex
-      fixed top-0 left-0 h-screen w-[60px] z-40
-      flex-col items-center
-      bg-solar-deep border-r border-solar-border/20
+      fixed top-0 left-0 h-screen z-40
+      flex-col
+      w-16 lg:w-52
+      bg-solar-void border-r border-solar-border/30
+      overflow-hidden
     ">
 
-      {/* Logo */}
+      {/* Logo / wordmark */}
       <Link
         href="/"
-        className="relative group flex items-center justify-center w-full h-[52px] border-b border-solar-border/20 flex-shrink-0"
+        className="flex items-center gap-2.5 px-4 h-[52px] border-b border-solar-border/20 flex-shrink-0 group"
       >
-        <span className="text-solar-amber/60 group-hover:text-solar-amber transition-colors text-lg leading-none select-none">☀</span>
-        <span className="absolute left-[52px] top-1/2 -translate-y-1/2 px-2.5 py-1 bg-solar-deep border border-solar-border/40 text-[9px] font-mono text-solar-text/80 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-[100] shadow-lg">
+        <Sun size={14} strokeWidth={1.5} className="text-solar-accent/70 group-hover:text-solar-accent transition-colors flex-shrink-0" />
+        <span className="hidden lg:block text-[11px] font-mono uppercase tracking-[0.15em] text-solar-text/70 group-hover:text-solar-text transition-colors">
           Portal Solar
         </span>
       </Link>
 
-      {/* ── PORTAL ── */}
-      <div className="flex flex-col items-center w-full pt-2">
+      {/* Search + Quick capture */}
+      <div className="border-b border-solar-border/20 flex-shrink-0">
+        <button
+          onClick={() => {
+            // Trigger global search — dispatch ⌘K
+            window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true, bubbles: true }))
+          }}
+          className="flex items-center gap-3 w-full px-4 py-2.5 text-[10px] font-mono text-solar-text/35 hover:text-solar-text/60 hover:bg-solar-surface/20 transition-colors border-b border-solar-border/10"
+        >
+          <Search size={12} strokeWidth={1.5} className="flex-shrink-0" />
+          <span className="hidden lg:block flex-1 text-left">Buscar</span>
+          <kbd className="hidden lg:block text-[7px] text-solar-muted/25 border border-solar-border/20 px-1 py-0.5 font-mono">⌘K</kbd>
+        </button>
+        <button
+          onClick={() => openQuickCapture("nota")}
+          className="flex items-center gap-3 w-full px-4 py-2.5 text-[10px] font-mono text-solar-text/35 hover:text-solar-text/60 hover:bg-solar-surface/20 transition-colors"
+        >
+          <Plus size={12} strokeWidth={1.5} className="flex-shrink-0" />
+          <span className="hidden lg:block flex-1 text-left">Capturar</span>
+          <kbd className="hidden lg:block text-[7px] text-solar-muted/25 border border-solar-border/20 px-1 py-0.5 font-mono">⌘N</kbd>
+        </button>
+      </div>
+
+      {/* Scrollable nav area */}
+      <div className="flex-1 overflow-y-auto overflow-x-hidden">
+
+        {/* PORTAL */}
         <SectionLabel label="Portal" />
         {PORTAL_ITEMS.map((item) => (
-          <SidebarItem key={item.key} item={item} isActive={isActive(item.href)} accent="amber" />
+          <NavRow key={item.key} item={item} isActive={isActive(item.href)} />
         ))}
-      </div>
 
-      <Divider />
-
-      {/* ── ATLAS ── */}
-      <div className="flex flex-col items-center w-full">
+        {/* ATLAS */}
         <SectionLabel label="Atlas" />
         {ATLAS_ITEMS.map((item) => (
-          <SidebarItem key={item.key} item={item} isActive={isActive(item.href)} accent="amber" />
+          <NavRow key={item.key} item={item} isActive={isActive(item.href)} />
         ))}
-      </div>
 
-      {/* ── Criar item ── */}
-      <Link
-        href="/atlas/novo"
-        className="relative group flex items-center justify-center w-full h-9"
-        title="Novo item"
-      >
-        <span className="flex items-center justify-center w-8 h-8 rounded-sm transition-all duration-150 text-solar-muted/30 hover:text-solar-amber/80 group-hover:bg-solar-surface/30">
-          <Plus size={15} strokeWidth={1.5} />
-        </span>
-        <span className="absolute left-[52px] top-1/2 -translate-y-1/2 px-2.5 py-1 bg-solar-deep border border-solar-border/40 text-[9px] font-mono text-solar-text/80 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-[100] shadow-lg">
-          Novo item
-        </span>
-      </Link>
-
-      <Divider />
-
-      {/* ── COMPASS ── */}
-      <div className="flex flex-col items-center w-full">
+        {/* COMPASS */}
         <SectionLabel label="Compass" />
         {COMPASS_ITEMS.map((item) => (
-          <SidebarItem key={item.key} item={item} isActive={isActive(item.href)} accent="teal" />
+          <NavRow key={item.key} item={item} isActive={isActive(item.href)} />
         ))}
+
       </div>
 
-      {/* Spacer */}
-      <div className="flex-1" />
+      {/* Bottom actions */}
+      <div className="border-t border-solar-border/20 py-2 flex-shrink-0">
 
-      {/* ── Favoritos ── */}
-      {favorites.slice(0, 3).map((fav) => (
+        {/* Mode picker */}
+        <div className="relative">
+          <button
+            onClick={() => setModeOpen((v) => !v)}
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-[11px] font-mono text-solar-text/50 hover:text-solar-text hover:bg-solar-surface/20 transition-colors"
+          >
+            <span className="flex-shrink-0 w-[14px] h-[14px] flex items-center justify-center">
+              <span className="w-1.5 h-1.5 rounded-full bg-solar-accent/60" />
+            </span>
+            <span className="hidden lg:block">Modo</span>
+          </button>
+
+          {modeOpen && (
+            <>
+              <div className="fixed inset-0 z-[90]" onClick={() => setModeOpen(false)} />
+              <div className="absolute left-full bottom-0 z-[100] bg-solar-void border border-solar-border/40 shadow-xl py-1 min-w-[140px] lg:left-0 lg:bottom-full">
+                {MODES.map((m) => (
+                  <button
+                    key={m.id}
+                    onClick={() => { setMode(m.id); setModeOpen(false) }}
+                    className={`w-full flex items-center gap-2 px-4 py-2 text-[10px] font-mono transition-colors text-left ${
+                      mode === m.id ? "text-solar-text" : "text-solar-text/40 hover:text-solar-text"
+                    }`}
+                  >
+                    {mode === m.id && <span className="w-1 h-1 rounded-full bg-solar-accent flex-shrink-0" />}
+                    {mode !== m.id && <span className="w-1 h-1 flex-shrink-0" />}
+                    {m.label}
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Settings */}
         <Link
-          key={fav.id}
-          href={`/atlas/${fav.slug ?? fav.id}`}
-          className="relative group flex items-center justify-center w-full h-8"
+          href="/settings"
+          className={`flex items-center gap-3 px-4 py-2.5 text-[11px] font-mono transition-colors ${
+            pathname === "/settings"
+              ? "text-solar-text border-l-2 border-solar-accent -ml-px pl-[15px]"
+              : "text-solar-text/50 hover:text-solar-text hover:bg-solar-surface/20 border-l-2 border-transparent -ml-px pl-[15px]"
+          }`}
         >
-          <Star size={10} strokeWidth={1.5} className="text-solar-amber/25 group-hover:text-solar-amber/60 transition-colors" />
-          <span className="absolute left-[52px] top-1/2 -translate-y-1/2 px-2.5 py-1 bg-solar-deep border border-solar-border/40 text-[9px] font-mono text-solar-text/80 whitespace-nowrap max-w-[160px] truncate opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-[100] shadow-lg">
-            {fav.title}
-          </span>
+          <Settings2 size={14} strokeWidth={1.5} className="flex-shrink-0" />
+          <span className="hidden lg:block">Config</span>
         </Link>
-      ))}
 
-      <Divider />
-
-      {/* ── ModeSwitch compacto ── */}
-      <div className="relative group flex flex-col items-center w-full">
+        {/* Logout */}
         <button
-          onClick={() => setModeOpen((v) => !v)}
-          className="relative flex items-center justify-center w-full h-9 group/btn"
-          title={`Modo: ${currentMode.label}`}
+          onClick={async () => {
+            await fetch("/api/auth/logout", { method: "POST" })
+            window.location.href = "/login"
+          }}
+          className="w-full flex items-center gap-3 px-4 py-2.5 text-[11px] font-mono text-solar-text/40 hover:text-solar-text hover:bg-solar-surface/20 transition-colors border-l-2 border-transparent -ml-px pl-[15px]"
         >
-          <span className="text-sm leading-none text-solar-muted/40 group-hover/btn:text-solar-muted/80 transition-colors">
-            {currentMode.symbol}
-          </span>
-          <span className="absolute left-[52px] top-1/2 -translate-y-1/2 px-2.5 py-1 bg-solar-deep border border-solar-border/40 text-[9px] font-mono text-solar-text/80 whitespace-nowrap opacity-0 group-hover/btn:opacity-100 pointer-events-none transition-opacity duration-150 z-[100] shadow-lg">
-            Modo: {currentMode.label}
-          </span>
+          <LogOut size={14} strokeWidth={1.5} className="flex-shrink-0" />
+          <span className="hidden lg:block">Sair</span>
         </button>
 
-        {/* Dropdown de modos — abre para a direita */}
-        {modeOpen && (
-          <>
-            <div className="fixed inset-0 z-[90]" onClick={() => setModeOpen(false)} />
-            <div className="absolute left-[52px] bottom-0 z-[100] bg-solar-deep border border-solar-border/40 shadow-xl py-1 min-w-[160px]">
-              {MODES.map((m) => (
-                <button
-                  key={m.id}
-                  onClick={() => { setMode(m.id); setModeOpen(false) }}
-                  className={`w-full flex items-center gap-2.5 px-3 py-2 transition-colors text-left ${
-                    mode === m.id ? "text-solar-amber" : "text-solar-muted/60 hover:text-solar-text"
-                  }`}
-                >
-                  <span className="text-sm w-5 text-center">{m.symbol}</span>
-                  <span className="text-[10px] font-mono flex-1">{m.label}</span>
-                  <span className="text-[8px] font-mono text-solar-muted/30">{m.shortcut}</span>
-                </button>
-              ))}
-            </div>
-          </>
-        )}
       </div>
-
-      {/* ── Settings ── */}
-      <Link
-        href="/settings"
-        className="relative group flex items-center justify-center w-full h-9"
-      >
-        <Settings2
-          size={14}
-          strokeWidth={1.5}
-          className={`transition-colors ${pathname === "/settings" ? "text-solar-amber" : "text-solar-muted/30 group-hover:text-solar-muted/70"}`}
-        />
-        <span className="absolute left-[52px] top-1/2 -translate-y-1/2 px-2.5 py-1 bg-solar-deep border border-solar-border/40 text-[9px] font-mono text-solar-text/80 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-[100] shadow-lg">
-          Configurações
-        </span>
-      </Link>
-
-      {/* ── Logout ── */}
-      <button
-        onClick={async () => {
-          await fetch("/api/auth/logout", { method: "POST" })
-          window.location.href = "/login"
-        }}
-        className="relative group flex items-center justify-center w-full h-9 mb-2"
-      >
-        <LogOut
-          size={14}
-          strokeWidth={1.5}
-          className="text-solar-muted/25 group-hover:text-solar-muted/60 transition-colors"
-        />
-        <span className="absolute left-[52px] top-1/2 -translate-y-1/2 px-2.5 py-1 bg-solar-deep border border-solar-border/40 text-[9px] font-mono text-solar-text/80 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-150 z-[100] shadow-lg">
-          Sair
-        </span>
-      </button>
-
     </aside>
   )
 }

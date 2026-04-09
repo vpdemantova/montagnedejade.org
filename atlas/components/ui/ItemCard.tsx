@@ -1,12 +1,13 @@
 "use client"
 
 import type { AtlasItemWithTags } from "@/atlas/types"
-import { AREA_LABELS, TYPE_LABELS, STATUS_LABELS } from "@/atlas/types"
-import { Tag } from "./Tag"
+import { AREA_LABELS, TYPE_LABELS } from "@/atlas/types"
 
 type ItemCardProps = {
-  item: AtlasItemWithTags
+  item:     AtlasItemWithTags
   onClick?: (item: AtlasItemWithTags) => void
+  variant?: "grid" | "list"
+  index?:   number
 }
 
 function itemCode(id: string): string {
@@ -19,85 +20,116 @@ function parseMetadata(raw?: string | null) {
   try { return JSON.parse(raw) as Record<string, unknown> } catch { return {} }
 }
 
-export function ItemCard({ item, onClick }: ItemCardProps) {
-  const areaLabel   = AREA_LABELS[item.area as keyof typeof AREA_LABELS]   ?? item.area
-  const typeLabel   = TYPE_LABELS[item.type as keyof typeof TYPE_LABELS]   ?? item.type
-  const statusLabel = STATUS_LABELS[item.status as keyof typeof STATUS_LABELS] ?? item.status
-  const code        = itemCode(item.id)
+function shortDate(d: Date | string) {
+  return new Date(d).toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })
+}
 
-  const isFavorite = item.status === "FAVORITE"
-  const isActive   = item.status === "ACTIVE"
+// ── Grid variant ──────────────────────────────────────────────────────────────
 
-  const meta     = parseMetadata(item.metadata)
-  const imageUrl = ((item as Record<string, unknown>).coverImage ?? meta.imageUrl ?? meta.coverImage ?? "") as string
-
-  const updatedAt = new Date(item.updatedAt).toLocaleDateString("pt-BR", {
-    day: "2-digit", month: "short",
-  })
+function GridCard({ item, onClick, index }: { item: AtlasItemWithTags; onClick?: (item: AtlasItemWithTags) => void; index?: number }) {
+  const areaLabel = AREA_LABELS[item.area as keyof typeof AREA_LABELS] ?? item.area
+  const typeLabel = TYPE_LABELS[item.type as keyof typeof TYPE_LABELS] ?? item.type
+  const code      = itemCode(item.id)
+  const meta      = parseMetadata(item.metadata)
+  const imageUrl  = ((item as Record<string, unknown>).coverImage ?? meta.imageUrl ?? meta.coverImage ?? "") as string
 
   return (
     <article
       onClick={() => onClick?.(item)}
-      className="
-        group hover:bg-solar-surface/30
-        transition-solar cursor-pointer overflow-hidden
-        stagger-item
-      "
-      style={{ animationDelay: "var(--stagger-delay, 0ms)" }}
+      className="group border-b border-solar-border/30 py-5 cursor-pointer hover:bg-solar-surface/20 transition-colors duration-150"
     >
-      {/* Cover image */}
+      {/* Cover image full-bleed */}
       {imageUrl && (
-        <div className="aspect-[16/6] overflow-hidden bg-solar-surface/30">
+        <div className="aspect-[3/1] overflow-hidden mb-3 bg-solar-surface/20">
           <img
             src={imageUrl}
             alt={item.title}
-            className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+            className="w-full h-full object-cover opacity-75 group-hover:opacity-90 transition-opacity duration-200"
             loading="lazy"
           />
         </div>
       )}
 
-      {/* Barra de metadados */}
-      <div className="flex items-center justify-between px-3 py-1.5 border-b border-solar-border/30">
-        <span className="text-[9px] font-mono uppercase tracking-widest text-solar-muted/75">
+      {/* Meta row */}
+      <div className="flex items-center justify-between mb-2">
+        <span className="editorial-label text-solar-muted/50">
           {areaLabel}
-          <span className="mx-1 text-solar-border">·</span>
+          <span className="mx-1.5 opacity-40">·</span>
           {typeLabel}
         </span>
-        <span className="text-[9px] font-mono text-solar-muted/55 tracking-wider">
-          {code}
-        </span>
+        <span className="font-mono text-[9px] text-solar-muted/25">{code}</span>
       </div>
 
-      {/* Corpo */}
-      <div className="px-3 py-3">
-        <h3 className="
-          font-display text-solar-text text-[14px] leading-snug mb-2
-          group-hover:text-solar-amber-lt transition-solar line-clamp-2
-        ">
-          {item.title}
-        </h3>
+      {/* Title */}
+      <h3 className="font-display text-[17px] leading-tight text-solar-text group-hover:opacity-80 transition-opacity mb-3 line-clamp-3">
+        {item.title}
+      </h3>
 
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1 flex-wrap">
-            {item.tags.slice(0, 2).map((tag) => (
-              <Tag key={tag.id} name={tag.name} />
-            ))}
-            {item.tags.length > 2 && (
-              <span className="text-[9px] font-mono text-solar-muted/40">
-                +{item.tags.length - 2}
-              </span>
-            )}
-          </div>
-
-          <div className="flex items-center gap-1.5 flex-shrink-0 ml-2">
-            {isFavorite && (
-              <span className="text-solar-amber text-[9px]">★</span>
-            )}
-            <span className="text-[9px] font-mono text-solar-muted/65">{updatedAt}</span>
-          </div>
+      {/* Tags + date */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2 flex-wrap">
+          {item.tags.slice(0, 2).map((tag) => (
+            <span key={tag.id} className="font-mono text-[8px] text-solar-muted/45">
+              #{tag.name}
+            </span>
+          ))}
+          {item.tags.length > 2 && (
+            <span className="font-mono text-[8px] text-solar-muted/25">+{item.tags.length - 2}</span>
+          )}
         </div>
+        <span className="font-mono text-[8px] text-solar-muted/35 flex-shrink-0">
+          {shortDate(item.updatedAt)}
+        </span>
       </div>
     </article>
   )
+}
+
+// ── List variant ──────────────────────────────────────────────────────────────
+
+function ListRow({ item, onClick, index }: { item: AtlasItemWithTags; onClick?: (item: AtlasItemWithTags) => void; index?: number }) {
+  const areaLabel = AREA_LABELS[item.area as keyof typeof AREA_LABELS] ?? item.area
+  const typeLabel = TYPE_LABELS[item.type as keyof typeof TYPE_LABELS] ?? item.type
+  const code      = itemCode(item.id)
+
+  return (
+    <article
+      onClick={() => onClick?.(item)}
+      className="group flex items-baseline gap-4 border-b border-solar-border/20 py-3 cursor-pointer hover:bg-solar-surface/20 transition-colors duration-150"
+    >
+      {/* Sequence number */}
+      <span className="font-mono text-[10px] text-solar-muted/25 flex-shrink-0 w-8 text-right">
+        {index !== undefined ? String(index + 1).padStart(2, "0") : code}
+      </span>
+
+      {/* Title */}
+      <span className="font-display text-[13px] leading-snug text-solar-text group-hover:opacity-80 transition-opacity flex-1 min-w-0 truncate">
+        {item.title}
+      </span>
+
+      {/* Area */}
+      <span className="font-mono text-[8px] uppercase tracking-widest text-solar-muted/40 hidden sm:block flex-shrink-0 w-20 text-right">
+        {areaLabel}
+      </span>
+
+      {/* Type */}
+      <span className="font-mono text-[8px] uppercase tracking-widest text-solar-muted/30 hidden md:block flex-shrink-0 w-16 text-right">
+        {typeLabel}
+      </span>
+
+      {/* Date */}
+      <span className="font-mono text-[8px] text-solar-muted/30 flex-shrink-0 w-14 text-right hidden lg:block">
+        {shortDate(item.updatedAt)}
+      </span>
+    </article>
+  )
+}
+
+// ── Export ────────────────────────────────────────────────────────────────────
+
+export function ItemCard({ item, onClick, variant = "grid", index }: ItemCardProps) {
+  if (variant === "list") {
+    return <ListRow item={item} onClick={onClick} index={index} />
+  }
+  return <GridCard item={item} onClick={onClick} index={index} />
 }

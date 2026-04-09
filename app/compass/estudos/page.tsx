@@ -174,25 +174,21 @@ export default function EstudosPage() {
     <div className="relative min-h-screen">
       <div className="fixed inset-0 pointer-events-none z-0 bg-grid-aligned" />
 
-      <header className="page-header relative z-10 border-b border-solar-border/40 pt-12 pb-6">
-        <div className="max-w-4xl mx-auto px-4 sm:px-8 md:px-12">
-          <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-compass-neon-dim/60 mb-3">
-            Numita Compass · Estudos
-          </p>
+      <header className="relative z-10 border-b border-solar-border/30 px-4 sm:px-8 md:px-12 pt-10 pb-6">
+        <div className="max-w-4xl mx-auto">
+          <p className="editorial-label text-solar-muted/35 mb-3">COMPASS / ESTUDOS</p>
           <div className="flex items-end justify-between gap-6">
             <div>
-              <h1 className="font-display text-[28px] sm:text-[36px] md:text-[44px] leading-none text-solar-text font-semibold tracking-tight">
-                Tracker de Estudos
-              </h1>
+              <h1 className="page-hero text-solar-text leading-none">ESTUDOS</h1>
               {!loading && (
-                <p className="text-[10px] font-mono text-solar-muted/40 mt-2">
+                <p className="font-mono text-[10px] text-solar-muted/40 mt-1">
                   {disciplines.length} disciplinas · {fmtHours(totalLogged)} registradas
                 </p>
               )}
             </div>
             <button
               onClick={() => setShowForm((o) => !o)}
-              className="flex-shrink-0 px-4 py-2 border border-compass-neon/40 bg-compass-neon/8 text-[10px] font-mono uppercase tracking-widest text-compass-neon hover:bg-compass-neon/15 transition-solar"
+              className="flex-shrink-0 px-4 py-2 bg-solar-text text-solar-void text-[9px] font-mono uppercase tracking-[0.2em] hover:opacity-80 transition-opacity"
             >
               + Disciplina
             </button>

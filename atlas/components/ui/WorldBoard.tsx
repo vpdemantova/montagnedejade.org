@@ -43,13 +43,23 @@ const VIEWS: { id: View; label: string; symbol: string }[] = [
   { id: "CONSTELACAO", label: "Constelação",  symbol: "✦" },
 ]
 
+// Use CSS variable accent for all types — monochrome editorial
 const TYPE_COLORS: Record<string, string> = {
-  OBRA:       "#C8A45A",
-  AVISO:      "#E05C5C",
-  EVENTO:     "#4A6C7C",
-  DESCOBERTA: "#7CFC6A",
-  HOMENAGEM:  "#8A8678",
-  CITACAO:    "#4A4A5A",
+  OBRA:       "rgb(var(--c-accent))",
+  AVISO:      "rgb(var(--c-accent))",
+  EVENTO:     "rgb(var(--c-accent))",
+  DESCOBERTA: "rgb(var(--c-accent))",
+  HOMENAGEM:  "rgb(var(--c-muted))",
+  CITACAO:    "rgb(var(--c-muted))",
+}
+// Hex fallbacks for canvas rendering (force graph)
+const TYPE_HEX: Record<string, string> = {
+  OBRA:       "#2A2A28",
+  AVISO:      "#1A1A1A",
+  EVENTO:     "#3A3A38",
+  DESCOBERTA: "#141414",
+  HOMENAGEM:  "#666660",
+  CITACAO:    "#4A4A48",
 }
 
 // ── Notice panel ──────────────────────────────────────────────────────────────
@@ -82,7 +92,7 @@ function NoticePanel({
       <div className="flex items-center justify-between px-5 py-4 border-b border-solar-border/20">
         <span
           className="text-[8px] font-mono uppercase tracking-widest"
-          style={{ color: TYPE_COLORS[notice.type] ?? "#8A8678" }}
+          style={{ color: TYPE_COLORS[notice.type] ?? "rgb(var(--c-muted))" }}
         >
           {NOTICE_LABELS[notice.type] ?? notice.type}
         </span>
@@ -139,7 +149,7 @@ function MuralView({ notices, onSelect }: { notices: WorldNotice[]; onSelect: (n
           onClick={() => onSelect(n)}
         >
           <span className="text-[8px] font-mono uppercase tracking-widest mb-2 block"
-            style={{ color: TYPE_COLORS[n.type] ?? "#8A8678" }}>
+            style={{ color: TYPE_COLORS[n.type] ?? "rgb(var(--c-muted))" }}>
             {NOTICE_LABELS[n.type] ?? n.type}
           </span>
           <h3 className="font-display text-[14px] leading-snug text-solar-text/90 mb-2">{n.title}</h3>
@@ -183,15 +193,13 @@ function TimelineView({ notices, onSelect }: { notices: WorldNotice[]; onSelect:
                   </p>
                   <p className="text-[10px] font-mono text-solar-text/80 line-clamp-2">{n.title}</p>
                 </div>
-                <div className="w-2 h-2 rounded-full flex-shrink-0"
-                  style={{ background: TYPE_COLORS[n.type] ?? "#4A4A5A", border: "2px solid rgb(232, 224, 208)" }} />
+                <div className="w-2 h-2 flex-shrink-0 border border-solar-border/40 bg-solar-accent/40" />
                 <div className="h-14" />
               </>
             ) : (
               <>
                 <div className="h-14" />
-                <div className="w-2 h-2 rounded-full flex-shrink-0"
-                  style={{ background: TYPE_COLORS[n.type] ?? "#4A4A5A", border: "2px solid rgb(232, 224, 208)" }} />
+                <div className="w-2 h-2 flex-shrink-0 border border-solar-border/40 bg-solar-accent/40" />
                 <div
                   className="w-36 mt-3 border border-solar-border/20 p-3 cursor-pointer hover:border-solar-amber/30 transition-solar bg-solar-deep/60"
                   onClick={() => onSelect(n)}
@@ -226,7 +234,7 @@ function StreamView({ notices, onSelect }: { notices: WorldNotice[]; onSelect: (
         >
           <div className="flex items-center gap-3 mb-3">
             <span className="text-[8px] font-mono uppercase tracking-widest"
-              style={{ color: TYPE_COLORS[n.type] ?? "#8A8678" }}>
+              style={{ color: TYPE_COLORS[n.type] ?? "rgb(var(--c-muted))" }}>
               {NOTICE_LABELS[n.type] ?? n.type}
             </span>
             <span className="text-[8px] font-mono text-solar-muted/30">
@@ -259,7 +267,7 @@ function ConstellationView({ notices, onSelect }: { notices: WorldNotice[]; onSe
   const nodes: GraphNode[] = notices.map((n) => ({
     id:     n.id,
     name:   n.title,
-    color:  TYPE_COLORS[n.type] ?? "#4A4A5A",
+    color:  TYPE_HEX[n.type] ?? "#2A2A28",
     val:    n.isPinned ? 4 : 2,
     notice: n,
   }))

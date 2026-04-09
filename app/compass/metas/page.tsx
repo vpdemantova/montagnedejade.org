@@ -169,25 +169,24 @@ export default function MetasPage() {
     <div className="relative min-h-screen">
       <div className="fixed inset-0 pointer-events-none z-0 bg-grid-aligned" />
 
-      <header className="page-header relative z-10 border-b border-solar-border/40 pt-12 pb-6">
-        <div className="max-w-4xl mx-auto px-4 md:px-12">
-          <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-compass-neon-dim/60 mb-3">
-            Numita Compass · Metas
-          </p>
+      <header className="relative z-10 border-b border-solar-border/30 px-4 md:px-12 pt-10 pb-6">
+        <div className="max-w-4xl mx-auto">
+          <p className="editorial-label text-solar-muted/35 mb-3">COMPASS / METAS</p>
           <div className="flex items-end justify-between gap-6">
-            <h1 className="font-display text-[44px] leading-none text-solar-text font-semibold tracking-tight">
-              Metas & Intenções
-            </h1>
+            <div>
+              <h1 className="page-hero text-solar-text leading-none">METAS</h1>
+              <p className="font-mono text-[10px] text-solar-muted/40 mt-1">objetivos · intenções · horizontes</p>
+            </div>
             <button
               onClick={() => setShowForm((o) => !o)}
-              className="flex-shrink-0 px-4 py-2 border border-compass-neon/40 bg-compass-neon/8 text-[10px] font-mono uppercase tracking-widest text-compass-neon hover:bg-compass-neon/15 transition-solar"
+              className="flex-shrink-0 px-4 py-2 bg-solar-text text-solar-void text-[9px] font-mono uppercase tracking-[0.2em] hover:opacity-80 transition-opacity"
             >
               + Meta
             </button>
           </div>
 
           {/* Horizon filter */}
-          <div className="flex items-center gap-0 mt-4">
+          <div className="flex items-center gap-0 mt-5 border-t border-solar-border/15 pt-3">
             {(["all", "short", "long"] as const).map((h) => (
               <button
                 key={h}

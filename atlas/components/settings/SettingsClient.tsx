@@ -413,6 +413,7 @@ function PerfilTab() {
 // ── (themes removed — single paper theme) ────────────────────────────────────
 
 const THEMES: { id: SolarTheme; label: string; bg: string; accent: string; light?: boolean }[] = [
+  { id: "editorial",      label: "Editorial B&W",         bg: "#FCFCFA", accent: "#0C0A08", light: true },
   { id: "default",        label: "Cosmos Escuro",         bg: "#0D0D0F", accent: "#C8A45A" },
   { id: "papel-amarelo",  label: "Papel & Tinta",         bg: "#F5EDBB", accent: "#783C19", light: true },
   { id: "terminal",       label: "Terminal Fósforo",      bg: "#000000", accent: "#33FF33" },
@@ -733,27 +734,60 @@ function ThemeCard({
 
 function InterfaceTab() {
   const { getViewForRoute, setViewForRoute } = useViewStore()
-  const atlasView = getViewForRoute("/atlas", "GALLERY")
+  const atlasView  = getViewForRoute("/atlas", "GALLERY")
+  const theme      = useSolarStore((s) => s.theme)
+  const setTheme   = useSolarStore((s) => s.setTheme)
+  const [group, setGroup] = useState<string>("claros")
 
   return (
     <div className="flex flex-col gap-5">
 
+      {/* Theme picker */}
       <Section title="Tema">
-        <div className="flex items-center gap-4 py-2">
-          <div
-            className="w-10 h-10 rounded border border-solar-border/40 flex-shrink-0"
-            style={{ background: "rgb(250 246 238)" }}
-          />
-          <div>
-            <p className="text-[11px] font-mono text-solar-text/80 mb-0.5">Papel &amp; Tinta</p>
-            <p className="text-[9px] font-mono text-solar-muted/50">
-              Tema claro com fundo off-white quente e tipografia escura de alto contraste.
-              Tema único e permanente do Portal Solar.
-            </p>
-          </div>
+        {/* Group tabs */}
+        <div className="flex gap-0 border-b border-solar-border/20 mb-4 -mx-5 px-5">
+          {THEME_GROUPS.map((g) => (
+            <button
+              key={g.id}
+              onClick={() => setGroup(g.id)}
+              className={`flex items-center gap-1.5 px-3 py-2 text-[8px] font-mono uppercase tracking-widest border-b-2 -mb-px transition-all ${
+                group === g.id
+                  ? "border-solar-accent text-solar-accent"
+                  : "border-transparent text-solar-muted/40 hover:text-solar-muted"
+              }`}
+            >
+              <span>{g.symbol}</span>
+              <span className="hidden sm:inline">{g.label}</span>
+            </button>
+          ))}
         </div>
+
+        {/* Theme grid */}
+        {THEME_GROUPS.filter((g) => g.id === group).map((g) => (
+          <div key={g.id} className="grid grid-cols-4 sm:grid-cols-6 gap-2">
+            {g.themes.map((t) => (
+              <ThemeCard
+                key={t.id}
+                t={t}
+                active={theme === t.id}
+                onSelect={() => setTheme(t.id as SolarTheme)}
+              />
+            ))}
+          </div>
+        ))}
+
+        {/* Active theme label */}
+        <p className="text-[9px] font-mono text-solar-muted/40 mt-3">
+          Tema atual: <span className="text-solar-amber/60">{THEMES.find((t) => t.id === theme)?.label ?? theme}</span>
+        </p>
       </Section>
 
+      {/* Custom colors */}
+      <Section title="Cores Personalizadas">
+        <ColorEditor />
+      </Section>
+
+      {/* Default Atlas view */}
       <Section title="Atlas — Visualização Padrão">
         <p className="text-[9px] font-mono text-solar-muted/60 mb-4">
           Como os itens são exibidos por padrão no Atlas.
@@ -1062,7 +1096,18 @@ function HomeSectionsTab() {
 
 // ── Sobre tab ─────────────────────────────────────────────────────────────────
 
+type AIStatus = { gemini: boolean; replicate: boolean }
+
 function SobreTab() {
+  const [ai, setAi] = useState<AIStatus | null>(null)
+
+  useEffect(() => {
+    fetch("/api/ai/status")
+      .then((r) => r.ok ? r.json() as Promise<AIStatus> : null)
+      .then((d) => { if (d) setAi(d) })
+      .catch(() => {})
+  }, [])
+
   return (
     <div className="flex flex-col gap-4">
       <Section title="SOLARIS">
@@ -1073,16 +1118,43 @@ function SobreTab() {
         </div>
       </Section>
 
+      <Section title="Integrações AI">
+        {([
+          ["Gemini (texto + imagem)", ai?.gemini],
+          ["Replicate / Flux (imagem)", ai?.replicate],
+        ] as [string, boolean | undefined][]).map(([label, active]) => (
+          <div key={label} className="flex items-center justify-between py-2 border-b border-solar-border/10 last:border-0">
+            <span className="text-[9px] font-mono text-solar-muted/50">{label}</span>
+            {ai === null ? (
+              <span className="text-[8px] font-mono text-solar-muted/25">…</span>
+            ) : active ? (
+              <span className="text-[8px] font-mono text-compass-neon/70">● configurado</span>
+            ) : (
+              <span className="text-[8px] font-mono text-solar-red/50">○ chave ausente</span>
+            )}
+          </div>
+        ))}
+        {ai && !ai.gemini && !ai.replicate && (
+          <p className="text-[9px] font-mono text-solar-muted/40 mt-3 leading-relaxed">
+            Adicione <code className="text-solar-amber/60">GEMINI_API_KEY</code> e/ou{" "}
+            <code className="text-solar-amber/60">REPLICATE_API_TOKEN</code> no arquivo{" "}
+            <code className="text-solar-amber/60">.env</code> para ativar geração de texto e imagem.
+          </p>
+        )}
+      </Section>
+
       <Section title="Módulos">
         {[
           ["1–6",  "Core, Atlas CRUD, Editor BlockNote, Sidebar"],
-          ["7",    "Numita Compass — Diário, Perfil, Notas"],
+          ["7",    "Numita Compass — Diário, Notas, Metas, Estudos, Mapa, Perfil"],
           ["8",    "Portal Solar — Vilas, Cultura, WorldBoard"],
-          ["9",    "Portabilidade — mirrors .md, export/import"],
-          ["10",   "Busca Global ⌘K, DimensionFilterPanel"],
+          ["9",    "Portabilidade — mirrors .md, export/import ZIP"],
+          ["10",   "Busca Global ⌘K, DimensionFilterPanel, modos de prefixo"],
           ["11",   "Sistema de Modos — FOCUS/CONTEMPLATION/ATLAS/PUBLIC"],
-          ["12",   "SolarMonument — React Three Fiber"],
-          ["13",   "Autenticação — NextAuth.js (pendente)"],
+          ["12",   "SolarMonument — React Three Fiber + força 2D"],
+          ["13",   "Autenticação — JWT (jose) + bcrypt, sessão convidado"],
+          ["14",   "Rede Social — feed, follows, interesses, tokens, tickets"],
+          ["15",   "AI — Gemini texto/imagem, Replicate Flux Schnell"],
         ].map(([num, desc]) => (
           <div key={num} className="flex items-start gap-4 py-2 border-b border-solar-border/10 last:border-0">
             <span className="text-[9px] font-mono text-solar-amber/50 w-6 flex-shrink-0">{num}</span>

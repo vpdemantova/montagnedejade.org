@@ -3,9 +3,11 @@ import { Inter, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google"
 import { LenisProvider }        from "@/atlas/components/layout/LenisProvider"
 import { PageTransition }       from "@/atlas/components/layout/PageTransition"
 import { GlobalSearch }         from "@/atlas/components/ui/GlobalSearch"
+import { QuickCapture, QuickCaptureButton } from "@/atlas/components/ui/QuickCapture"
 import { ModeAwareShell }       from "@/atlas/components/layout/ModeAwareShell"
 import { OnboardingOverlay }    from "@/atlas/components/layout/OnboardingOverlay"
 import { ThemeApplier }         from "@/atlas/components/layout/ThemeApplier"
+import { KeyboardShortcuts }    from "@/atlas/components/ui/KeyboardShortcuts"
 
 import "./globals.css"
 
@@ -52,6 +54,9 @@ export default function RootLayout({
             <PageTransition>{children}</PageTransition>
           </ModeAwareShell>
           <GlobalSearch />
+          <QuickCapture />
+          <QuickCaptureButton />
+          <KeyboardShortcuts />
           <OnboardingOverlay />
         </LenisProvider>
       </body>
