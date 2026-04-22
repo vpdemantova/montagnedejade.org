@@ -6,6 +6,7 @@ import { AnimatePresence } from "framer-motion"
 import type { AtlasItemWithTags } from "@/atlas/types"
 import { useSolarStore, useViewStore } from "@/atlas/lib/store"
 import { ViewType, AREA_LABELS } from "@/atlas/types"
+import { Layers, LayoutGrid, Table2, List, Map, type LucideIcon } from "lucide-react"
 import { ItemDrawer } from "@/atlas/components/layout/ItemDrawer"
 import Link from "next/link"
 import { ItemCard } from "@/atlas/components/ui/ItemCard"
@@ -61,12 +62,12 @@ const TYPE_CHIPS = [
   { value: "PARTITURA", label: "Partitura" },
 ]
 
-const VIEW_CHIPS = [
-  { value: ViewType.HORIZONTAL, label: "Grupos"  },
-  { value: ViewType.GALLERY,    label: "Gallery" },
-  { value: ViewType.TABLE,      label: "Table"   },
-  { value: ViewType.LIST,       label: "List"    },
-  { value: ViewType.ATLAS_MAP,  label: "Grafo"   },
+const VIEW_CHIPS: { value: string; label: string; icon: LucideIcon }[] = [
+  { value: ViewType.HORIZONTAL, label: "Grupos",  icon: Layers      },
+  { value: ViewType.GALLERY,    label: "Galeria", icon: LayoutGrid  },
+  { value: ViewType.TABLE,      label: "Tabela",  icon: Table2      },
+  { value: ViewType.LIST,       label: "Lista",   icon: List        },
+  { value: ViewType.ATLAS_MAP,  label: "Mapa",    icon: Map         },
 ]
 
 export function AtlasClient({ items, initialArea, initialTag, defaultView, backHref, backLabel }: AtlasClientProps) {
@@ -189,21 +190,26 @@ export function AtlasClient({ items, initialArea, initialTag, defaultView, backH
 
           {/* view switcher — scroll horizontal em telas pequenas */}
           <div className="flex items-center gap-0.5 ml-auto flex-shrink-0 overflow-x-auto scrollbar-hide">
-            {VIEW_CHIPS.map((v) => (
-              <button
-                key={v.value}
-                onClick={() => handleView(v.value)}
-                className="px-2 sm:px-2.5 py-1 text-[9px] font-mono uppercase tracking-widest rounded transition-all duration-150 flex-shrink-0"
-                style={{
-                  background: view === v.value ? "rgb(var(--c-accent) / 0.15)" : "transparent",
-                  color: view === v.value ? "rgb(var(--c-accent))" : "rgb(var(--c-muted) / 0.45)",
-                  border: `1px solid ${view === v.value ? "rgb(var(--c-accent) / 0.3)" : "rgb(var(--c-border) / 0.2)"}`,
-                }}
-              >
-                <span className="hidden sm:inline">{v.label}</span>
-                <span className="sm:hidden">{v.label.charAt(0)}</span>
-              </button>
-            ))}
+            {VIEW_CHIPS.map((v) => {
+              const Icon = v.icon
+              return (
+                <button
+                  key={v.value}
+                  onClick={() => handleView(v.value)}
+                  title={v.label}
+                  aria-label={v.label}
+                  className="flex items-center gap-1.5 px-2 sm:px-2.5 py-1 text-[9px] font-mono uppercase tracking-widest rounded transition-all duration-150 flex-shrink-0"
+                  style={{
+                    background: view === v.value ? "rgb(var(--c-accent) / 0.15)" : "transparent",
+                    color: view === v.value ? "rgb(var(--c-accent))" : "rgb(var(--c-muted) / 0.45)",
+                    border: `1px solid ${view === v.value ? "rgb(var(--c-accent) / 0.3)" : "rgb(var(--c-border) / 0.2)"}`,
+                  }}
+                >
+                  <Icon size={11} strokeWidth={1.5} className="flex-shrink-0" />
+                  <span className="hidden sm:inline">{v.label}</span>
+                </button>
+              )
+            })}
 
             {/* advanced filters */}
             <div className="relative ml-1">

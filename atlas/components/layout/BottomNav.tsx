@@ -3,84 +3,104 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
-import { Plus } from "lucide-react"
+import {
+  Home, BookOpen, Globe2, Plus, BookHeart, Search, AlignJustify,
+  Drama, Users, FileText, Target, GraduationCap, MapPin, UserCircle,
+  Settings2, LogOut, Info, Landmark, GitBranch, Pencil, Eye,
+  Layers, Satellite, Music, StickyNote, X, type LucideIcon,
+} from "lucide-react"
+import { useSolarStore, type InterfaceMode } from "@/atlas/lib/store"
+import { openQuickCapture } from "@/atlas/components/ui/QuickCapture"
 
-// ── Seções de navegação ───────────────────────────────────────────────────────
+// ── Tipos ─────────────────────────────────────────────────────────────────────
 
-type NavSection = "GERAL" | "PORTAL" | "NUMITA"
+type NavItem = {
+  href:  string
+  label: string
+  icon:  LucideIcon
+}
 
-const NAV_SECTIONS: { id: NavSection; label: string }[] = [
-  { id: "GERAL",  label: "Geral"  },
-  { id: "PORTAL", label: "Portal" },
-  { id: "NUMITA", label: "Numita" },
+// ── Itens da barra principal ──────────────────────────────────────────────────
+
+const BAR_LEFT: NavItem[] = [
+  { href: "/",               label: "Hub",    icon: Home     },
+  { href: "/atlas",          label: "Atlas",  icon: BookOpen },
+  { href: "/world",          label: "Mundo",  icon: Globe2   },
 ]
 
-type NavItem = { href: string; label: string }
-
-const GERAL_CORE: NavItem[] = [
-  { href: "/",       label: "Hub"    },
-  { href: "/atlas",  label: "Atlas"  },
-  { href: "/social", label: "Social" },
-]
-const GERAL_LEFT: NavItem[] = [
-  { href: "/world",          label: "World"   },
-  { href: "/portal/vilas",   label: "Vilas"   },
-  { href: "/portal/cultura", label: "Cultura" },
-]
-const GERAL_RIGHT: NavItem[] = [
-  { href: "/compass/diario",  label: "Diário"  },
-  { href: "/compass/notas",   label: "Notas"   },
-  { href: "/compass/metas",   label: "Metas"   },
-  { href: "/compass/estudos", label: "Estudos" },
+const BAR_RIGHT: NavItem[] = [
+  { href: "/compass/diario", label: "Diário", icon: BookHeart },
 ]
 
-const PORTAL_ITEMS: NavItem[] = [
-  { href: "/",               label: "Hub"     },
-  { href: "/world",          label: "World"   },
-  { href: "/portal/vilas",   label: "Vilas"   },
-  { href: "/portal/cultura", label: "Cultura" },
-  { href: "/social",         label: "Social"  },
-  { href: "/atlas",          label: "Atlas"   },
+// ── Itens do drawer ───────────────────────────────────────────────────────────
+
+type DrawerSection = {
+  label: string
+  items: NavItem[]
+}
+
+const DRAWER_NAV: DrawerSection[] = [
+  {
+    label: "Portal Solar",
+    items: [
+      { href: "/",               label: "Hub",       icon: Home      },
+      { href: "/world",          label: "Mundo",     icon: Globe2    },
+      { href: "/portal/vilas",   label: "Vilas",     icon: MapPin    },
+      { href: "/portal/cultura", label: "Cultura",   icon: Drama     },
+      { href: "/social",         label: "Social",    icon: Users     },
+      { href: "/monument",       label: "Monumento", icon: Landmark  },
+    ],
+  },
+  {
+    label: "Atlas",
+    items: [
+      { href: "/atlas",          label: "Atlas",     icon: BookOpen  },
+      { href: "/atlas/novo",     label: "Novo item", icon: Plus      },
+      { href: "/atlas/grafo",    label: "Grafo",     icon: GitBranch },
+    ],
+  },
+  {
+    label: "Compass",
+    items: [
+      { href: "/compass/diario",  label: "Diário",   icon: BookHeart     },
+      { href: "/compass/notas",   label: "Notas",    icon: StickyNote    },
+      { href: "/compass/metas",   label: "Metas",    icon: Target        },
+      { href: "/compass/estudos", label: "Estudos",  icon: GraduationCap },
+      { href: "/compass/mapa",    label: "Mapa",     icon: MapPin        },
+      { href: "/compass/perfil",  label: "Perfil",   icon: UserCircle    },
+    ],
+  },
 ]
 
-const NUMITA_ITEMS: NavItem[] = [
-  { href: "/compass/diario",  label: "Diário"  },
-  { href: "/compass/notas",   label: "Notas"   },
-  { href: "/compass/metas",   label: "Metas"   },
-  { href: "/compass/estudos", label: "Estudos" },
-  { href: "/compass/mapa",    label: "Mapa"    },
-  { href: "/compass/perfil",  label: "Perfil"  },
+// ── Modos de interface ────────────────────────────────────────────────────────
+
+type ModeOption = {
+  id:     InterfaceMode
+  label:  string
+  icon:   LucideIcon
+  hint:   string
+}
+
+const MODES: ModeOption[] = [
+  { id: "FOCUS",         label: "Foco",        icon: Pencil,    hint: "Editor limpo"              },
+  { id: "CONTEMPLATION", label: "Contemplação", icon: Eye,       hint: "Leitura imersiva"          },
+  { id: "ATLAS",         label: "Atlas",        icon: Layers,    hint: "Exploração completa"       },
+  { id: "PUBLIC",        label: "Público",      icon: Satellite, hint: "Visão de visitante"        },
 ]
 
-// ── Drawer ────────────────────────────────────────────────────────────────────
+// ── Barra principal — item ────────────────────────────────────────────────────
 
-const ALL_NAV = [
-  { href: "/",               label: "Hub",     section: "Portal Solar"   },
-  { href: "/world",          label: "World",   section: "Portal Solar"   },
-  { href: "/portal/vilas",   label: "Vilas",   section: "Portal Solar"   },
-  { href: "/portal/cultura", label: "Cultura", section: "Portal Solar"   },
-  { href: "/social",         label: "Social",  section: "Portal Solar"   },
-  { href: "/atlas",          label: "Atlas",   section: "Atlas"          },
-  { href: "/atlas/novo",     label: "Novo",    section: "Atlas"          },
-  { href: "/compass/diario", label: "Diário",  section: "Numita Compass" },
-  { href: "/compass/notas",  label: "Notas",   section: "Numita Compass" },
-  { href: "/compass/metas",  label: "Metas",   section: "Numita Compass" },
-  { href: "/compass/estudos",label: "Estudos", section: "Numita Compass" },
-  { href: "/compass/mapa",   label: "Mapa",    section: "Numita Compass" },
-  { href: "/compass/perfil", label: "Perfil",  section: "Numita Compass" },
-  { href: "/settings",       label: "Config",  section: "Sistema"        },
-]
-
-const DRAWER_SECTIONS = ["Portal Solar", "Atlas", "Numita Compass", "Sistema"]
-
-// ── NavTab ────────────────────────────────────────────────────────────────────
-
-function NavTab({ item, active }: { item: NavItem; active: boolean }) {
+function BarItem({ item, active }: { item: NavItem; active: boolean }) {
+  const Icon = item.icon
   return (
     <Link
       href={item.href}
-      className={`relative flex items-center justify-center flex-1 min-w-0 transition-all duration-200 px-2
-        ${active ? "text-solar-accent" : "text-solar-muted/45 hover:text-solar-text/70"}`}
+      title={item.label}
+      aria-label={item.label}
+      className={`
+        relative flex flex-col items-center justify-center gap-1 flex-1 min-w-0 h-full transition-colors
+        ${active ? "text-solar-accent" : "text-solar-muted/45 hover:text-solar-text/70"}
+      `}
     >
       {active && (
         <span
@@ -88,163 +108,279 @@ function NavTab({ item, active }: { item: NavItem; active: boolean }) {
           style={{ background: "rgb(var(--c-accent) / 0.6)" }}
         />
       )}
-      <span className="text-[11px] font-mono uppercase tracking-wide leading-none whitespace-nowrap">
+      <Icon size={16} strokeWidth={1.5} />
+      <span className="text-[8px] font-mono uppercase tracking-wider leading-none hidden sm:block">
         {item.label}
       </span>
     </Link>
   )
 }
 
-// ── Componente ────────────────────────────────────────────────────────────────
+// ── Drawer — item de navegação ────────────────────────────────────────────────
+
+function DrawerNavItem({
+  item,
+  active,
+  onClose,
+}: {
+  item:    NavItem
+  active:  boolean
+  onClose: () => void
+}) {
+  const Icon = item.icon
+  return (
+    <Link
+      href={item.href}
+      onClick={onClose}
+      className={`
+        flex flex-col items-center gap-2 py-4 rounded transition-colors
+        ${active
+          ? "text-solar-accent bg-solar-surface/30"
+          : "text-solar-muted/60 hover:text-solar-text hover:bg-solar-surface/20"
+        }
+      `}
+    >
+      <Icon size={18} strokeWidth={1.5} />
+      <span className="text-[9px] font-mono uppercase tracking-widest leading-none">
+        {item.label}
+      </span>
+    </Link>
+  )
+}
+
+// ── Componente principal ──────────────────────────────────────────────────────
 
 export function BottomNav() {
-  const pathname = usePathname()
-  const [open, setOpen]   = useState(false)
-  const [navSection, setNavSection] = useState<NavSection>("GERAL")
+  const pathname            = usePathname()
+  const [open, setOpen]     = useState(false)
+  const { mode, setMode }   = useSolarStore()
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href)
 
-  const cycleSection = () => {
-    const idx  = NAV_SECTIONS.findIndex((s) => s.id === navSection)
-    const next = NAV_SECTIONS[(idx + 1) % NAV_SECTIONS.length]
-    if (next) setNavSection(next.id)
+  const currentMode = MODES.find((m) => m.id === mode)
+
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" })
+    window.location.href = "/login"
+  }
+
+  const triggerSearch = () => {
+    window.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "k", metaKey: true, bubbles: true })
+    )
   }
 
   return (
     <>
-      {/* ── Drawer ───────────────────────────────────────────────────────── */}
+      {/* ── Drawer ───────────────────────────────────────────────────────────── */}
       {open && (
         <div
-          className="fixed inset-0 z-40 bg-solar-void/85"
+          className="fixed inset-0 z-40"
+          style={{ background: "rgb(var(--c-void) / 0.7)", backdropFilter: "blur(4px)" }}
           onClick={() => setOpen(false)}
         >
           <div
-            className="absolute bottom-28 left-1/2 -translate-x-1/2 w-[min(580px,calc(100vw-24px))] overflow-hidden"
+            className="absolute bottom-24 left-1/2 -translate-x-1/2 w-[min(640px,calc(100vw-24px))] overflow-hidden"
             style={{
-              background: "rgb(var(--c-deep) / 0.97)",
-              border: "1px solid rgb(var(--c-border) / 0.4)",
-              boxShadow: "0 -8px 40px rgb(0 0 0 / 0.5)",
+              background: "rgb(var(--c-deep) / 0.98)",
+              border:     "1px solid rgb(var(--c-border) / 0.4)",
+              boxShadow:  "0 -8px 48px rgb(0 0 0 / 0.4)",
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            {DRAWER_SECTIONS.map((section) => {
-              const items = ALL_NAV.filter((i) => i.section === section)
-              return (
-                <div key={section}>
-                  <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-solar-muted/40 px-6 pt-5 pb-2">
-                    {section}
-                  </p>
-                  <div className="grid grid-cols-4 border-t border-solar-border/10 sm:grid-cols-5">
-                    {items.map((item) => {
-                      const active = isActive(item.href)
-                      return (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          onClick={() => setOpen(false)}
-                          className={`flex items-center justify-center py-5 transition-colors border-b border-solar-border/10
-                            ${active ? "text-solar-accent" : "text-solar-muted/60 hover:text-solar-text"}`}
-                        >
-                          <span className="text-[11px] font-mono uppercase tracking-wide">{item.label}</span>
-                        </Link>
-                      )
-                    })}
-                  </div>
+
+            {/* Topo — busca + captura */}
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-solar-border/15">
+              <button
+                onClick={() => { triggerSearch(); setOpen(false) }}
+                className="flex-1 flex items-center gap-2 px-3 py-2 text-[11px] font-mono text-solar-muted/40 hover:text-solar-text/70 transition-colors border border-solar-border/20 hover:border-solar-border/40"
+              >
+                <Search size={11} strokeWidth={1.5} />
+                <span>Buscar</span>
+                <kbd className="ml-auto text-[8px] text-solar-muted/25 border border-solar-border/20 px-1 font-mono">⌘K</kbd>
+              </button>
+              <button
+                onClick={() => { openQuickCapture("nota"); setOpen(false) }}
+                className="flex items-center gap-1.5 px-3 py-2 text-[11px] font-mono text-solar-muted/40 hover:text-solar-text/70 transition-colors border border-solar-border/20 hover:border-solar-border/40"
+              >
+                <FileText size={11} strokeWidth={1.5} />
+                <span>Capturar</span>
+                <kbd className="ml-1 text-[8px] text-solar-muted/25 border border-solar-border/20 px-1 font-mono">⌘N</kbd>
+              </button>
+              <button
+                onClick={() => setOpen(false)}
+                className="flex items-center justify-center w-8 h-8 text-solar-muted/40 hover:text-solar-text transition-colors"
+              >
+                <X size={14} strokeWidth={1.5} />
+              </button>
+            </div>
+
+            {/* Seções de navegação */}
+            {DRAWER_NAV.map((section) => (
+              <div key={section.label}>
+                <p className="text-[8px] font-mono uppercase tracking-[0.25em] text-solar-muted/30 px-5 pt-4 pb-1">
+                  {section.label}
+                </p>
+                <div
+                  className="grid border-t border-solar-border/10"
+                  style={{ gridTemplateColumns: `repeat(${Math.min(section.items.length, 6)}, 1fr)` }}
+                >
+                  {section.items.map((item) => (
+                    <DrawerNavItem
+                      key={item.href}
+                      item={item}
+                      active={isActive(item.href)}
+                      onClose={() => setOpen(false)}
+                    />
+                  ))}
                 </div>
-              )
-            })}
+              </div>
+            ))}
+
+            {/* Modo de interface */}
+            <div>
+              <p className="text-[8px] font-mono uppercase tracking-[0.25em] text-solar-muted/30 px-5 pt-4 pb-1">
+                Modo
+              </p>
+              <div className="grid grid-cols-4 border-t border-solar-border/10">
+                {MODES.map((m) => {
+                  const Icon    = m.icon
+                  const active  = mode === m.id
+                  return (
+                    <button
+                      key={m.id}
+                      onClick={() => { setMode(m.id); setOpen(false) }}
+                      title={m.hint}
+                      className={`
+                        flex flex-col items-center gap-2 py-4 transition-colors
+                        ${active
+                          ? "text-solar-accent bg-solar-surface/30"
+                          : "text-solar-muted/50 hover:text-solar-text hover:bg-solar-surface/20"
+                        }
+                      `}
+                    >
+                      <Icon size={18} strokeWidth={1.5} />
+                      <span className="text-[9px] font-mono uppercase tracking-widest leading-none">
+                        {m.label}
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* Sistema */}
+            <div className="flex items-center border-t border-solar-border/20 px-2 py-2 gap-1">
+              <Link
+                href="/sobre"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2 px-4 py-2.5 text-[10px] font-mono text-solar-muted/50 hover:text-solar-text transition-colors flex-1 justify-center"
+              >
+                <Info size={13} strokeWidth={1.5} />
+                <span>Sobre</span>
+              </Link>
+              <Link
+                href="/settings"
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-2 px-4 py-2.5 text-[10px] font-mono text-solar-muted/50 hover:text-solar-text transition-colors flex-1 justify-center"
+              >
+                <Settings2 size={13} strokeWidth={1.5} />
+                <span>Config</span>
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-4 py-2.5 text-[10px] font-mono text-solar-muted/40 hover:text-solar-text transition-colors flex-1 justify-center"
+              >
+                <LogOut size={13} strokeWidth={1.5} />
+                <span>Sair</span>
+              </button>
+            </div>
 
           </div>
         </div>
       )}
 
-      {/* ── Barra de navegação ───────────────────────────────────────────── */}
+      {/* ── Barra de navegação ────────────────────────────────────────────────── */}
       <nav
         className="fixed bottom-5 left-1/2 -translate-x-1/2 z-50"
-        style={{ width: "calc(100vw - 24px)" }}
+        style={{ width: "calc(100vw - 24px)", maxWidth: "720px" }}
       >
         <div
           className="flex items-stretch h-12 overflow-hidden"
           style={{
             background: "rgb(var(--c-deep))",
-            borderTop: "2px solid rgb(var(--c-accent) / 0.15)",
-            border: "1px solid rgb(var(--c-border) / 0.35)",
-            boxShadow: "0 4px 24px rgb(0 0 0 / 0.18)",
+            border:     "1px solid rgb(var(--c-border) / 0.35)",
+            boxShadow:  "0 4px 32px rgb(0 0 0 / 0.2)",
           }}
         >
-          {/* Itens — variam conforme seção */}
-          {navSection === "GERAL" && (
-            <>
-              <div className="hidden md:flex flex-1 min-w-0">
-                {GERAL_LEFT.map((item) => (
-                  <NavTab key={item.href} item={item} active={isActive(item.href)} />
-                ))}
-              </div>
-              <div className="hidden md:block w-px bg-solar-border/20 self-stretch my-3 flex-shrink-0" />
-              {GERAL_CORE.map((item) => (
-                <NavTab key={item.href} item={item} active={isActive(item.href)} />
-              ))}
-            </>
-          )}
-
-          {navSection === "PORTAL" && PORTAL_ITEMS.map((item) => (
-            <NavTab key={item.href} item={item} active={isActive(item.href)} />
+          {/* Esquerda — Portal + Atlas + Mundo */}
+          {BAR_LEFT.map((item) => (
+            <BarItem key={item.href} item={item} active={isActive(item.href)} />
           ))}
 
-          {navSection === "NUMITA" && NUMITA_ITEMS.map((item) => (
-            <NavTab key={item.href} item={item} active={isActive(item.href)} />
-          ))}
+          {/* Divisor */}
+          <span className="w-px bg-solar-border/20 self-stretch my-3 flex-shrink-0" />
 
-          {/* Botão criar */}
+          {/* Ação central — Criar novo */}
           <Link
             href="/atlas/novo"
-            className="flex items-center justify-center w-16 flex-shrink-0 transition-all duration-200"
-            style={{
-              color: "rgb(var(--c-accent) / 0.8)",
-              borderLeft: "1px solid rgb(var(--c-border) / 0.2)",
-              borderRight: "1px solid rgb(var(--c-border) / 0.2)",
-            }}
+            title="Novo item"
+            aria-label="Criar novo item"
+            className="flex flex-col items-center justify-center gap-1 w-14 flex-shrink-0 transition-colors"
+            style={{ color: "rgb(var(--c-accent) / 0.85)" }}
           >
-            <Plus size={22} strokeWidth={1.5} />
+            <Plus size={18} strokeWidth={1.5} />
+            <span className="text-[8px] font-mono uppercase tracking-wider leading-none hidden sm:block">
+              Novo
+            </span>
           </Link>
 
-          {/* Desktop extra direita — só no Geral */}
-          {navSection === "GERAL" && (
-            <>
-              <div className="hidden md:flex flex-1 min-w-0">
-                {GERAL_RIGHT.map((item) => (
-                  <NavTab key={item.href} item={item} active={isActive(item.href)} />
-                ))}
-              </div>
-              <div className="hidden md:block w-px bg-solar-border/20 self-stretch my-3 flex-shrink-0" />
-            </>
-          )}
+          {/* Divisor */}
+          <span className="w-px bg-solar-border/20 self-stretch my-3 flex-shrink-0" />
 
-          {/* Configuração */}
-          <button
-            onClick={() => setOpen((v) => !v)}
-            className={`flex items-center justify-center w-14 flex-shrink-0 transition-colors
-              ${open ? "text-solar-accent" : "text-solar-muted/70 hover:text-solar-text"}`}
-            title="Menu"
-          >
-            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
-              <line x1="4" y1="8"  x2="18" y2="8"  />
-              <line x1="4" y1="14" x2="18" y2="14" />
-            </svg>
-          </button>
+          {/* Direita — Compass */}
+          {BAR_RIGHT.map((item) => (
+            <BarItem key={item.href} item={item} active={isActive(item.href)} />
+          ))}
 
-          {/* Seção — cicla entre Geral / Portal / Numita */}
+          {/* Busca */}
           <button
-            onClick={cycleSection}
-            className="flex items-center justify-center w-14 flex-shrink-0 transition-colors text-solar-muted/50 hover:text-solar-text"
-            title={`Seção: ${NAV_SECTIONS.find((s) => s.id === navSection)?.label}`}
-            style={{ borderLeft: "1px solid rgb(var(--c-border) / 0.2)" }}
+            onClick={triggerSearch}
+            title="Buscar (⌘K)"
+            aria-label="Buscar"
+            className="flex flex-col items-center justify-center gap-1 flex-1 min-w-0 h-full text-solar-muted/45 hover:text-solar-text/70 transition-colors"
           >
-            <span className="text-[8px] font-mono uppercase tracking-widest leading-none" style={{ color: "rgb(var(--c-accent) / 0.6)" }}>
-              {NAV_SECTIONS.find((s) => s.id === navSection)?.label}
+            <Search size={16} strokeWidth={1.5} />
+            <span className="text-[8px] font-mono uppercase tracking-wider leading-none hidden sm:block">
+              Buscar
             </span>
           </button>
+
+          {/* Divisor */}
+          <span className="w-px bg-solar-border/20 self-stretch my-3 flex-shrink-0" />
+
+          {/* Menu / Drawer */}
+          <button
+            onClick={() => setOpen((v) => !v)}
+            title="Menu"
+            aria-label="Menu completo"
+            className={`
+              flex flex-col items-center justify-center gap-1 w-14 flex-shrink-0 transition-colors
+              ${open ? "text-solar-accent" : "text-solar-muted/50 hover:text-solar-text"}
+            `}
+          >
+            <AlignJustify size={16} strokeWidth={1.5} />
+            {currentMode && (
+              <span
+                className="text-[7px] font-mono uppercase tracking-wider leading-none hidden sm:block"
+                style={{ color: open ? "rgb(var(--c-accent) / 0.8)" : "rgb(var(--c-accent) / 0.4)" }}
+              >
+                {currentMode.label}
+              </span>
+            )}
+          </button>
+
         </div>
       </nav>
     </>

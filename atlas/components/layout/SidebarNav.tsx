@@ -7,7 +7,7 @@ import { useState } from "react"
 import {
   Home, Globe2, Drama, Users,
   BookOpen, BookHeart, FileText, Target, GraduationCap, MapPin,
-  Settings2, LogOut, Sun, ChevronRight, Search, Plus,
+  Settings2, LogOut, Sun, ChevronRight, Search, Plus, Info,
 } from "lucide-react"
 import { openQuickCapture } from "@/atlas/components/ui/QuickCapture"
 
@@ -194,6 +194,19 @@ export function SidebarNav() {
             </>
           )}
         </div>
+
+        {/* Sobre / Como foi feito */}
+        <Link
+          href="/sobre"
+          className={`flex items-center gap-3 px-4 py-2.5 text-[11px] font-mono transition-colors ${
+            pathname === "/sobre"
+              ? "text-solar-text border-l-2 border-solar-accent -ml-px pl-[15px]"
+              : "text-solar-text/50 hover:text-solar-text hover:bg-solar-surface/20 border-l-2 border-transparent -ml-px pl-[15px]"
+          }`}
+        >
+          <Info size={14} strokeWidth={1.5} className="flex-shrink-0" />
+          <span className="hidden lg:block">Sobre</span>
+        </Link>
 
         {/* Settings */}
         <Link

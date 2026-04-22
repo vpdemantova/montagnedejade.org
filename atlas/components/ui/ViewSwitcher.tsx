@@ -1,5 +1,10 @@
 "use client"
 
+import {
+  List, Table2, LayoutDashboard, LayoutGrid, Library, AlignLeft,
+  Users, Music, GraduationCap, Disc, BookOpen, Map,
+  type LucideIcon,
+} from "lucide-react"
 import { ViewType } from "@/atlas/types"
 
 type ViewSwitcherProps = {
@@ -7,31 +12,33 @@ type ViewSwitcherProps = {
   onChange: (view: string) => void
 }
 
-// Símbolo mono para cada view — sem dependência de lucide
-const VIEWS = [
-  // Vistas gerais
-  { value: ViewType.LIST,       label: "Lista",      symbol: "≡"  },
-  { value: ViewType.TABLE,      label: "Tabela",     symbol: "⊟"  },
-  { value: ViewType.KANBAN,     label: "Kanban",     symbol: "⫼"  },
-  { value: ViewType.GALLERY,    label: "Galeria",    symbol: "⊞"  },
-  { value: ViewType.SHELVES,    label: "Estante",    symbol: "▐▐" },
-  { value: ViewType.INDEX,      label: "Índice",     symbol: "⊳"  },
-  // Vistas especializadas
-  { value: ViewType.AUTORES,    label: "Autores",    symbol: "◉"  },
-  { value: ViewType.PARTITURAS, label: "Partituras", symbol: "♩"  },
-  { value: ViewType.CURSOS,     label: "Cursos",     symbol: "▶"  },
-  { value: ViewType.REPERTORIO, label: "Repertório", symbol: "♪"  },
-  { value: ViewType.READINGS,   label: "Leituras",   symbol: "▤"  },
-  { value: ViewType.ATLAS_MAP,  label: "Mapa",       symbol: "◎"  },
-] as const
+type ViewDef = {
+  value: string
+  label: string
+  icon:  LucideIcon
+}
 
-// Separador entre vistas gerais e especializadas
-const GENERAL_VIEWS   = VIEWS.slice(0, 6)
-const SPECIAL_VIEWS   = VIEWS.slice(6)
+const GENERAL_VIEWS: ViewDef[] = [
+  { value: ViewType.LIST,       label: "Lista",      icon: List            },
+  { value: ViewType.TABLE,      label: "Tabela",     icon: Table2          },
+  { value: ViewType.KANBAN,     label: "Kanban",     icon: LayoutDashboard },
+  { value: ViewType.GALLERY,    label: "Galeria",    icon: LayoutGrid      },
+  { value: ViewType.SHELVES,    label: "Estante",    icon: Library         },
+  { value: ViewType.INDEX,      label: "Índice",     icon: AlignLeft       },
+]
+
+const SPECIAL_VIEWS: ViewDef[] = [
+  { value: ViewType.AUTORES,    label: "Autores",    icon: Users           },
+  { value: ViewType.PARTITURAS, label: "Partituras", icon: Music           },
+  { value: ViewType.CURSOS,     label: "Cursos",     icon: GraduationCap   },
+  { value: ViewType.REPERTORIO, label: "Repertório", icon: Disc            },
+  { value: ViewType.READINGS,   label: "Leituras",   icon: BookOpen        },
+  { value: ViewType.ATLAS_MAP,  label: "Mapa",       icon: Map             },
+]
 
 export function ViewSwitcher({ current, onChange }: ViewSwitcherProps) {
   return (
-    <div className="flex items-center gap-0.5" role="group" aria-label="Alternar visualização">
+    <div className="flex items-center gap-0.5 flex-wrap" role="group" aria-label="Alternar visualização">
       {GENERAL_VIEWS.map((view) => (
         <ViewBtn key={view.value} view={view} active={current === view.value} onClick={onChange} />
       ))}
@@ -50,10 +57,11 @@ function ViewBtn({
   active,
   onClick,
 }: {
-  view:    { value: string; label: string; symbol: string }
+  view:    ViewDef
   active:  boolean
   onClick: (v: string) => void
 }) {
+  const Icon = view.icon
   return (
     <button
       onClick={() => onClick(view.value)}
@@ -61,15 +69,14 @@ function ViewBtn({
       aria-label={view.label}
       aria-pressed={active}
       className={`
-        flex items-center justify-center w-7 h-7 rounded-sm
-        font-mono text-[11px] transition-solar
+        flex items-center justify-center w-7 h-7 rounded-sm transition-colors
         ${active
           ? "text-solar-text bg-solar-surface border border-solar-border/60"
-          : "text-solar-muted/50 hover:text-solar-muted/90"
+          : "text-solar-muted/40 hover:text-solar-text/70"
         }
       `}
     >
-      {view.symbol}
+      <Icon size={13} strokeWidth={1.5} />
     </button>
   )
 }
