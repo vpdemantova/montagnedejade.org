@@ -14,7 +14,7 @@ export default async function DiarioPage() {
     <div className="relative min-h-screen">
       <div className="fixed inset-0 pointer-events-none z-0 bg-grid-aligned" />
 
-      <header className="relative z-10 border-b border-solar-border/30 px-4 md:px-12 pt-10 pb-6">
+      <header className="relative z-10 border-b border-solar-border/30 pt-10 pb-6">
         <div className="max-w-6xl mx-auto">
           <p className="editorial-label text-solar-muted/35 mb-3">COMPASS / DIÁRIO</p>
           <div className="flex items-end justify-between gap-6">
@@ -32,7 +32,7 @@ export default async function DiarioPage() {
         </div>
       </header>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-12 py-6">
+      <div className="relative z-10 max-w-6xl mx-auto py-6">
         <DiarioClient entries={entries} />
       </div>
     </div>

@@ -10,6 +10,7 @@ import {
   Settings2, LogOut, Sun, ChevronRight, Search, Plus, Info,
 } from "lucide-react"
 import { openQuickCapture } from "@/atlas/components/ui/QuickCapture"
+import { UI } from "@/portal.config"
 
 type NavItem = {
   key:   string
@@ -59,7 +60,7 @@ function NavRow({ item, isActive }: { item: NavItem; isActive: boolean }) {
         }
       `}
     >
-      <span className="flex-shrink-0 opacity-70">{item.icon}</span>
+      {UI.SHOW_ICONS && <span className="flex-shrink-0 opacity-70">{item.icon}</span>}
       <span className="hidden lg:block truncate">{item.label}</span>
     </Link>
   )
@@ -106,7 +107,7 @@ export function SidebarNav() {
         href="/"
         className="flex items-center gap-2.5 px-4 h-[52px] border-b border-solar-border/20 flex-shrink-0 group"
       >
-        <Sun size={14} strokeWidth={1.5} className="text-solar-accent/70 group-hover:text-solar-accent transition-colors flex-shrink-0" />
+        {UI.SHOW_ICONS && <Sun size={14} strokeWidth={1.5} className="text-solar-accent/70 group-hover:text-solar-accent transition-colors flex-shrink-0" />}
         <span className="hidden lg:block text-[11px] font-mono uppercase tracking-[0.15em] text-solar-text/70 group-hover:text-solar-text transition-colors">
           Portal Solar
         </span>
@@ -121,7 +122,7 @@ export function SidebarNav() {
           }}
           className="flex items-center gap-3 w-full px-4 py-2.5 text-[10px] font-mono text-solar-text/35 hover:text-solar-text/60 hover:bg-solar-surface/20 transition-colors border-b border-solar-border/10"
         >
-          <Search size={12} strokeWidth={1.5} className="flex-shrink-0" />
+          {UI.SHOW_ICONS && <Search size={12} strokeWidth={1.5} className="flex-shrink-0" />}
           <span className="hidden lg:block flex-1 text-left">Buscar</span>
           <kbd className="hidden lg:block text-[7px] text-solar-muted/25 border border-solar-border/20 px-1 py-0.5 font-mono">⌘K</kbd>
         </button>
@@ -129,7 +130,7 @@ export function SidebarNav() {
           onClick={() => openQuickCapture("nota")}
           className="flex items-center gap-3 w-full px-4 py-2.5 text-[10px] font-mono text-solar-text/35 hover:text-solar-text/60 hover:bg-solar-surface/20 transition-colors"
         >
-          <Plus size={12} strokeWidth={1.5} className="flex-shrink-0" />
+          {UI.SHOW_ICONS && <Plus size={12} strokeWidth={1.5} className="flex-shrink-0" />}
           <span className="hidden lg:block flex-1 text-left">Capturar</span>
           <kbd className="hidden lg:block text-[7px] text-solar-muted/25 border border-solar-border/20 px-1 py-0.5 font-mono">⌘N</kbd>
         </button>
@@ -204,7 +205,7 @@ export function SidebarNav() {
               : "text-solar-text/50 hover:text-solar-text hover:bg-solar-surface/20 border-l-2 border-transparent -ml-px pl-[15px]"
           }`}
         >
-          <Info size={14} strokeWidth={1.5} className="flex-shrink-0" />
+          {UI.SHOW_ICONS && <Info size={14} strokeWidth={1.5} className="flex-shrink-0" />}
           <span className="hidden lg:block">Sobre</span>
         </Link>
 
@@ -217,7 +218,7 @@ export function SidebarNav() {
               : "text-solar-text/50 hover:text-solar-text hover:bg-solar-surface/20 border-l-2 border-transparent -ml-px pl-[15px]"
           }`}
         >
-          <Settings2 size={14} strokeWidth={1.5} className="flex-shrink-0" />
+          {UI.SHOW_ICONS && <Settings2 size={14} strokeWidth={1.5} className="flex-shrink-0" />}
           <span className="hidden lg:block">Config</span>
         </Link>
 
@@ -229,7 +230,7 @@ export function SidebarNav() {
           }}
           className="w-full flex items-center gap-3 px-4 py-2.5 text-[11px] font-mono text-solar-text/40 hover:text-solar-text hover:bg-solar-surface/20 transition-colors border-l-2 border-transparent -ml-px pl-[15px]"
         >
-          <LogOut size={14} strokeWidth={1.5} className="flex-shrink-0" />
+          {UI.SHOW_ICONS && <LogOut size={14} strokeWidth={1.5} className="flex-shrink-0" />}
           <span className="hidden lg:block">Sair</span>
         </button>
 

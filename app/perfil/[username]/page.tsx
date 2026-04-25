@@ -120,7 +120,7 @@ export default function ProfilePage() {
       </div>
 
       {/* Avatar + info */}
-      <div className="max-w-2xl mx-auto px-4 md:px-6">
+      <div className="max-w-2xl mx-auto">
         <div className="relative -mt-12 mb-6 flex items-end justify-between">
           {/* Avatar */}
           <div
@@ -291,7 +291,7 @@ export default function ProfilePage() {
               <div className="flex justify-end">
                 <Link
                   href="/social/tokens"
-                  className="text-[9px] font-mono uppercase tracking-widest px-3 py-1.5 border border-solar-border/30 text-solar-muted/50 hover:text-solar-accent hover:border-solar-accent/30 transition-colors"
+                  className="text-[9px] font-mono uppercase tracking-widest py-1.5 border border-solar-border/30 text-solar-muted/50 hover:text-solar-accent hover:border-solar-accent/30 transition-colors"
                 >
                   Gerenciar coleção →
                 </Link>

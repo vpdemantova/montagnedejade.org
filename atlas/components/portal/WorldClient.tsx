@@ -5,6 +5,7 @@ import dynamic from "next/dynamic"
 import { motion, AnimatePresence } from "framer-motion"
 import type { AtlasItemWithTags } from "@/atlas/types"
 import { ItemDrawer } from "@/atlas/components/layout/ItemDrawer"
+import { CoverImage } from "@/atlas/components/ui/CoverImage"
 
 // ── Lazy map (react-simple-maps — browser only) ───────────────────────────────
 
@@ -48,7 +49,7 @@ function ViewSwitcher({ current, onChange }: { current: ViewId; onChange: (v: Vi
           onClick={() => onChange(v.id)}
           title={v.label}
           className={`
-            flex items-center gap-1.5 px-3 py-1.5 text-[9px] font-mono uppercase tracking-widest
+            flex items-center gap-1.5 py-1.5 text-[9px] font-mono uppercase tracking-widest
             transition-all duration-150
             ${current === v.id
               ? "bg-solar-surface text-solar-amber border-r border-solar-border/30 last:border-r-0"
@@ -85,21 +86,15 @@ function GalleryCard({ item, onClick }: { item: AtlasItemWithTags; onClick: () =
       "
     >
       {/* Image / placeholder */}
-      <div className="aspect-[4/3] overflow-hidden bg-solar-surface/20 relative">
-        {cover ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={cover}
-            alt={item.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <span className="text-solar-muted/15 font-mono text-3xl">◼</span>
-          </div>
-        )}
+      <div className="aspect-[4/3] overflow-hidden relative">
+        <CoverImage
+          src={cover}
+          alt={item.title}
+          name={item.title}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        />
         {/* Type badge */}
-        <span className="absolute top-2 left-2 text-[7px] font-mono uppercase tracking-widest px-1.5 py-0.5 bg-solar-deep/80 text-solar-amber/70 border border-solar-amber/20">
+        <span className="absolute top-2 left-2 text-[7px] font-mono uppercase tracking-widest py-0.5 bg-solar-deep/80 text-solar-amber/70 border border-solar-amber/20">
           {item.type}
         </span>
       </div>
@@ -117,7 +112,7 @@ function GalleryCard({ item, onClick }: { item: AtlasItemWithTags; onClick: () =
         {item.tags.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-2">
             {item.tags.slice(0, 3).map((t) => (
-              <span key={t.id} className="text-[7px] font-mono text-solar-muted/35 border border-solar-border/20 px-1 py-0.5 uppercase">
+              <span key={t.id} className="text-[7px] font-mono text-solar-muted/35 border border-solar-border/20 py-0.5 uppercase">
                 {t.name}
               </span>
             ))}
@@ -237,7 +232,7 @@ export function WorldClient({ items }: { items: AtlasItemWithTags[] }) {
 
       {/* Header */}
       <header className="page-header relative z-10 border-b border-solar-border/40 pt-12 pb-0">
-        <div className="max-w-6xl mx-auto px-4 sm:px-8 md:px-12">
+        <div className="max-w-6xl mx-auto">
           <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-solar-muted/70 mb-3">
             Portal Solar · Mundo
           </p>
@@ -258,7 +253,7 @@ export function WorldClient({ items }: { items: AtlasItemWithTags[] }) {
                 onChange={(e) => setQuery(e.target.value)}
                 className="
                   bg-transparent border-b border-solar-border/50
-                  px-0 py-1 text-xs font-mono text-solar-text
+                  py-1 text-xs font-mono text-solar-text
                   placeholder:text-solar-muted/55
                   focus:outline-none focus:border-solar-amber/40
                   transition-all duration-200 w-36
@@ -271,7 +266,7 @@ export function WorldClient({ items }: { items: AtlasItemWithTags[] }) {
       </header>
 
       {/* Content */}
-      <main className="relative z-10 max-w-6xl mx-auto px-4 sm:px-8 md:px-12 py-8">
+      <main className="relative z-10 max-w-6xl mx-auto py-8">
         <AnimatePresence mode="wait">
           <motion.div
             key={view}

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { AnimatePresence, motion } from "framer-motion"
 import { X, Zap, BookOpen, FileText, Target, BookHeart } from "lucide-react"
+import { UI } from "@/portal.config"
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -206,9 +207,9 @@ export function QuickCapture() {
           />
 
           {/* Panel */}
+          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[201]" style={{ width: "min(640px, calc(100vw - 24px))" }}>
           <motion.div
-            className="fixed top-[20vh] left-1/2 -translate-x-1/2 z-[201] w-full max-w-xl"
-            initial={{ opacity: 0, y: -12 }}
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
@@ -227,7 +228,7 @@ export function QuickCapture() {
                         : "text-solar-muted/35 hover:text-solar-muted/60"
                     }`}
                   >
-                    <span className="hidden sm:block">{m.icon}</span>
+                    {UI.SHOW_ICONS && <span className="hidden sm:block">{m.icon}</span>}
                     <span>{m.label}</span>
                     <span className="hidden sm:block text-solar-muted/20 text-[7px]">⌘{i + 1}</span>
                   </button>
@@ -236,7 +237,7 @@ export function QuickCapture() {
                   onClick={close}
                   className="flex items-center justify-center w-10 flex-shrink-0 text-solar-muted/30 hover:text-solar-muted/60 transition-colors border-l border-solar-border/20"
                 >
-                  <X size={14} strokeWidth={1.5} />
+                  {UI.SHOW_ICONS && <X size={14} strokeWidth={1.5} />}
                 </button>
               </div>
 
@@ -337,6 +338,7 @@ export function QuickCapture() {
 
             </div>
           </motion.div>
+          </div>
         </>
       )}
     </AnimatePresence>
@@ -349,7 +351,7 @@ export function QuickCaptureButton() {
   return (
     <button
       onClick={() => openQuickCapture("nota")}
-      className="fixed bottom-24 right-5 z-[150] md:bottom-8 md:right-8 w-11 h-11 bg-solar-text text-solar-void flex items-center justify-center shadow-lg hover:opacity-90 active:scale-95 transition-all"
+      className="fixed bottom-8 right-6 z-[150] md:hidden w-11 h-11 bg-solar-text text-solar-void flex items-center justify-center shadow-lg hover:opacity-90 active:scale-95 transition-all"
       title="Captura rápida (⌘N)"
       aria-label="Nova nota rápida"
     >

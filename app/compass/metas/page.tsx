@@ -86,7 +86,7 @@ function GoalCard({
           <div className="flex items-center gap-2">
             <button
               onClick={cycleStatus}
-              className={`text-[8px] font-mono px-2 py-0.5 border uppercase tracking-widest transition-colors ${STATUS_COLOR[goal.status] ?? ""}`}
+              className={`text-[8px] font-mono py-0.5 border uppercase tracking-widest transition-colors ${STATUS_COLOR[goal.status] ?? ""}`}
             >
               {STATUS_LABEL[goal.status] ?? goal.status}
             </button>
@@ -111,7 +111,7 @@ function GoalCard({
             className="flex-1 accent-solar-accent"
           />
           <span className="text-[10px] font-mono text-solar-accent w-10">{progress}%</span>
-          <button onClick={saveProgress} className="text-[9px] font-mono px-3 py-1 border border-solar-accent/40 text-solar-accent hover:bg-solar-accent/10 transition-colors">
+          <button onClick={saveProgress} className="text-[9px] font-mono py-1 border border-solar-accent/40 text-solar-accent hover:bg-solar-accent/10 transition-colors">
             OK
           </button>
         </div>
@@ -169,7 +169,7 @@ export default function MetasPage() {
     <div className="relative min-h-screen">
       <div className="fixed inset-0 pointer-events-none z-0 bg-grid-aligned" />
 
-      <header className="relative z-10 border-b border-solar-border/30 px-4 md:px-12 pt-10 pb-6">
+      <header className="relative z-10 border-b border-solar-border/30 pt-10 pb-6">
         <div className="max-w-4xl mx-auto">
           <p className="editorial-label text-solar-muted/35 mb-3">COMPASS / METAS</p>
           <div className="flex items-end justify-between gap-6">
@@ -179,7 +179,7 @@ export default function MetasPage() {
             </div>
             <button
               onClick={() => setShowForm((o) => !o)}
-              className="flex-shrink-0 px-4 py-2 bg-solar-text text-solar-void text-[9px] font-mono uppercase tracking-[0.2em] hover:opacity-80 transition-opacity"
+              className="flex-shrink-0 py-2 bg-solar-text text-solar-void text-[9px] font-mono uppercase tracking-[0.2em] hover:opacity-80 transition-opacity"
             >
               + Meta
             </button>
@@ -202,7 +202,7 @@ export default function MetasPage() {
         </div>
       </header>
 
-      <main className="relative z-10 max-w-4xl mx-auto px-4 md:px-12 py-6 space-y-6">
+      <main className="relative z-10 max-w-4xl mx-auto py-6 space-y-6">
 
         {/* Add form */}
         {showForm && (
@@ -212,20 +212,20 @@ export default function MetasPage() {
               placeholder="O que você quer alcançar? *"
               value={form.title}
               onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-              className="w-full bg-transparent border border-solar-border/30 px-3 py-2 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-solar-accent/40"
+              className="w-full bg-transparent border border-solar-border/30 py-2 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-solar-accent/40"
             />
             <textarea
               placeholder="Descrição (opcional)"
               rows={2}
               value={form.description}
               onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-              className="w-full bg-transparent border border-solar-border/30 px-3 py-2 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-solar-accent/40 resize-none"
+              className="w-full bg-transparent border border-solar-border/30 py-2 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-solar-accent/40 resize-none"
             />
             <div className="flex gap-3">
               <select
                 value={form.horizon}
                 onChange={(e) => setForm((f) => ({ ...f, horizon: e.target.value }))}
-                className="flex-1 bg-solar-deep border border-solar-border/30 px-3 py-2 text-[11px] font-mono text-solar-text focus:outline-none focus:border-solar-accent/40"
+                className="flex-1 bg-solar-deep border border-solar-border/30 py-2 text-[11px] font-mono text-solar-text focus:outline-none focus:border-solar-accent/40"
               >
                 <option value="short">Curto prazo</option>
                 <option value="long">Longo prazo</option>
@@ -234,7 +234,7 @@ export default function MetasPage() {
                 type="date"
                 value={form.dueDate}
                 onChange={(e) => setForm((f) => ({ ...f, dueDate: e.target.value }))}
-                className="flex-1 bg-solar-deep border border-solar-border/30 px-3 py-2 text-[11px] font-mono text-solar-text focus:outline-none focus:border-solar-accent/40"
+                className="flex-1 bg-solar-deep border border-solar-border/30 py-2 text-[11px] font-mono text-solar-text focus:outline-none focus:border-solar-accent/40"
               />
             </div>
             <div className="flex gap-2">

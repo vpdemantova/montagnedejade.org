@@ -169,14 +169,14 @@ export default function SocialPage() {
 
   return (
     <div className="min-h-screen pb-24">
-      <header className="border-b border-solar-border/30 px-4 md:px-6 pt-10 pb-6">
+      <header className="border-b border-solar-border/30 pt-10 pb-6">
         <div className="max-w-2xl mx-auto">
           <p className="editorial-label text-solar-muted/35 mb-3">PORTAL SOLAR / REDE</p>
           <h1 className="page-hero text-solar-text leading-none">REDE<br/>SOLAR</h1>
         </div>
       </header>
 
-      <div className="max-w-2xl mx-auto px-4 md:px-6 py-6 space-y-6">
+      <div className="max-w-2xl mx-auto py-6 space-y-6">
 
         {/* Compose */}
         {me && (
@@ -344,7 +344,7 @@ export default function SocialPage() {
                 {me && (
                   <Link
                     href={`/perfil/${me.username}`}
-                    className="inline-block mt-2 px-4 py-2 text-[10px] font-mono uppercase tracking-widest border border-solar-accent/30 text-solar-accent hover:bg-solar-accent/10 transition-colors"
+                    className="inline-block mt-2 py-2 text-[10px] font-mono uppercase tracking-widest border border-solar-accent/30 text-solar-accent hover:bg-solar-accent/10 transition-colors"
                   >
                     Meu perfil →
                   </Link>
@@ -374,7 +374,7 @@ export default function SocialPage() {
                   {u.bio && <p className="text-xs text-solar-muted/60 mt-0.5 line-clamp-1">{u.bio}</p>}
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <div className="text-[9px] font-mono px-2 py-1 border border-solar-border/25 text-solar-muted/50">
+                  <div className="text-[9px] font-mono py-1 border border-solar-border/25 text-solar-muted/50">
                     {u.commonInterests} em comum
                   </div>
                   <p className="text-[8px] font-mono text-solar-muted/30 mt-1">{u._count.followers} seguidores</p>

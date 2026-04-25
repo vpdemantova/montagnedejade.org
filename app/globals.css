@@ -44,20 +44,41 @@
   --bg-pattern-pos: var(--grid-col-offset) 0;
 }
 
-/* ── EDITORIAL — Preto e Branco Puro (tema padrão) ── */
+/* ── PERGAMINHO — Papel quente com contraste forte (tema padrão) ── */
+[data-theme="pergaminho"] {
+  --c-void:      248 243 230;
+  --c-deep:      238 230 212;
+  --c-surface:   224 214 194;
+  --c-border:     42  30  12;
+  --c-text:        8   5   2;
+  --c-muted:      62  46  24;
+  --c-accent:    118  72  14;
+  --c-accent-lt: 158 104  38;
+  --c-teal:       38  90  58;
+  --c-teal-lt:    58 118  80;
+  --grain-opacity: 0.05;
+  --grid-color: rgba(42, 30, 12, 0.08);
+  --bg-pattern-image:
+    linear-gradient(to right, rgba(42, 30, 12, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(42, 30, 12, 0.04) 1px, transparent 1px);
+  --bg-pattern-size: 40px 40px;
+  --bg-pattern-pos: 0 0;
+}
+
+/* ── EDITORIAL — Preto e Branco Puro ── */
 [data-theme="editorial"] {
   --c-void:       252 252 250;
   --c-deep:       244 242 238;
-  --c-surface:    232 229 224;
-  --c-border:     165 160 153;
+  --c-surface:    228 224 218;
+  --c-border:     140 133 124;
   --c-text:        12  10   8;
-  --c-muted:       95  90  85;
+  --c-muted:       52  48  43;
   --c-accent:      12  10   8;
   --c-accent-lt:   50  48  45;
   --c-teal:        12  10   8;
   --c-teal-lt:     70  68  65;
-  --grain-opacity: 0.025;
-  --grid-color: rgba(12, 10, 8, 0.04);
+  --grain-opacity: 0.03;
+  --grid-color: rgba(12, 10, 8, 0.05);
   --bg-pattern-image:
     linear-gradient(rgb(12 10 8 / 0.05) 1px, transparent 1px),
     linear-gradient(90deg, rgb(12 10 8 / 0.05) 1px, transparent 1px);
@@ -832,6 +853,16 @@
   background-image: var(--bg-pattern-image);
   background-size: var(--bg-pattern-size);
   background-position: var(--bg-pattern-pos);
+}
+
+/* ── Ocultar headers quando NAV.SHOW_PAGE_HEADERS = false ───────────────────
+   Ativado via data-hide-headers em ModeAwareShell.
+   Oculta títulos grandes de página; o contexto fica no breadcrumb + URL.      */
+[data-hide-headers] .page-hero,
+[data-hide-headers] .page-hero-sm,
+[data-hide-headers] .page-hero-xl,
+[data-hide-headers] h1.page-hero {
+  display: none;
 }
 
 /* ── Tipografia editorial ─────────────────────────────────────────────────── */

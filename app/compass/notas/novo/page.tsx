@@ -58,7 +58,7 @@ export default function NovaNotaPage() {
       <div className="fixed inset-0 pointer-events-none z-0 bg-grid-aligned" />
 
       <header className="page-header relative z-10 border-b border-solar-border/40 pt-12 pb-6">
-        <div className="max-w-4xl mx-auto px-4 md:px-12">
+        <div className="max-w-4xl mx-auto">
           <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-compass-neon-dim/60 mb-3">
             Numita Compass · Notas · Nova
           </p>
@@ -68,7 +68,7 @@ export default function NovaNotaPage() {
         </div>
       </header>
 
-      <div className="relative z-10 max-w-4xl mx-auto px-4 md:px-12 py-10 space-y-8">
+      <div className="relative z-10 max-w-4xl mx-auto py-10 space-y-8">
 
         {/* Mode selector */}
         <div>
@@ -78,7 +78,7 @@ export default function NovaNotaPage() {
               <button
                 key={m.id}
                 onClick={() => setMode(m.id)}
-                className={`flex-1 px-4 py-3 border text-left transition-solar
+                className={`flex-1 py-3 border text-left transition-solar
                   ${mode === m.id
                     ? "border-compass-neon/50 bg-compass-neon/8"
                     : "border-solar-border/30 hover:border-solar-border/50"}`}
@@ -126,7 +126,7 @@ export default function NovaNotaPage() {
 
         {/* Error */}
         {error && (
-          <p className="text-[10px] font-mono text-red-400/80 border border-red-400/20 px-3 py-2">
+          <p className="text-[10px] font-mono text-red-400/80 border border-red-400/20 py-2">
             {error}
           </p>
         )}

@@ -1,6 +1,7 @@
 "use client"
 
 import { Plus } from "lucide-react"
+import { UI } from "@/portal.config"
 
 type FABProps = {
   onClick: () => void
@@ -25,7 +26,7 @@ export function FAB({ onClick, label = "Novo item" }: FABProps) {
         group
       "
     >
-      <Plus size={20} strokeWidth={2.5} />
+      {UI.SHOW_ICONS && <Plus size={20} strokeWidth={2.5} />}
 
       {/* Tooltip */}
       <span

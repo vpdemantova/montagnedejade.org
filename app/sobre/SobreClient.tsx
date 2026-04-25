@@ -32,7 +32,7 @@ export function SobreClient({ docs }: { docs: Doc[] }) {
             key={doc.key}
             onClick={() => setActive(doc.key)}
             className={`
-              px-5 py-3 text-[11px] font-mono uppercase tracking-widest transition-colors
+              py-3 text-[11px] font-mono uppercase tracking-widest transition-colors
               ${active === doc.key
                 ? "text-solar-text border-b-2 border-solar-accent -mb-px"
                 : "text-solar-text/35 hover:text-solar-text/60"
@@ -46,7 +46,7 @@ export function SobreClient({ docs }: { docs: Doc[] }) {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-2xl mx-auto px-6 py-10">
+        <div className="max-w-2xl mx-auto py-10">
           {current && <MarkdownRender content={current.content} />}
         </div>
       </div>

@@ -56,7 +56,7 @@ function NoteCard({
         </h3>
         <div className="flex items-center gap-1.5 flex-shrink-0 mt-0.5">
           {badge && (
-            <span className="text-[7px] font-mono px-1 py-0.5 border border-compass-neon/20 text-compass-neon/50 uppercase tracking-widest">
+            <span className="text-[7px] font-mono py-0.5 border border-compass-neon/20 text-compass-neon/50 uppercase tracking-widest">
               {badge}
             </span>
           )}
@@ -82,7 +82,7 @@ function NoteCard({
             <button
               key={tag.id}
               onClick={() => onTagClick(tag.name)}
-              className="text-[8px] font-mono px-1.5 py-0.5 border border-solar-border/30 text-solar-muted/50 uppercase tracking-widest hover:border-compass-neon/30 hover:text-compass-neon/60 transition-solar"
+              className="text-[8px] font-mono py-0.5 border border-solar-border/30 text-solar-muted/50 uppercase tracking-widest hover:border-compass-neon/30 hover:text-compass-neon/60 transition-solar"
             >
               {tag.name}
             </button>
@@ -162,7 +162,7 @@ export default function NotasPage() {
     <div className="relative min-h-screen">
       <div className="fixed inset-0 pointer-events-none z-0 bg-grid-aligned" />
 
-      <header className="relative z-10 border-b border-solar-border/30 px-4 md:px-12 pt-10 pb-6">
+      <header className="relative z-10 border-b border-solar-border/30 pt-10 pb-6">
         <div className="max-w-6xl mx-auto">
           <p className="editorial-label text-solar-muted/35 mb-3">COMPASS / NOTAS</p>
           <div className="flex items-end justify-between gap-6">
@@ -188,7 +188,7 @@ export default function NotasPage() {
         </div>
       </header>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-12 py-6 space-y-3">
+      <div className="relative z-10 max-w-6xl mx-auto py-6 space-y-3">
 
         {/* Filter bar */}
         <div className="flex items-center justify-between gap-4">
@@ -213,7 +213,7 @@ export default function NotasPage() {
           <div className="relative">
             <button
               onClick={() => setShowSort((v) => !v)}
-              className="flex items-center gap-1.5 px-3 py-1.5 border border-solar-border/20 text-[9px] font-mono uppercase tracking-widest text-solar-muted/50 hover:text-solar-text hover:border-solar-border/40 transition-solar"
+              className="flex items-center gap-1.5 py-1.5 border border-solar-border/20 text-[9px] font-mono uppercase tracking-widest text-solar-muted/50 hover:text-solar-text hover:border-solar-border/40 transition-solar"
             >
               {SORT_OPTIONS.find((o) => o.id === sortBy)?.label}
               <span className="text-[8px] opacity-60">▾</span>
@@ -224,7 +224,7 @@ export default function NotasPage() {
                   <button
                     key={opt.id}
                     onClick={() => { setSortBy(opt.id); setShowSort(false) }}
-                    className={`w-full text-left px-3 py-2 text-[9px] font-mono uppercase tracking-widest transition-solar
+                    className={`w-full text-left py-2 text-[9px] font-mono uppercase tracking-widest transition-solar
                       ${sortBy === opt.id ? "text-compass-neon" : "text-solar-muted/60 hover:text-solar-text"}`}
                   >
                     {opt.label}
@@ -240,7 +240,7 @@ export default function NotasPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setActiveTag(null)}
-              className="flex items-center gap-1.5 px-2.5 py-1 border border-compass-neon/30 bg-compass-neon/6 text-[9px] font-mono text-compass-neon/70 hover:bg-compass-neon/12 transition-solar"
+              className="flex items-center gap-1.5 py-1 border border-compass-neon/30 bg-compass-neon/6 text-[9px] font-mono text-compass-neon/70 hover:bg-compass-neon/12 transition-solar"
             >
               <span className="opacity-60">#</span>
               {activeTag}
@@ -255,7 +255,7 @@ export default function NotasPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Buscar notas…"
-            className="w-full bg-transparent border border-solar-border/30 px-4 py-2.5 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-compass-neon/40 transition-solar"
+            className="w-full bg-transparent border border-solar-border/30 py-2.5 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-compass-neon/40 transition-solar"
           />
           {search && (
             <button

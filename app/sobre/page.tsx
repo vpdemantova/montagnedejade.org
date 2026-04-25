@@ -4,6 +4,7 @@ import matter from "gray-matter"
 import Link from "next/link"
 import { ArrowLeft, Sun } from "lucide-react"
 import { SobreClient } from "./SobreClient"
+import { UI } from "@/portal.config"
 
 async function readDoc(filename: string) {
   const raw = await readFile(join(process.cwd(), "docs", filename), "utf-8")
@@ -33,12 +34,12 @@ export default async function SobrePage() {
           href="/"
           className="flex items-center gap-1.5 text-solar-text/40 hover:text-solar-text transition-colors text-[11px] font-mono"
         >
-          <ArrowLeft size={12} strokeWidth={1.5} />
+          {UI.SHOW_ICONS && <ArrowLeft size={12} strokeWidth={1.5} />}
           <span className="hidden sm:block">Voltar</span>
         </Link>
 
         <div className="flex-1 flex items-center justify-center gap-2">
-          <Sun size={13} strokeWidth={1.5} className="text-solar-accent/60" />
+          {UI.SHOW_ICONS && <Sun size={13} strokeWidth={1.5} className="text-solar-accent/60" />}
           <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-solar-text/50">
             Portal Solar
           </span>

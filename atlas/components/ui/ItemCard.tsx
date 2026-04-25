@@ -2,6 +2,7 @@
 
 import type { AtlasItemWithTags } from "@/atlas/types"
 import { AREA_LABELS, TYPE_LABELS } from "@/atlas/types"
+import { CoverImage } from "@/atlas/components/ui/CoverImage"
 
 type ItemCardProps = {
   item:     AtlasItemWithTags
@@ -26,7 +27,7 @@ function shortDate(d: Date | string) {
 
 // ── Grid variant ──────────────────────────────────────────────────────────────
 
-function GridCard({ item, onClick, index }: { item: AtlasItemWithTags; onClick?: (item: AtlasItemWithTags) => void; index?: number }) {
+function GridCard({ item, onClick }: { item: AtlasItemWithTags; onClick?: (item: AtlasItemWithTags) => void }) {
   const areaLabel = AREA_LABELS[item.area as keyof typeof AREA_LABELS] ?? item.area
   const typeLabel = TYPE_LABELS[item.type as keyof typeof TYPE_LABELS] ?? item.type
   const code      = itemCode(item.id)
@@ -38,17 +39,15 @@ function GridCard({ item, onClick, index }: { item: AtlasItemWithTags; onClick?:
       onClick={() => onClick?.(item)}
       className="group border-b border-solar-border/30 py-5 cursor-pointer hover:bg-solar-surface/20 transition-colors duration-150"
     >
-      {/* Cover image full-bleed */}
-      {imageUrl && (
-        <div className="aspect-[3/1] overflow-hidden mb-3 bg-solar-surface/20">
-          <img
-            src={imageUrl}
-            alt={item.title}
-            className="w-full h-full object-cover opacity-75 group-hover:opacity-90 transition-opacity duration-200"
-            loading="lazy"
-          />
-        </div>
-      )}
+      {/* Cover image / placeholder generativo */}
+      <div className="aspect-[3/1] overflow-hidden mb-3">
+        <CoverImage
+          src={imageUrl}
+          alt={item.title}
+          name={item.title}
+          className="w-full h-full object-cover opacity-75 group-hover:opacity-90 transition-opacity duration-200"
+        />
+      </div>
 
       {/* Meta row */}
       <div className="flex items-center justify-between mb-2">
@@ -131,5 +130,5 @@ export function ItemCard({ item, onClick, variant = "grid", index }: ItemCardPro
   if (variant === "list") {
     return <ListRow item={item} onClick={onClick} index={index} />
   }
-  return <GridCard item={item} onClick={onClick} index={index} />
+  return <GridCard item={item} onClick={onClick} />
 }

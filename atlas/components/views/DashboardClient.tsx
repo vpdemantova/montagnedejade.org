@@ -172,7 +172,7 @@ function DiscoveryCard({ item }: { item: AtlasItemWithTags }) {
         {item.tags.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-3">
             {item.tags.slice(0, 3).map((tag) => (
-              <span key={tag.id} className="text-[8px] font-mono px-1.5 py-0.5 border border-solar-border/50 text-solar-muted/55 uppercase tracking-widest">
+              <span key={tag.id} className="text-[8px] font-mono py-0.5 border border-solar-border/50 text-solar-muted/55 uppercase tracking-widest">
                 {tag.name}
               </span>
             ))}
@@ -233,7 +233,7 @@ function BoardCarrossel({ items }: { items: ArtItem[] }) {
         <div className="absolute inset-0 bg-gradient-to-r from-solar-deep to-solar-surface" />
       )}
       <div className="absolute inset-0 bg-gradient-to-t from-solar-void/80 to-transparent" />
-      <div className="relative z-10 flex items-end justify-between w-full px-6 pb-5">
+      <div className="relative z-10 flex items-end justify-between w-full pb-5">
         <div>
           <p className="text-[8px] font-mono uppercase tracking-widest text-solar-amber/50 mb-1">{cur.area} · {cur.type}</p>
           <Link href={`/atlas/${cur.slug ?? cur.id}`} className="font-display text-xl text-solar-text hover:text-solar-amber transition-solar leading-tight block">
@@ -301,7 +301,7 @@ function BoardArtes() {
 
   return (
     <div className="border border-solar-border/30 bg-solar-border/10">
-      <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-solar-border/20 bg-solar-void">
+      <div className="flex items-center justify-between py-3 border-b border-solar-border/20 bg-solar-void">
         <p className="text-[9px] font-mono uppercase tracking-[0.18em] text-solar-muted/70">Acervo de Artes</p>
         <div className="flex items-center gap-0">
           {(["galeria", "carrossel", "mosaico"] as BoardView[]).map((v) => (
@@ -342,7 +342,7 @@ function RSSPanel() {
 
   return (
     <div className="border border-solar-border/30 bg-solar-border/10">
-      <div className="flex items-center justify-between px-6 py-3 border-b border-solar-border/20 bg-solar-void">
+      <div className="flex items-center justify-between py-3 border-b border-solar-border/20 bg-solar-void">
         <p className="text-[9px] font-mono uppercase tracking-[0.18em] text-solar-muted/70">Notícias & Feeds</p>
         <Link href="/settings#rss" className="text-[7px] font-mono text-solar-muted/30 hover:text-solar-amber transition-solar uppercase tracking-widest">
           Gerenciar →
@@ -355,7 +355,7 @@ function RSSPanel() {
             href={item.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-start gap-4 px-6 py-3 border-b border-solar-border/10 last:border-0 hover:bg-solar-surface/20 transition-colors group"
+            className="flex items-start gap-4 py-3 border-b border-solar-border/10 last:border-0 hover:bg-solar-surface/20 transition-colors group"
           >
             <div className="flex-1 min-w-0">
               <p className="text-[10px] font-mono text-solar-text/80 leading-snug group-hover:text-solar-amber transition-solar line-clamp-1">
@@ -428,7 +428,7 @@ function SecaoHub() {
     <div className="border border-solar-border/30 bg-solar-void">
 
       {/* Header — Pitch principal */}
-      <div className="px-4 sm:px-8 pt-6 sm:pt-10 pb-6 sm:pb-8 border-b border-solar-border/20">
+      <div className="px-4 pt-6 sm:pt-10 pb-6 sm:pb-8 border-b border-solar-border/20">
         <p className="text-[8px] font-mono uppercase tracking-[0.28em] text-solar-amber/50 mb-5">
           ✦ Hub — O que é o Portal Solar
         </p>
@@ -460,7 +460,7 @@ function SecaoHub() {
       </div>
 
       {/* O problema que resolve */}
-      <div className="px-4 sm:px-8 py-6 sm:py-7 border-b border-solar-border/20 grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
+      <div className="px-4 py-6 sm:py-7 border-b border-solar-border/20 grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
         {[
           {
             titulo: "O problema",
@@ -483,7 +483,7 @@ function SecaoHub() {
       </div>
 
       {/* Os 4 Pilares */}
-      <div className="px-4 sm:px-8 py-6 sm:py-7 border-b border-solar-border/20">
+      <div className="px-4 py-6 sm:py-7 border-b border-solar-border/20">
         <p className="text-[8px] font-mono uppercase tracking-[0.2em] text-solar-muted/50 mb-6">
           Os 4 Pilares
         </p>
@@ -512,7 +512,7 @@ function SecaoHub() {
       </div>
 
       {/* Como funciona */}
-      <div className="px-4 sm:px-8 py-6 sm:py-7 border-b border-solar-border/20">
+      <div className="px-4 py-6 sm:py-7 border-b border-solar-border/20">
         <p className="text-[8px] font-mono uppercase tracking-[0.2em] text-solar-muted/50 mb-6">
           Como Funciona
         </p>
@@ -534,7 +534,7 @@ function SecaoHub() {
               desc: "Explora o que você construiu — filtrando por área, buscando por texto, revisitando recentes, descobrindo conexões esquecidas. O painel inicial reúne tudo numa visão integrada do seu universo.",
             },
           ].map(({ passo, titulo, desc }) => (
-            <div key={passo} className="px-4 sm:px-6 py-5 sm:py-6">
+            <div key={passo} className="px-4 py-5 sm:py-6">
               <p className="text-[8px] font-mono text-solar-amber/30 mb-3 tracking-[0.2em]">PASSO {passo}</p>
               <p className="text-[11px] font-mono text-solar-text/75 mb-2 font-medium">{titulo}</p>
               <p className="text-[10px] font-body text-solar-muted/50 leading-[1.7]">{desc}</p>
@@ -544,7 +544,7 @@ function SecaoHub() {
       </div>
 
       {/* Módulos implementados */}
-      <div className="px-4 sm:px-8 py-6 sm:py-7 border-b border-solar-border/20">
+      <div className="px-4 py-6 sm:py-7 border-b border-solar-border/20">
         <div className="flex items-baseline justify-between mb-6">
           <p className="text-[8px] font-mono uppercase tracking-[0.2em] text-solar-muted/50">
             Módulos Implementados
@@ -553,7 +553,7 @@ function SecaoHub() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-0 border border-solar-border/15 divide-y divide-solar-border/10">
           {HUB_MODULOS.map(({ n, nome, desc }) => (
-            <div key={n} className="flex gap-4 px-5 py-3 odd:border-r odd:border-solar-border/10">
+            <div key={n} className="flex gap-4 py-3 odd:border-r odd:border-solar-border/10">
               <span className="text-[9px] font-mono text-solar-amber/25 tabular-nums pt-0.5 flex-shrink-0">{n}</span>
               <div>
                 <p className="text-[10px] font-mono text-solar-text/70">{nome}</p>
@@ -565,7 +565,7 @@ function SecaoHub() {
       </div>
 
       {/* Planos de operação */}
-      <div className="px-4 sm:px-8 py-6 sm:py-7 border-b border-solar-border/20">
+      <div className="px-4 py-6 sm:py-7 border-b border-solar-border/20">
         <p className="text-[8px] font-mono uppercase tracking-[0.2em] text-solar-muted/50 mb-6">Planos de Operação</p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[
@@ -594,7 +594,7 @@ function SecaoHub() {
             <div key={plano} className="border border-solar-border/20 p-5">
               <div className="flex items-start justify-between gap-2 mb-3">
                 <p className="text-[11px] font-mono text-solar-text/75 font-medium">{plano}</p>
-                <span className={`text-[8px] font-mono uppercase tracking-widest ${cor} border border-current/20 px-2 py-0.5 flex-shrink-0`}>
+                <span className={`text-[8px] font-mono uppercase tracking-widest ${cor} border border-current/20 py-0.5 flex-shrink-0`}>
                   {status}
                 </span>
               </div>
@@ -613,7 +613,7 @@ function SecaoHub() {
       </div>
 
       {/* Rodapé — Manifesto */}
-      <div className="px-4 sm:px-8 py-6 sm:py-8">
+      <div className="px-4 py-6 sm:py-8">
         <div className="max-w-2xl mx-auto text-center">
           <p className="text-[9px] font-mono uppercase tracking-[0.3em] text-solar-amber/30 mb-5">Manifesto</p>
           <blockquote className="text-[13px] font-body text-solar-muted/55 leading-[1.9] italic mb-6">
@@ -639,7 +639,7 @@ function SecaoHub() {
 function SecaoPlataforma() {
   return (
     <div className="border border-solar-border/30 bg-solar-void">
-      <div className="px-4 sm:px-8 py-6 sm:py-8 border-b border-solar-border/20 flex items-start justify-between gap-6 sm:gap-12">
+      <div className="px-4 py-6 sm:py-8 border-b border-solar-border/20 flex items-start justify-between gap-6 sm:gap-12">
         <div className="flex-1 min-w-0">
           <p className="text-[9px] font-mono uppercase tracking-[0.18em] text-solar-muted/60 mb-4">Sobre a Plataforma</p>
           <h2 className="font-display text-fluid-3xl text-solar-text font-semibold leading-tight mb-4">
@@ -663,7 +663,7 @@ function SecaoPlataforma() {
           { label: "Compass",  desc: "Diário interior, metas e mapa pessoal",           symbol: "◈" },
           { label: "Cultura",  desc: "Rede social minimalista de estudantes",           symbol: "⊕" },
         ].map(({ label, desc, symbol }) => (
-          <div key={label} className="px-4 sm:px-6 py-4 sm:py-5">
+          <div key={label} className="px-4 py-4 sm:py-5">
             <p className="text-[10px] font-mono text-solar-amber/50 mb-1">{symbol} {label}</p>
             <p className="text-[9px] font-mono text-solar-muted/45 leading-relaxed">{desc}</p>
           </div>
@@ -716,7 +716,7 @@ function SecaoConsciencia() {
 
   return (
     <div className="border border-solar-border/30 bg-solar-void">
-      <div className="px-4 sm:px-8 py-5 sm:py-6 border-b border-solar-border/20">
+      <div className="px-4 py-5 sm:py-6 border-b border-solar-border/20">
         <p className="text-[9px] font-mono uppercase tracking-[0.18em] text-solar-muted/60 mb-2">Consciência</p>
         <p className="text-[11px] font-mono text-solar-muted/45 leading-relaxed">
           Algumas perguntas para nos sintonizarmos — seus estudos, suas visões, sua trajetória.
@@ -740,7 +740,7 @@ function SecaoConsciencia() {
         <>
           <div className="divide-y divide-solar-border/15">
             {QUESTOES.map((q) => (
-              <div key={q.id} className="px-4 sm:px-8 py-5 sm:py-6">
+              <div key={q.id} className="px-4 py-5 sm:py-6">
                 <p className="text-[8px] font-mono uppercase tracking-widest text-solar-amber/40 mb-1">{q.tema}</p>
                 <p className="text-[11px] font-mono text-solar-text/75 mb-4">{q.pergunta}</p>
                 <div className="flex flex-wrap gap-2">
@@ -749,7 +749,7 @@ function SecaoConsciencia() {
                       key={opcao}
                       onClick={() => handleSelect(q.id, opcao)}
                       className={`
-                        px-3 py-1.5 text-[9px] font-mono border transition-all
+                        py-1.5 text-[9px] font-mono border transition-all
                         ${answers[q.id] === opcao
                           ? "border-solar-amber/60 bg-solar-amber/10 text-solar-amber"
                           : "border-solar-border/30 text-solar-muted/50 hover:border-solar-amber/30 hover:text-solar-muted"}
@@ -762,7 +762,7 @@ function SecaoConsciencia() {
               </div>
             ))}
           </div>
-          <div className="px-4 sm:px-8 py-4 border-t border-solar-border/15 flex items-center justify-between">
+          <div className="px-4 py-4 border-t border-solar-border/15 flex items-center justify-between">
             <p className="text-[9px] font-mono text-solar-muted/30">
               {Object.keys(answers).length} / {QUESTOES.length} respondidas
             </p>
@@ -958,7 +958,7 @@ export function DashboardClient({ recentItems, discoveryItem, areaCounts, totalI
   }
 
   return (
-    <div ref={containerRef} className="relative z-10 max-w-6xl mx-auto px-4 sm:px-8 md:px-12 py-6 space-y-px">
+    <div ref={containerRef} className="relative z-10 max-w-6xl mx-auto py-6 space-y-px">
       {homeSections.map((s) => sectionMap[s.id])}
     </div>
   )

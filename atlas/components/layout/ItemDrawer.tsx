@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react"
 import Link from "next/link"
 import { X, ExternalLink, Tag as TagIcon, Calendar, Hash } from "lucide-react"
+import { UI } from "@/portal.config"
 import type { AtlasItemWithTags } from "@/atlas/types"
 import { AREA_LABELS, TYPE_LABELS, STATUS_LABELS, AREA_COLORS } from "@/atlas/types"
 import { Tag } from "@/atlas/components/ui/Tag"
@@ -123,14 +124,14 @@ export function ItemDrawer({ item, onClose }: ItemDrawerProps) {
               className="w-8 h-8 flex items-center justify-center rounded-md text-solar-muted hover:text-solar-amber hover:bg-solar-amber/10 transition-solar"
               title="Abrir página completa"
             >
-              <ExternalLink size={14} />
+              {UI.SHOW_ICONS && <ExternalLink size={14} />}
             </Link>
             <button
               onClick={onClose}
               className="w-8 h-8 flex items-center justify-center rounded-md text-solar-muted hover:text-solar-text hover:bg-solar-surface transition-solar"
               title="Fechar (Esc)"
             >
-              <X size={14} />
+              {UI.SHOW_ICONS && <X size={14} />}
             </button>
           </div>
         </div>

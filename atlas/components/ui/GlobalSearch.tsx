@@ -140,9 +140,9 @@ export function GlobalSearch() {
           />
 
           {/* Modal */}
+          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[101]" style={{ width: "min(640px, calc(100vw - 24px))" }}>
           <motion.div
-            className="fixed top-[18%] left-1/2 -translate-x-1/2 z-[101] w-full max-w-xl"
-            initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+            initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.18, ease: [0.0, 0.0, 0.2, 1] }}
           >
             <div className="border border-solar-border/50 bg-solar-deep/95 shadow-[0_24px_80px_rgba(0,0,0,0.6)]">
@@ -268,6 +268,7 @@ export function GlobalSearch() {
               )}
             </div>
           </motion.div>
+          </div>
         </>
       )}
     </AnimatePresence>

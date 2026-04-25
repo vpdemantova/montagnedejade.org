@@ -88,7 +88,7 @@ function FavoritosTab() {
               {item.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1 mt-2">
                   {item.tags.slice(0, 2).map((t) => (
-                    <span key={t.id} className="text-[7px] font-mono px-1 border border-solar-border/20 text-solar-muted/35 uppercase">
+                    <span key={t.id} className="text-[7px] font-mono border border-solar-border/20 text-solar-muted/35 uppercase">
                       {t.name}
                     </span>
                   ))}
@@ -154,7 +154,7 @@ function MusicaTab() {
             <div className="space-y-px">
               {list.map((item) => (
                 <a key={item.id} href={`/atlas/${item.slug ?? item.id}`}
-                  className="flex items-center justify-between px-4 py-2.5 border border-solar-border/15 hover:border-solar-border/40 hover:bg-solar-surface/20 transition-all group"
+                  className="flex items-center justify-between py-2.5 border border-solar-border/15 hover:border-solar-border/40 hover:bg-solar-surface/20 transition-all group"
                 >
                   <span className="text-[11px] font-mono text-solar-text/80 group-hover:text-solar-amber transition-solar truncate">
                     {item.title}
@@ -270,7 +270,7 @@ function EstudosTab() {
                           type="number"
                           value={logMin}
                           onChange={(e) => setLogMin(Number(e.target.value))}
-                          className="w-14 bg-solar-deep border border-solar-border/30 px-1.5 py-1 text-[9px] font-mono text-solar-text focus:outline-none"
+                          className="w-14 bg-solar-deep border border-solar-border/30 py-1 text-[9px] font-mono text-solar-text focus:outline-none"
                         />
                         <span className="text-[8px] font-mono text-solar-muted/40">min</span>
                         <button
@@ -314,12 +314,12 @@ function EstudosTab() {
         <input
           value={newName} onChange={(e) => setNewName(e.target.value)}
           placeholder="Nome da disciplina"
-          className="flex-1 bg-transparent border-b border-solar-border/30 px-0 py-1 text-xs font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-compass-neon/30"
+          className="flex-1 bg-transparent border-b border-solar-border/30 py-1 text-xs font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-compass-neon/30"
         />
         <input
           value={newCode} onChange={(e) => setNewCode(e.target.value)}
           placeholder="Código"
-          className="w-24 bg-transparent border-b border-solar-border/30 px-0 py-1 text-xs font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-compass-neon/30"
+          className="w-24 bg-transparent border-b border-solar-border/30 py-1 text-xs font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-compass-neon/30"
         />
         <button
           onClick={addDiscipline}
@@ -453,11 +453,11 @@ function SonhosTab() {
           value={newTitle} onChange={(e) => setNewTitle(e.target.value)}
           placeholder="Nova meta ou intenção..."
           onKeyDown={(e) => e.key === "Enter" && addGoal()}
-          className="flex-1 bg-transparent border-b border-solar-border/30 px-0 py-1 text-xs font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-compass-neon/30"
+          className="flex-1 bg-transparent border-b border-solar-border/30 py-1 text-xs font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-compass-neon/30"
         />
         <button
           onClick={() => setHorizon((h) => h === "short" ? "long" : "short")}
-          className={`text-[8px] font-mono uppercase tracking-widest px-2 py-1 border transition-colors ${horizon === "short" ? "border-compass-neon/30 text-compass-neon/60" : "border-solar-amber/30 text-solar-amber/60"}`}
+          className={`text-[8px] font-mono uppercase tracking-widest py-1 border transition-colors ${horizon === "short" ? "border-compass-neon/30 text-compass-neon/60" : "border-solar-amber/30 text-solar-amber/60"}`}
         >
           {horizon === "short" ? "Curto" : "Longo"}
         </button>
@@ -552,7 +552,7 @@ export default function PerfilPage() {
       <div className="fixed inset-0 pointer-events-none z-0 bg-grid-aligned" />
 
       <header className="page-header relative z-10 border-b border-solar-border/40 pt-12 pb-6">
-        <div className="max-w-6xl mx-auto px-4 sm:px-8 md:px-12">
+        <div className="max-w-6xl mx-auto">
           <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-compass-neon-dim/60 mb-3">
             Numita Compass · Perfil
           </p>
@@ -562,7 +562,7 @@ export default function PerfilPage() {
         </div>
       </header>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-8 md:px-12 py-6">
+      <div className="relative z-10 max-w-6xl mx-auto py-6">
         {/* Tabs */}
         <div className="flex gap-0 border-b border-solar-border/20 mb-8 overflow-x-auto scrollbar-hide">
           {TABS.map((tab) => (

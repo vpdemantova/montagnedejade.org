@@ -1,12 +1,12 @@
 "use client"
 
 import { useState, useCallback, useRef } from "react"
-import { useRouter } from "next/navigation"
 import { AnimatePresence } from "framer-motion"
 import type { AtlasItemWithTags } from "@/atlas/types"
-import { useSolarStore, useViewStore } from "@/atlas/lib/store"
+import { useViewStore } from "@/atlas/lib/store"
 import { ViewType, AREA_LABELS } from "@/atlas/types"
 import { Layers, LayoutGrid, Table2, List, Map, type LucideIcon } from "lucide-react"
+import { UI } from "@/portal.config"
 import { ItemDrawer } from "@/atlas/components/layout/ItemDrawer"
 import Link from "next/link"
 import { ItemCard } from "@/atlas/components/ui/ItemCard"
@@ -71,7 +71,6 @@ const VIEW_CHIPS: { value: string; label: string; icon: LucideIcon }[] = [
 ]
 
 export function AtlasClient({ items, initialArea, initialTag, defaultView, backHref, backLabel }: AtlasClientProps) {
-  const router = useRouter()
   const { getViewForRoute, setViewForRoute } = useViewStore()
   const persistedView = getViewForRoute("/atlas", defaultView ?? ViewType.HORIZONTAL)
   const [view, setView]         = useState<string>(persistedView)
@@ -132,7 +131,7 @@ export function AtlasClient({ items, initialArea, initialTag, defaultView, backH
     <div className="relative min-h-screen flex flex-col">
 
       {/* ── Editorial header ── */}
-      <div className="border-b border-solar-border/30 px-6 pt-10 pb-6">
+      <div className="border-b border-solar-border/30 pt-10 pb-6">
         <p className="editorial-label text-solar-muted/35 mb-3">
           PORTAL SOLAR / {new Date().getFullYear()}
         </p>
@@ -146,15 +145,16 @@ export function AtlasClient({ items, initialArea, initialTag, defaultView, backH
 
       {/* ── Toolbar unificada ── */}
       <div
-        className="sticky top-0 z-20 flex flex-col"
+        className="sticky z-20 flex flex-col"
         style={{
+          top: "70px",
           background: "rgb(var(--c-void) / 0.92)",
           backdropFilter: "blur(16px)",
           borderBottom: "1px solid rgb(var(--c-border) / 0.25)",
         }}
       >
         {/* Linha 1 — título + busca + views */}
-        <div className="flex items-center gap-2 sm:gap-3 px-3 py-2 border-b" style={{ borderColor: "rgb(var(--c-border) / 0.15)" }}>
+        <div className="flex items-center gap-2 sm:gap-3 py-2 border-b" style={{ borderColor: "rgb(var(--c-border) / 0.15)" }}>
           {backHref && (
             <Link href={backHref} className="text-[9px] font-mono uppercase tracking-widest flex-shrink-0 hidden sm:inline"
               style={{ color: "rgb(var(--c-muted) / 0.5)" }}>
@@ -175,10 +175,12 @@ export function AtlasClient({ items, initialArea, initialTag, defaultView, backH
 
           {/* busca */}
           <div className="flex-1 flex items-center gap-1 min-w-0">
-            <svg width="11" height="11" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-              style={{ color: "rgb(var(--c-muted) / 0.35)", flexShrink: 0 }}>
-              <circle cx="8.5" cy="8.5" r="5.5"/><path d="M17 17l-3.5-3.5"/>
-            </svg>
+            {UI.SHOW_ICONS && (
+              <svg width="11" height="11" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+                style={{ color: "rgb(var(--c-muted) / 0.35)", flexShrink: 0 }}>
+                <circle cx="8.5" cy="8.5" r="5.5"/><path d="M17 17l-3.5-3.5"/>
+              </svg>
+            )}
             <input
               type="text"
               onChange={(e) => handleQuery(e.target.value)}
@@ -205,7 +207,7 @@ export function AtlasClient({ items, initialArea, initialTag, defaultView, backH
                     border: `1px solid ${view === v.value ? "rgb(var(--c-accent) / 0.3)" : "rgb(var(--c-border) / 0.2)"}`,
                   }}
                 >
-                  <Icon size={11} strokeWidth={1.5} className="flex-shrink-0" />
+                  {UI.SHOW_ICONS && <Icon size={11} strokeWidth={1.5} className="flex-shrink-0" />}
                   <span className="hidden sm:inline">{v.label}</span>
                 </button>
               )

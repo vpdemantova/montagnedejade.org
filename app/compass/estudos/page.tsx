@@ -85,14 +85,14 @@ function DisciplineCard({
             <button
               key={min}
               onClick={() => onSession(disc.id, min)}
-              className="text-[8px] font-mono px-2 py-1 border border-solar-border/25 text-solar-muted/50 hover:text-solar-text hover:border-solar-border/60 transition-colors"
+              className="text-[8px] font-mono py-1 border border-solar-border/25 text-solar-muted/50 hover:text-solar-text hover:border-solar-border/60 transition-colors"
             >
               +{min < 60 ? `${min}′` : `${min / 60}h`}
             </button>
           ))}
           <button
             onClick={() => setOpen((o) => !o)}
-            className="text-[8px] font-mono px-2 py-1 border border-solar-border/25 text-solar-muted/50 hover:text-solar-text hover:border-solar-border/60 transition-colors"
+            className="text-[8px] font-mono py-1 border border-solar-border/25 text-solar-muted/50 hover:text-solar-text hover:border-solar-border/60 transition-colors"
           >
             …
           </button>
@@ -106,14 +106,14 @@ function DisciplineCard({
             placeholder="min"
             value={custom}
             onChange={(e) => setCustom(e.target.value)}
-            className="w-20 bg-transparent border border-solar-border/30 px-2 py-1 text-[10px] font-mono text-solar-text focus:outline-none focus:border-solar-accent/40"
+            className="w-20 bg-transparent border border-solar-border/30 py-1 text-[10px] font-mono text-solar-text focus:outline-none focus:border-solar-accent/40"
           />
           <button
             onClick={() => {
               const m = parseInt(custom)
               if (m > 0) { onSession(disc.id, m); setCustom(""); setOpen(false) }
             }}
-            className="text-[9px] font-mono px-3 py-1 border border-solar-accent/40 text-solar-accent hover:bg-solar-accent/10 transition-colors"
+            className="text-[9px] font-mono py-1 border border-solar-accent/40 text-solar-accent hover:bg-solar-accent/10 transition-colors"
           >
             Registrar
           </button>
@@ -174,7 +174,7 @@ export default function EstudosPage() {
     <div className="relative min-h-screen">
       <div className="fixed inset-0 pointer-events-none z-0 bg-grid-aligned" />
 
-      <header className="relative z-10 border-b border-solar-border/30 px-4 sm:px-8 md:px-12 pt-10 pb-6">
+      <header className="relative z-10 border-b border-solar-border/30 pt-10 pb-6">
         <div className="max-w-4xl mx-auto">
           <p className="editorial-label text-solar-muted/35 mb-3">COMPASS / ESTUDOS</p>
           <div className="flex items-end justify-between gap-6">
@@ -188,7 +188,7 @@ export default function EstudosPage() {
             </div>
             <button
               onClick={() => setShowForm((o) => !o)}
-              className="flex-shrink-0 px-4 py-2 bg-solar-text text-solar-void text-[9px] font-mono uppercase tracking-[0.2em] hover:opacity-80 transition-opacity"
+              className="flex-shrink-0 py-2 bg-solar-text text-solar-void text-[9px] font-mono uppercase tracking-[0.2em] hover:opacity-80 transition-opacity"
             >
               + Disciplina
             </button>
@@ -196,7 +196,7 @@ export default function EstudosPage() {
         </div>
       </header>
 
-      <main className="relative z-10 max-w-4xl mx-auto px-4 sm:px-8 md:px-12 py-6 space-y-4">
+      <main className="relative z-10 max-w-4xl mx-auto py-6 space-y-4">
 
         {/* Add discipline form */}
         {showForm && (
@@ -204,16 +204,16 @@ export default function EstudosPage() {
             <p className="text-[9px] font-mono uppercase tracking-[0.15em] text-solar-muted/50">Nova Disciplina</p>
             <div className="grid grid-cols-2 gap-3">
               <input placeholder="Nome da disciplina *" value={form.name}       onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                className="col-span-2 bg-transparent border border-solar-border/30 px-3 py-2 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-solar-accent/40" />
+                className="col-span-2 bg-transparent border border-solar-border/30 py-2 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-solar-accent/40" />
               <input placeholder="Código (ex: DES-320)"  value={form.code}       onChange={(e) => setForm((f) => ({ ...f, code: e.target.value }))}
-                className="bg-transparent border border-solar-border/30 px-3 py-2 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-solar-accent/40" />
+                className="bg-transparent border border-solar-border/30 py-2 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-solar-accent/40" />
               <input placeholder="Professor"              value={form.professor}  onChange={(e) => setForm((f) => ({ ...f, professor: e.target.value }))}
-                className="bg-transparent border border-solar-border/30 px-3 py-2 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-solar-accent/40" />
+                className="bg-transparent border border-solar-border/30 py-2 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-solar-accent/40" />
               <input placeholder="Semestre (2026-1)"      value={form.semester}   onChange={(e) => setForm((f) => ({ ...f, semester: e.target.value }))}
-                className="bg-transparent border border-solar-border/30 px-3 py-2 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-solar-accent/40" />
+                className="bg-transparent border border-solar-border/30 py-2 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-solar-accent/40" />
               <div className="flex items-center gap-2">
                 <input placeholder="Total horas" type="number" value={form.totalHours} onChange={(e) => setForm((f) => ({ ...f, totalHours: e.target.value }))}
-                  className="flex-1 bg-transparent border border-solar-border/30 px-3 py-2 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-solar-accent/40" />
+                  className="flex-1 bg-transparent border border-solar-border/30 py-2 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-solar-accent/40" />
                 <span className="text-[9px] font-mono text-solar-muted/40">h</span>
               </div>
             </div>

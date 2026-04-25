@@ -366,7 +366,7 @@ export function AtlasEditor({ item, redirectOnSave }: Props) {
 
       {/* ── Cabeçalho de propriedades ─────────────────────────────────── */}
       <div className="border-b border-solar-border/30 bg-solar-void">
-        <div className="max-w-4xl mx-auto px-4 sm:px-8 md:px-12 pt-6 sm:pt-10 pb-4 sm:pb-6 space-y-5">
+        <div className="max-w-4xl mx-auto pt-6 sm:pt-10 pb-4 sm:pb-6 space-y-5">
           {/* Cover image banner */}
           {coverImage && (
             <div className="relative w-full aspect-[16/5] overflow-hidden -mx-0">
@@ -469,7 +469,7 @@ export function AtlasEditor({ item, redirectOnSave }: Props) {
 
       {/* ── Editor BlockNote ──────────────────────────────────────────────── */}
       <div
-        className="flex-1 max-w-4xl mx-auto w-full px-4 sm:px-8 md:px-12 py-6 sm:py-8"
+        className="flex-1 max-w-4xl mx-auto w-full py-6 sm:py-8"
         style={{
           // Segue as variáveis CSS do tema ativo (claro ou escuro)
           "--bn-colors-editor-background":          "rgb(var(--c-void))",
@@ -496,7 +496,7 @@ export function AtlasEditor({ item, redirectOnSave }: Props) {
 
       {/* ── Rodapé ────────────────────────────────────────────────────────── */}
       <div className="border-t border-solar-border/20 bg-solar-void">
-        <div className="max-w-4xl mx-auto px-4 sm:px-8 md:px-12 py-2 flex items-center justify-between gap-2 flex-wrap">
+        <div className="max-w-4xl mx-auto py-2 flex items-center justify-between gap-2 flex-wrap">
           <div className="flex items-center gap-5">
             <span className="text-[8px] font-mono text-solar-muted/40">{stats.words} palavras</span>
             <span className="text-[8px] font-mono text-solar-muted/30">{stats.chars} chars</span>
@@ -508,7 +508,7 @@ export function AtlasEditor({ item, redirectOnSave }: Props) {
               <button
                 onClick={() => void suggestTags()}
                 disabled={aiTagsLoading}
-                className="text-[8px] font-mono uppercase tracking-widest transition-solar px-2 py-0.5 border border-solar-border/20 text-solar-muted/35 hover:text-solar-amber hover:border-solar-amber/30 disabled:opacity-30"
+                className="text-[8px] font-mono uppercase tracking-widest transition-solar py-0.5 border border-solar-border/20 text-solar-muted/35 hover:text-solar-amber hover:border-solar-amber/30 disabled:opacity-30"
                 title="Sugerir tags com IA"
               >
                 {aiTagsLoading ? "…" : "✦ Tags"}
@@ -521,13 +521,13 @@ export function AtlasEditor({ item, redirectOnSave }: Props) {
             {/* Painel lateral — botões */}
             <button
               onClick={() => setSidePanel((p) => p === "meta" ? "none" : "meta")}
-              className={`text-[8px] font-mono uppercase tracking-widest transition-solar px-2 py-0.5 border ${sidePanel === "meta" ? "border-solar-amber/40 text-solar-amber" : "border-solar-border/20 text-solar-muted/35 hover:text-solar-muted"}`}
+              className={`text-[8px] font-mono uppercase tracking-widest transition-solar py-0.5 border ${sidePanel === "meta" ? "border-solar-amber/40 text-solar-amber" : "border-solar-border/20 text-solar-muted/35 hover:text-solar-muted"}`}
             >
               Imagem
             </button>
             <button
               onClick={() => setSidePanel((p) => p === "relations" ? "none" : "relations")}
-              className={`text-[8px] font-mono uppercase tracking-widest transition-solar px-2 py-0.5 border ${sidePanel === "relations" ? "border-solar-amber/40 text-solar-amber" : "border-solar-border/20 text-solar-muted/35 hover:text-solar-muted"}`}
+              className={`text-[8px] font-mono uppercase tracking-widest transition-solar py-0.5 border ${sidePanel === "relations" ? "border-solar-amber/40 text-solar-amber" : "border-solar-border/20 text-solar-muted/35 hover:text-solar-muted"}`}
             >
               Relações {relations.length > 0 && `(${relations.length})`}
             </button>
@@ -575,7 +575,7 @@ export function AtlasEditor({ item, redirectOnSave }: Props) {
                 value={coverDraft}
                 onChange={(e) => setCoverDraft(e.target.value)}
                 placeholder="https://…"
-                className="w-full bg-solar-deep/60 border border-solar-border/30 px-3 py-1.5 text-[10px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40 transition-solar"
+                className="w-full bg-solar-deep/60 border border-solar-border/30 py-1.5 text-[10px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40 transition-solar"
               />
             </div>
             <div className="flex gap-2">
@@ -621,7 +621,7 @@ export function AtlasEditor({ item, redirectOnSave }: Props) {
                 value={aiImagePrompt}
                 onChange={(e) => setAiImagePrompt(e.target.value)}
                 placeholder="Descreva a imagem…"
-                className="w-full bg-solar-deep/60 border border-solar-border/30 px-3 py-1.5 text-[10px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40 transition-solar"
+                className="w-full bg-solar-deep/60 border border-solar-border/30 py-1.5 text-[10px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40 transition-solar"
               />
 
               <button
@@ -672,7 +672,7 @@ export function AtlasEditor({ item, redirectOnSave }: Props) {
               <select
                 value={relType}
                 onChange={(e) => setRelType(e.target.value)}
-                className="w-full bg-solar-deep/60 border border-solar-border/30 px-2 py-1.5 text-[10px] font-mono text-solar-text/80 focus:outline-none"
+                className="w-full bg-solar-deep/60 border border-solar-border/30 py-1.5 text-[10px] font-mono text-solar-text/80 focus:outline-none"
                 style={{ background: "rgb(var(--c-deep))" }}
               >
                 {RELATION_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
@@ -682,7 +682,7 @@ export function AtlasEditor({ item, redirectOnSave }: Props) {
                 value={relSearch}
                 onChange={(e) => { setRelSearch(e.target.value); void searchItems(e.target.value) }}
                 placeholder="Buscar item…"
-                className="w-full bg-solar-deep/60 border border-solar-border/30 px-3 py-1.5 text-[10px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40 transition-solar"
+                className="w-full bg-solar-deep/60 border border-solar-border/30 py-1.5 text-[10px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40 transition-solar"
               />
               {relResults.length > 0 && (
                 <div className="border border-solar-border/20 divide-y divide-solar-border/10">
@@ -690,7 +690,7 @@ export function AtlasEditor({ item, redirectOnSave }: Props) {
                     <button
                       key={r.id}
                       onClick={() => void addRelation(r.id)}
-                      className="w-full text-left px-3 py-2 hover:bg-solar-surface/30 transition-solar"
+                      className="w-full text-left py-2 hover:bg-solar-surface/30 transition-solar"
                     >
                       <p className="text-[10px] font-mono text-solar-text/80 truncate">{r.title}</p>
                       <p className="text-[8px] font-mono text-solar-muted/40">{AREA_LABELS[r.area] ?? r.area}</p>

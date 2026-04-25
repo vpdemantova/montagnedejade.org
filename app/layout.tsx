@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { Inter, Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google"
 import { LenisProvider }        from "@/atlas/components/layout/LenisProvider"
 import { PageTransition }       from "@/atlas/components/layout/PageTransition"
+import { NavProgress }          from "@/atlas/components/layout/NavProgress"
 import { GlobalSearch }         from "@/atlas/components/ui/GlobalSearch"
 import { QuickCapture, QuickCaptureButton } from "@/atlas/components/ui/QuickCapture"
 import { ModeAwareShell }       from "@/atlas/components/layout/ModeAwareShell"
@@ -49,6 +50,7 @@ export default function RootLayout({
     >
       <body className="bg-solar-void text-solar-text antialiased">
         <LenisProvider>
+          <NavProgress />
           <ThemeApplier />
           <ModeAwareShell>
             <PageTransition>{children}</PageTransition>

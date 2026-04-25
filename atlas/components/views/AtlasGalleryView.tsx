@@ -2,6 +2,7 @@
 
 import type { AtlasItemWithTags } from "@/atlas/types"
 import { AREA_LABELS, TYPE_LABELS } from "@/atlas/types"
+import { CoverImage } from "@/atlas/components/ui/CoverImage"
 
 type Props = {
   items:       AtlasItemWithTags[]
@@ -36,7 +37,6 @@ export function AtlasGalleryView({ items, onItemClick }: Props) {
         const location  = (meta.location ?? meta.country ?? "") as string
         const areaLabel = AREA_LABELS[item.area as keyof typeof AREA_LABELS] ?? item.area
         const isFav     = item.isFavorite || item.status === "FAVORITE"
-        const initial   = item.title.charAt(0).toUpperCase()
         const code      = itemCode(item.id)
 
         return (
@@ -47,21 +47,13 @@ export function AtlasGalleryView({ items, onItemClick }: Props) {
             style={{ animationDelay: `${Math.min(i * 20, 300)}ms` }}
           >
             {/* Imagem / placeholder */}
-            <div className="relative aspect-[4/3] overflow-hidden flex-shrink-0 bg-solar-surface/30">
-              {imageUrl ? (
-                <img
-                  src={imageUrl}
-                  alt={item.title}
-                  className="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-300"
-                  loading="lazy"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <span className="font-display text-5xl select-none text-solar-text/08">
-                    {initial}
-                  </span>
-                </div>
-              )}
+            <div className="relative aspect-[4/3] overflow-hidden flex-shrink-0">
+              <CoverImage
+                src={imageUrl}
+                alt={item.title}
+                name={item.title}
+                className="w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-300"
+              />
 
               {/* Area badge — top left, hard edge */}
               <span className="absolute top-2 left-2 font-mono text-[7px] uppercase tracking-widest px-1.5 py-0.5 bg-solar-void/80 text-solar-muted/60 border border-solar-border/25">

@@ -63,7 +63,7 @@ function TextInput({
       placeholder={placeholder}
       className="
         w-full bg-solar-deep/50 border border-solar-border/30
-        px-3 py-1.5 text-xs font-mono text-solar-text
+        py-1.5 text-xs font-mono text-solar-text
         placeholder:text-solar-muted/30
         focus:outline-none focus:border-solar-amber/40
         transition-all duration-150
@@ -152,7 +152,7 @@ function ContaTab() {
         </p>
         <button
           onClick={() => void handleLogout()}
-          className="self-start px-5 py-2 border border-solar-border/30 text-[10px] font-mono text-solar-muted/60 uppercase tracking-widest hover:border-solar-red/40 hover:text-solar-red/60 transition-solar"
+          className="self-start py-2 border border-solar-border/30 text-[10px] font-mono text-solar-muted/60 uppercase tracking-widest hover:border-solar-red/40 hover:text-solar-red/60 transition-solar"
         >
           Sair da conta →
         </button>
@@ -172,7 +172,7 @@ function ContaTab() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-solar-deep/50 border border-solar-border/30 px-3 py-1.5 text-xs font-mono text-solar-text focus:outline-none focus:border-solar-amber/40 transition-all duration-150"
+              className="w-full bg-solar-deep/50 border border-solar-border/30 py-1.5 text-xs font-mono text-solar-text focus:outline-none focus:border-solar-amber/40 transition-all duration-150"
             />
           </Field>
           {error && (
@@ -236,7 +236,7 @@ function SenhaTab() {
             type="password"
             value={current}
             onChange={(e) => setCurrent(e.target.value)}
-            className="w-full bg-solar-deep/50 border border-solar-border/30 px-3 py-1.5 text-xs font-mono text-solar-text focus:outline-none focus:border-solar-amber/40 transition-all duration-150"
+            className="w-full bg-solar-deep/50 border border-solar-border/30 py-1.5 text-xs font-mono text-solar-text focus:outline-none focus:border-solar-amber/40 transition-all duration-150"
           />
         </Field>
         <Field label="Nova senha">
@@ -244,7 +244,7 @@ function SenhaTab() {
             type="password"
             value={next}
             onChange={(e) => setNext(e.target.value)}
-            className="w-full bg-solar-deep/50 border border-solar-border/30 px-3 py-1.5 text-xs font-mono text-solar-text focus:outline-none focus:border-solar-amber/40 transition-all duration-150"
+            className="w-full bg-solar-deep/50 border border-solar-border/30 py-1.5 text-xs font-mono text-solar-text focus:outline-none focus:border-solar-amber/40 transition-all duration-150"
           />
         </Field>
         <Field label="Confirmar nova senha">
@@ -253,7 +253,7 @@ function SenhaTab() {
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") void save() }}
-            className="w-full bg-solar-deep/50 border border-solar-border/30 px-3 py-1.5 text-xs font-mono text-solar-text focus:outline-none focus:border-solar-amber/40 transition-all duration-150"
+            className="w-full bg-solar-deep/50 border border-solar-border/30 py-1.5 text-xs font-mono text-solar-text focus:outline-none focus:border-solar-amber/40 transition-all duration-150"
           />
         </Field>
       </Section>
@@ -361,7 +361,7 @@ function PerfilTab() {
             onChange={(e) => setBio(e.target.value)}
             placeholder="Uma linha sobre você"
             rows={2}
-            className="w-full bg-solar-surface/20 border border-solar-border/30 px-3 py-2 text-[11px] font-mono text-solar-text/80 placeholder:text-solar-muted/30 outline-none resize-none focus:border-solar-amber/40 transition-colors"
+            className="w-full bg-solar-surface/20 border border-solar-border/30 py-2 text-[11px] font-mono text-solar-text/80 placeholder:text-solar-muted/30 outline-none resize-none focus:border-solar-amber/40 transition-colors"
           />
         </Field>
       </Section>
@@ -402,7 +402,7 @@ function PerfilTab() {
       <button
         onClick={save}
         disabled={saving}
-        className="self-end px-5 py-2 border border-solar-amber/40 text-[10px] font-mono uppercase tracking-widest text-solar-amber hover:bg-solar-amber/10 transition-all disabled:opacity-40"
+        className="self-end py-2 border border-solar-amber/40 text-[10px] font-mono uppercase tracking-widest text-solar-amber hover:bg-solar-amber/10 transition-all disabled:opacity-40"
       >
         {saving ? "Salvando…" : saved ? "Salvo ✓" : "Salvar perfil"}
       </button>
@@ -614,7 +614,7 @@ function ColorEditor() {
               key={p.id}
               onClick={() => setCustomPattern(p.id)}
               className={`
-                flex flex-col items-center gap-1 px-3 py-2 border transition-all duration-150
+                flex flex-col items-center gap-1 py-2 border transition-all duration-150
                 ${customPattern === p.id
                   ? "border-solar-accent/60 bg-solar-accent/8 text-solar-accent"
                   : "border-solar-border/20 text-solar-muted/40 hover:border-solar-border/50"
@@ -631,7 +631,7 @@ function ColorEditor() {
       {/* Reset all */}
       <button
         onClick={resetCustomColors}
-        className="self-start text-[9px] font-mono text-solar-muted/30 hover:text-solar-muted/70 transition-colors uppercase tracking-widest border border-solar-border/20 px-3 py-1.5 hover:border-solar-border/50"
+        className="self-start text-[9px] font-mono text-solar-muted/30 hover:text-solar-muted/70 transition-colors uppercase tracking-widest border border-solar-border/20 py-1.5 hover:border-solar-border/50"
       >
         ↺ Restaurar cores padrão do tema
       </button>
@@ -745,12 +745,12 @@ function InterfaceTab() {
       {/* Theme picker */}
       <Section title="Tema">
         {/* Group tabs */}
-        <div className="flex gap-0 border-b border-solar-border/20 mb-4 -mx-5 px-5">
+        <div className="flex gap-0 border-b border-solar-border/20 mb-4 -mx-5">
           {THEME_GROUPS.map((g) => (
             <button
               key={g.id}
               onClick={() => setGroup(g.id)}
-              className={`flex items-center gap-1.5 px-3 py-2 text-[8px] font-mono uppercase tracking-widest border-b-2 -mb-px transition-all ${
+              className={`flex items-center gap-1.5 py-2 text-[8px] font-mono uppercase tracking-widest border-b-2 -mb-px transition-all ${
                 group === g.id
                   ? "border-solar-accent text-solar-accent"
                   : "border-transparent text-solar-muted/40 hover:text-solar-muted"
@@ -867,7 +867,7 @@ function RSSTab() {
                     )}
                     <p className="text-[9px] font-mono text-solar-muted/40 truncate">{feed.url}</p>
                   </div>
-                  <span className="text-[7px] font-mono text-solar-muted/25 uppercase border border-solar-border/15 px-1 py-0.5 flex-shrink-0">
+                  <span className="text-[7px] font-mono text-solar-muted/25 uppercase border border-solar-border/15 py-0.5 flex-shrink-0">
                     {feed.area}
                   </span>
                   <button
@@ -891,7 +891,7 @@ function RSSTab() {
               <button
                 onClick={addFeed}
                 className="
-                  self-start px-3 py-1.5 border border-solar-border/30 text-[9px] font-mono
+                  self-start py-1.5 border border-solar-border/30 text-[9px] font-mono
                   text-solar-muted/60 hover:border-solar-amber/40 hover:text-solar-amber
                   transition-all
                 "
@@ -920,7 +920,7 @@ function RSSTab() {
             onClick={refresh}
             disabled={refreshing}
             className="
-              px-4 py-2 border border-solar-border/30 text-[9px] font-mono
+              py-2 border border-solar-border/30 text-[9px] font-mono
               uppercase tracking-widest text-solar-muted/60
               hover:border-solar-amber/40 hover:text-solar-amber
               transition-all disabled:opacity-40 flex-shrink-0
@@ -973,7 +973,7 @@ function ExportacaoTab({ total, areaCounts }: { total: number; areaCounts: Recor
             disabled={!!exporting}
             onClick={() => trigger("backup", "/api/portability/export/all", "portal-solar-backup.zip")}
             className="
-              px-4 py-2 border border-solar-amber/40 text-[9px] font-mono
+              py-2 border border-solar-amber/40 text-[9px] font-mono
               uppercase tracking-widest text-solar-amber
               hover:bg-solar-amber/10 transition-all disabled:opacity-40
             "
@@ -1062,7 +1062,7 @@ function HomeSectionsTab() {
               onDrop={() => handleDrop(section.id)}
               onDragEnd={() => { setDragging(null); setOver(null) }}
               className={`
-                flex items-center justify-between px-4 py-3 border
+                flex items-center justify-between py-3 border
                 transition-colors cursor-grab active:cursor-grabbing select-none
                 ${over === section.id
                   ? "border-solar-amber/40 bg-solar-amber/5"
@@ -1204,7 +1204,7 @@ function CategoriasTab() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Buscar categoria..."
-          className="w-full bg-solar-deep/50 border border-solar-border/30 px-3 py-1.5 text-xs font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-solar-amber/40 mb-4"
+          className="w-full bg-solar-deep/50 border border-solar-border/30 py-1.5 text-xs font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-solar-amber/40 mb-4"
         />
 
         {/* Category list */}
@@ -1212,7 +1212,7 @@ function CategoriasTab() {
           {filtered.map((cat) => (
             <div
               key={cat.id}
-              className="flex items-center gap-3 px-3 py-2 bg-solar-deep/20 border border-solar-border/15 group"
+              className="flex items-center gap-3 py-2 bg-solar-deep/20 border border-solar-border/15 group"
             >
               {cat.parent && (
                 <span className="text-solar-muted/20 text-[10px] font-mono">└</span>
@@ -1227,7 +1227,7 @@ function CategoriasTab() {
               )}
               <button
                 onClick={() => toggleCategory(cat.id)}
-                className={`text-[8px] font-mono uppercase tracking-widest px-2 py-0.5 border transition-colors ${
+                className={`text-[8px] font-mono uppercase tracking-widest py-0.5 border transition-colors ${
                   cat.enabled
                     ? "border-solar-amber/30 text-solar-amber/70 hover:bg-solar-amber/10"
                     : "border-solar-border/20 text-solar-muted/30 hover:border-solar-border/50"
@@ -1253,12 +1253,12 @@ function CategoriasTab() {
             value={newLabel}
             onChange={(e) => setNewLabel(e.target.value)}
             placeholder="Nome da categoria"
-            className="flex-1 bg-solar-deep/50 border border-solar-border/30 px-3 py-1.5 text-xs font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-solar-amber/40"
+            className="flex-1 bg-solar-deep/50 border border-solar-border/30 py-1.5 text-xs font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-solar-amber/40"
           />
           <select
             value={newParent}
             onChange={(e) => setNewParent(e.target.value)}
-            className="bg-solar-deep/50 border border-solar-border/30 px-2 py-1.5 text-xs font-mono text-solar-text focus:outline-none focus:border-solar-amber/40"
+            className="bg-solar-deep/50 border border-solar-border/30 py-1.5 text-xs font-mono text-solar-text focus:outline-none focus:border-solar-amber/40"
           >
             <option value="">Raiz</option>
             {rootCats.map((c) => (
@@ -1292,7 +1292,7 @@ export function SettingsClient({
   return (
     <div className="relative min-h-screen">
       <header className="relative z-10 border-b border-solar-border/40 pt-12 pb-0">
-        <div className="max-w-4xl mx-auto px-4 sm:px-8 md:px-12">
+        <div className="max-w-4xl mx-auto">
           <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-solar-muted/70 mb-3">
             Portal Solar · Configurações
           </p>
@@ -1307,7 +1307,7 @@ export function SettingsClient({
                 key={t.id}
                 onClick={() => setTab(t.id)}
                 className={`
-                  flex items-center gap-1.5 px-4 py-2.5 text-[9px] font-mono uppercase tracking-widest
+                  flex items-center gap-1.5 py-2.5 text-[9px] font-mono uppercase tracking-widest
                   border-b-2 transition-all duration-150
                   ${tab === t.id
                     ? "border-solar-amber text-solar-amber"
@@ -1323,7 +1323,7 @@ export function SettingsClient({
         </div>
       </header>
 
-      <main className="relative z-10 max-w-4xl mx-auto px-4 sm:px-8 md:px-12 py-8">
+      <main className="relative z-10 max-w-4xl mx-auto py-8">
         <AnimatePresence mode="wait">
           <motion.div
             key={tab}

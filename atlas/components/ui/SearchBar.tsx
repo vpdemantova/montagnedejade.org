@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react"
 import { Search, X } from "lucide-react"
+import { UI } from "@/portal.config"
 
 type SearchBarProps = {
   onSearch?: (query: string) => void
@@ -63,7 +64,7 @@ export function SearchBar({
           inputRef.current?.focus()
         }}
       >
-        <Search size={14} className="text-solar-muted shrink-0" />
+        {UI.SHOW_ICONS && <Search size={14} className="text-solar-muted shrink-0" />}
         <input
           ref={inputRef}
           type="text"
@@ -82,7 +83,7 @@ export function SearchBar({
             className="text-solar-muted hover:text-solar-text transition-solar"
             aria-label="Limpar busca"
           >
-            <X size={12} />
+            {UI.SHOW_ICONS && <X size={12} />}
           </button>
         )}
         {!query && (

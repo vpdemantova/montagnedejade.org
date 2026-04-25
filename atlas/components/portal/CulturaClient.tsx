@@ -59,7 +59,7 @@ function CreateNoticeForm({ onCreated }: { onCreated: (n: WorldNotice) => void }
     return (
       <button
         onClick={() => setOpen(true)}
-        className="text-[8px] font-mono uppercase tracking-widest px-3 py-1.5 border border-solar-amber/30 text-solar-amber/60 hover:text-solar-amber hover:border-solar-amber/60 transition-solar"
+        className="text-[8px] font-mono uppercase tracking-widest py-1.5 border border-solar-amber/30 text-solar-amber/60 hover:text-solar-amber hover:border-solar-amber/60 transition-solar"
       >
         + Nova entrada
       </button>
@@ -83,7 +83,7 @@ function CreateNoticeForm({ onCreated }: { onCreated: (n: WorldNotice) => void }
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Título da entrada"
-          className="w-full bg-solar-void/60 border border-solar-border/30 px-3 py-1.5 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40"
+          className="w-full bg-solar-void/60 border border-solar-border/30 py-1.5 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40"
         />
       </div>
 
@@ -94,7 +94,7 @@ function CreateNoticeForm({ onCreated }: { onCreated: (n: WorldNotice) => void }
           <select
             value={type}
             onChange={(e) => setType(e.target.value)}
-            className="w-full bg-solar-void/60 border border-solar-border/30 px-2 py-1.5 text-[10px] font-mono text-solar-text focus:outline-none focus:border-solar-amber/40"
+            className="w-full bg-solar-void/60 border border-solar-border/30 py-1.5 text-[10px] font-mono text-solar-text focus:outline-none focus:border-solar-amber/40"
           >
             {NOTICE_TYPE_OPTIONS.map(([k, v]) => (
               <option key={k} value={k}>{v}</option>
@@ -106,7 +106,7 @@ function CreateNoticeForm({ onCreated }: { onCreated: (n: WorldNotice) => void }
           <select
             value={area}
             onChange={(e) => setArea(e.target.value)}
-            className="w-full bg-solar-void/60 border border-solar-border/30 px-2 py-1.5 text-[10px] font-mono text-solar-text focus:outline-none focus:border-solar-amber/40"
+            className="w-full bg-solar-void/60 border border-solar-border/30 py-1.5 text-[10px] font-mono text-solar-text focus:outline-none focus:border-solar-amber/40"
           >
             {["ATLAS","ACADEMIA","ARTES","CULTURA","OBRAS","PESSOAS","STUDIO","COMPUTACAO","AULAS"].map((a) => (
               <option key={a} value={a}>{a}</option>
@@ -123,7 +123,7 @@ function CreateNoticeForm({ onCreated }: { onCreated: (n: WorldNotice) => void }
           onChange={(e) => setBody(e.target.value)}
           placeholder="Descrição ou conteúdo da entrada…"
           rows={3}
-          className="w-full bg-solar-void/60 border border-solar-border/30 px-3 py-1.5 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40 resize-none"
+          className="w-full bg-solar-void/60 border border-solar-border/30 py-1.5 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40 resize-none"
         />
       </div>
 
@@ -135,7 +135,7 @@ function CreateNoticeForm({ onCreated }: { onCreated: (n: WorldNotice) => void }
             value={author}
             onChange={(e) => setAuthor(e.target.value)}
             placeholder="opcional"
-            className="w-full bg-solar-void/60 border border-solar-border/30 px-3 py-1.5 text-[10px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40"
+            className="w-full bg-solar-void/60 border border-solar-border/30 py-1.5 text-[10px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40"
           />
         </div>
         <div>
@@ -144,7 +144,7 @@ function CreateNoticeForm({ onCreated }: { onCreated: (n: WorldNotice) => void }
             value={sourceUrl}
             onChange={(e) => setSourceUrl(e.target.value)}
             placeholder="https://…"
-            className="w-full bg-solar-void/60 border border-solar-border/30 px-3 py-1.5 text-[10px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40"
+            className="w-full bg-solar-void/60 border border-solar-border/30 py-1.5 text-[10px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40"
           />
         </div>
       </div>
@@ -204,7 +204,7 @@ function NoticeCard({ notice }: { notice: WorldNotice }) {
       )}
 
       <div className="flex items-start gap-3 mb-3">
-        <span className={`text-[8px] font-mono uppercase tracking-widest px-1.5 py-0.5 border ${style.border} ${style.text} flex-shrink-0 mt-0.5`}>
+        <span className={`text-[8px] font-mono uppercase tracking-widest py-0.5 border ${style.border} ${style.text} flex-shrink-0 mt-0.5`}>
           {NOTICE_LABELS[notice.type] ?? notice.type}
         </span>
         <p className={`text-[9px] font-mono uppercase tracking-widest ${style.text} opacity-50`}>
@@ -250,7 +250,7 @@ function RadarItemCard({ item }: { item: AtlasItemWithTags }) {
   return (
     <Link
       href={`/atlas/${item.slug ?? item.id}`}
-      className="group flex items-center gap-4 px-4 py-3 border-b border-solar-border/15 hover:bg-solar-surface/20 transition-solar"
+      className="group flex items-center gap-4 py-3 border-b border-solar-border/15 hover:bg-solar-surface/20 transition-solar"
     >
       <span className="text-[9px] font-mono text-solar-muted/30 w-14 flex-shrink-0 text-right">
         {new Date(item.createdAt).toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })}
@@ -297,7 +297,7 @@ export function CulturaClient({
       <div className="fixed inset-0 pointer-events-none z-0 bg-grid-aligned" />
 
       <header className="page-header relative z-10 border-b border-solar-border/40 pt-12 pb-6">
-        <div className="max-w-6xl mx-auto px-4 sm:px-8 md:px-12">
+        <div className="max-w-6xl mx-auto">
           <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-solar-muted/70 mb-3">
             Portal Solar · Cultura
           </p>
@@ -310,7 +310,7 @@ export function CulturaClient({
         </div>
       </header>
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-8 md:px-12 py-6">
+      <div className="relative z-10 max-w-6xl mx-auto py-6">
 
         {/* WorldBoard — 5 views */}
         <div className="mb-10">
@@ -370,7 +370,7 @@ export function CulturaClient({
               if (pessoas.length === 0) return null
               return (
                 <div className="border border-solar-border/20">
-                  <div className="border-b border-solar-border/20 px-4 py-2 flex items-center justify-between">
+                  <div className="border-b border-solar-border/20 py-2 flex items-center justify-between">
                     <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-solar-muted/40">
                       Perfis
                     </p>
@@ -381,7 +381,7 @@ export function CulturaClient({
                       <Link
                         key={item.id}
                         href={`/portal/cultura/perfil/${item.slug ?? item.id}`}
-                        className="group flex items-center gap-3 px-4 py-2.5 hover:bg-solar-surface/20 transition-solar"
+                        className="group flex items-center gap-3 py-2.5 hover:bg-solar-surface/20 transition-solar"
                       >
                         {item.coverImage ? (
                           <div className="w-7 h-7 rounded-full overflow-hidden border border-solar-border/30 flex-shrink-0">
@@ -406,7 +406,7 @@ export function CulturaClient({
 
             {/* Acervo geral (não-pessoas) */}
             <div className="border border-solar-border/20">
-              <div className="border-b border-solar-border/20 px-4 py-2 flex items-center justify-between">
+              <div className="border-b border-solar-border/20 py-2 flex items-center justify-between">
                 <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-solar-muted/40">
                   Acervo
                 </p>

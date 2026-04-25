@@ -69,7 +69,7 @@ export default function TokensPage() {
   return (
     <div className="min-h-screen pb-24">
       <header className="border-b border-solar-border/40 pt-8 pb-5">
-        <div className="max-w-2xl mx-auto px-4 md:px-6">
+        <div className="max-w-2xl mx-auto">
           <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-solar-muted/40 mb-2">
             <Link href="/social" className="hover:text-solar-muted transition-colors">Rede Solar</Link>
             {" · "}Tokens
@@ -79,7 +79,7 @@ export default function TokensPage() {
         </div>
       </header>
 
-      <div className="max-w-2xl mx-auto px-4 md:px-6 py-6 space-y-6">
+      <div className="max-w-2xl mx-auto py-6 space-y-6">
 
         {/* Equipped showcase */}
         {equipped.length > 0 && (
@@ -89,7 +89,7 @@ export default function TokensPage() {
               {equipped.map((t) => (
                 <div
                   key={t.id}
-                  className="flex items-center gap-2 px-3 py-2 border"
+                  className="flex items-center gap-2 py-2 border"
                   style={{
                     borderColor: `${RARITY_COLORS[t.rarity] ?? "#888"}40`,
                     background:  `${RARITY_COLORS[t.rarity] ?? "#888"}10`,

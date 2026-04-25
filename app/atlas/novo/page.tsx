@@ -59,7 +59,7 @@ function NovoItemForm() {
       <div className="fixed inset-0 pointer-events-none z-0 bg-grid-aligned" />
 
       <header className="page-header relative z-10 border-b border-solar-border/40 pt-8 sm:pt-12 pb-5 sm:pb-6">
-        <div className="max-w-3xl mx-auto px-4 sm:px-8">
+        <div className="max-w-3xl mx-auto">
           <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-solar-muted/70 mb-3">
             Atlas · Novo item
           </p>
@@ -69,7 +69,7 @@ function NovoItemForm() {
         </div>
       </header>
 
-      <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-8 py-6 sm:py-10 space-y-6">
+      <div className="relative z-10 max-w-3xl mx-auto py-6 sm:py-10 space-y-6">
 
         {/* Título */}
         <div>
@@ -95,7 +95,7 @@ function NovoItemForm() {
             <select
               value={area}
               onChange={(e) => setArea(e.target.value)}
-              className="w-full bg-solar-surface border border-solar-border/40 px-3 py-2 text-[11px] font-mono text-solar-text focus:outline-none focus:border-solar-amber/40 transition-solar"
+              className="w-full bg-solar-surface border border-solar-border/40 py-2 text-[11px] font-mono text-solar-text focus:outline-none focus:border-solar-amber/40 transition-solar"
             >
               {Object.entries(AREA_LABELS).map(([k, v]) => (
                 <option key={k} value={k} style={{ background: "#1C1C26" }}>{v}</option>
@@ -109,7 +109,7 @@ function NovoItemForm() {
             <select
               value={type}
               onChange={(e) => setType(e.target.value)}
-              className="w-full bg-solar-surface border border-solar-border/40 px-3 py-2 text-[11px] font-mono text-solar-text focus:outline-none focus:border-solar-amber/40 transition-solar"
+              className="w-full bg-solar-surface border border-solar-border/40 py-2 text-[11px] font-mono text-solar-text focus:outline-none focus:border-solar-amber/40 transition-solar"
             >
               {Object.entries(TYPE_LABELS).map(([k, v]) => (
                 <option key={k} value={k} style={{ background: "#1C1C26" }}>{v}</option>
@@ -127,7 +127,7 @@ function NovoItemForm() {
             value={coverImage}
             onChange={(e) => setCoverImage(e.target.value)}
             placeholder="https://…"
-            className="w-full bg-solar-deep/50 border border-solar-border/30 px-3 py-2 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40 transition-solar"
+            className="w-full bg-solar-deep/50 border border-solar-border/30 py-2 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40 transition-solar"
           />
           {coverImage && (
             <div className="mt-2 border border-solar-border/20 relative h-40">
@@ -145,7 +145,7 @@ function NovoItemForm() {
             value={tags}
             onChange={(e) => setTags(e.target.value)}
             placeholder={isPersonType ? "Compositor, Barroco, Itália…" : "Conceito, Renascimento…"}
-            className="w-full bg-solar-deep/50 border border-solar-border/30 px-3 py-2 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40 transition-solar"
+            className="w-full bg-solar-deep/50 border border-solar-border/30 py-2 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40 transition-solar"
           />
         </div>
 
@@ -160,7 +160,7 @@ function NovoItemForm() {
               onChange={(e) => setYearStart(e.target.value)}
               placeholder="1685"
               type="number"
-              className="w-full bg-solar-deep/50 border border-solar-border/30 px-3 py-2 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40 transition-solar"
+              className="w-full bg-solar-deep/50 border border-solar-border/30 py-2 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40 transition-solar"
             />
           </div>
           <div>
@@ -172,7 +172,7 @@ function NovoItemForm() {
               onChange={(e) => setYearEnd(e.target.value)}
               placeholder="1750"
               type="number"
-              className="w-full bg-solar-deep/50 border border-solar-border/30 px-3 py-2 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40 transition-solar"
+              className="w-full bg-solar-deep/50 border border-solar-border/30 py-2 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40 transition-solar"
             />
           </div>
           <div>
@@ -183,7 +183,7 @@ function NovoItemForm() {
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               placeholder="Alemanha"
-              className="w-full bg-solar-deep/50 border border-solar-border/30 px-3 py-2 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40 transition-solar"
+              className="w-full bg-solar-deep/50 border border-solar-border/30 py-2 text-[11px] font-mono text-solar-text placeholder:text-solar-muted/25 focus:outline-none focus:border-solar-amber/40 transition-solar"
             />
           </div>
         </div>

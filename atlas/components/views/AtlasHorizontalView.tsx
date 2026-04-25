@@ -3,6 +3,7 @@
 import { useState } from "react"
 import type { AtlasItemWithTags } from "@/atlas/types"
 import { AREA_LABELS, TYPE_LABELS } from "@/atlas/types"
+import { CoverImage } from "@/atlas/components/ui/CoverImage"
 
 type Props = {
   items:       AtlasItemWithTags[]
@@ -39,20 +40,6 @@ function periodStr(period?: { start?: number; end?: number }): string {
   return `${fmt(period.start)} – ${fmt(period.end)}`
 }
 
-// ── Placeholder monochrome ────────────────────────────────────────────────────
-
-function Placeholder({ initial, size }: { initial: string; size: number }) {
-  return (
-    <div className="w-full h-full flex items-center justify-center select-none bg-solar-surface/40">
-      <span
-        className="font-display font-bold text-solar-text/10"
-        style={{ fontSize: size }}
-      >
-        {initial}
-      </span>
-    </div>
-  )
-}
 
 // ── Card — estilo editorial ────────────────────────────────────────────────────
 
@@ -69,7 +56,6 @@ function Card({
   const period    = meta.period as { start?: number; end?: number } | undefined
   const location  = (meta.location ?? "") as string
   const typeLabel = TYPE_LABELS[item.type as keyof typeof TYPE_LABELS] ?? item.type
-  const initial   = item.title.charAt(0).toUpperCase()
   const dims      = CARD_DIMS[style]
   const seqNum    = String(index + 1).padStart(2, "0")
 
@@ -80,20 +66,13 @@ function Card({
       style={{ width: `${dims.w}px`, height: `${dims.h}px` }}
     >
       {/* Imagem */}
-      <div className="relative flex-shrink-0 overflow-hidden bg-solar-surface/20" style={{ width: dims.imgW }}>
-        {imageUrl ? (
-          <img
-            src={imageUrl}
-            alt={item.title}
-            className="w-full h-full object-cover opacity-75 group-hover:opacity-90 transition-opacity duration-200"
-            loading="lazy"
-          />
-        ) : (
-          <Placeholder
-            initial={initial}
-            size={style === "compact" ? 20 : style === "standard" ? 28 : 40}
-          />
-        )}
+      <div className="relative flex-shrink-0 overflow-hidden" style={{ width: dims.imgW }}>
+        <CoverImage
+          src={imageUrl}
+          alt={item.title}
+          name={item.title}
+          className="w-full h-full object-cover opacity-75 group-hover:opacity-90 transition-opacity duration-200"
+        />
         {/* Sequence overlay */}
         <span className="absolute bottom-1 left-1 font-mono text-[8px] text-solar-muted/20 leading-none">
           {seqNum}

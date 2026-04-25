@@ -2,6 +2,7 @@
 
 import type { AtlasItemWithTags } from "@/atlas/types"
 import { AREA_LABELS, TYPE_LABELS } from "@/atlas/types"
+import { CoverImage } from "@/atlas/components/ui/CoverImage"
 
 type Props = {
   items:       AtlasItemWithTags[]
@@ -65,7 +66,6 @@ export function AutoresView({ items, onItemClick }: Props) {
               const period    = meta.period as { start?: number; end?: number } | undefined
               const location  = (meta.location ?? meta.country ?? meta.nationality ?? "") as string
               const isFav     = person.isFavorite || person.status === "FAVORITE"
-              const initial   = person.title.charAt(0).toUpperCase()
 
               return (
                 <button
@@ -75,21 +75,13 @@ export function AutoresView({ items, onItemClick }: Props) {
                   style={{ "--stagger-delay": `${i * 40}ms` } as React.CSSProperties}
                 >
                   {/* Portrait */}
-                  <div className="relative aspect-[3/4] overflow-hidden bg-solar-surface/40">
-                    {imageUrl ? (
-                      <img
-                        src={imageUrl}
-                        alt={person.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <span className="font-display text-6xl text-solar-amber/15 group-hover:text-solar-amber/25 transition-colors select-none">
-                          {initial}
-                        </span>
-                      </div>
-                    )}
+                  <div className="relative aspect-[3/4] overflow-hidden">
+                    <CoverImage
+                      src={imageUrl}
+                      alt={person.title}
+                      name={person.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
                     {isFav && (
                       <span className="absolute top-2 left-2 text-solar-amber text-[10px]">★</span>
                     )}

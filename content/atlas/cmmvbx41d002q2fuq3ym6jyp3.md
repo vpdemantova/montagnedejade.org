@@ -13,8 +13,8 @@ tags:
   - Obras
   - Escultura
 createdAt: 2026-03-18T00:54:53.617Z
-updatedAt: 2026-03-19T03:57:38.985Z
+updatedAt: 2026-04-23T22:10:12.007Z
 created: '2026-03-18T00:54:53.617Z'
-updated: '2026-03-19T03:57:39.009Z'
+updated: '2026-04-23T22:10:12.258Z'
 ---
 

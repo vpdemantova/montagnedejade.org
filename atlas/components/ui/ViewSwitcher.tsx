@@ -6,6 +6,7 @@ import {
   type LucideIcon,
 } from "lucide-react"
 import { ViewType } from "@/atlas/types"
+import { UI } from "@/portal.config"
 
 type ViewSwitcherProps = {
   current:  string
@@ -76,7 +77,7 @@ function ViewBtn({
         }
       `}
     >
-      <Icon size={13} strokeWidth={1.5} />
+      {UI.SHOW_ICONS && <Icon size={13} strokeWidth={1.5} />}
     </button>
   )
 }

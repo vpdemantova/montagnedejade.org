@@ -14,7 +14,7 @@ export type PatternId = "none" | "grid" | "dots" | "horizontal" | "diagonal" | "
 export type InterfaceMode = "FOCUS" | "CONTEMPLATION" | "ATLAS" | "PUBLIC"
 
 export type SolarTheme =
-  | "editorial" | "default" | "papel-amarelo" | "terminal" | "blueprint" | "academia"
+  | "pergaminho" | "editorial" | "default" | "papel-amarelo" | "terminal" | "blueprint" | "academia"
   | "azulejo" | "floresta" | "aurora" | "jazz" | "manuscrito"
   | "neon-tokyo" | "mercurio" | "vulcao" | "gelo" | "carvao"
   | "museu" | "submarino" | "botanica" | "cosmos-violeta" | "mapa-antigo"
@@ -218,7 +218,7 @@ export const useSolarStore = create<SolarStore>()(
       mode:     "ATLAS",
       setMode:  (mode) => set({ mode }),
 
-      theme:    "editorial",
+      theme:    "pergaminho",
       setTheme: (theme) => set({ theme }),
 
       sidebarExpanded: { portal: true, compass: true },
@@ -286,7 +286,7 @@ export const useSolarStore = create<SolarStore>()(
       migrate: (persisted: unknown, fromVersion: number) => {
         const s = persisted as Partial<SolarStore> & { _version?: number }
         if (fromVersion < 3) {
-          return { ...s, theme: "editorial" as const, mode: "ATLAS" as const }
+          return { ...s, theme: "pergaminho" as const, mode: "ATLAS" as const }
         }
         return s
       },

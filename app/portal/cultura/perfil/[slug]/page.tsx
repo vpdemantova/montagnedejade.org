@@ -97,7 +97,7 @@ export default async function PerfilCulturaPage({
           <div className="h-32 bg-gradient-to-b from-solar-deep to-solar-void" />
         )}
 
-        <div className="max-w-4xl mx-auto px-4 sm:px-8 md:px-12 pb-8 -mt-16 relative z-10">
+        <div className="max-w-4xl mx-auto pb-8 -mt-16 relative z-10">
           {/* Avatar placeholder */}
           {!person.coverImage && (
             <div className="w-20 h-20 border border-solar-border/40 bg-solar-surface/30 flex items-center justify-center mb-4">
@@ -139,7 +139,7 @@ export default async function PerfilCulturaPage({
                   {person.tags.map((tag) => (
                     <span
                       key={tag.id}
-                      className="text-[8px] font-mono px-2 py-0.5 border border-solar-border/40 text-solar-muted/60 uppercase tracking-widest"
+                      className="text-[8px] font-mono py-0.5 border border-solar-border/40 text-solar-muted/60 uppercase tracking-widest"
                     >
                       {tag.name}
                     </span>
@@ -151,7 +151,7 @@ export default async function PerfilCulturaPage({
             {/* Edit link — subtle */}
             <Link
               href={`/atlas/${person.slug ?? person.id}`}
-              className="flex-shrink-0 text-[8px] font-mono uppercase tracking-widest text-solar-muted/25 hover:text-solar-amber/50 transition-solar border border-solar-border/15 px-2 py-1 hover:border-solar-amber/20 mt-2"
+              className="flex-shrink-0 text-[8px] font-mono uppercase tracking-widest text-solar-muted/25 hover:text-solar-amber/50 transition-solar border border-solar-border/15 py-1 hover:border-solar-amber/20 mt-2"
             >
               Editar →
             </Link>
@@ -160,7 +160,7 @@ export default async function PerfilCulturaPage({
       </div>
 
       {/* ── Conteúdo ── */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-8 md:px-12 py-10">
+      <div className="max-w-4xl mx-auto py-10">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
 
           {/* Coluna principal */}

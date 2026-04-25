@@ -115,7 +115,7 @@ export function RelationGraphClient() {
     <div className="relative min-h-screen">
       {/* Header */}
       <header className="page-header relative z-10 border-b border-solar-border/40 pt-12 pb-0">
-        <div className="max-w-6xl mx-auto px-4 sm:px-8 md:px-12">
+        <div className="max-w-6xl mx-auto">
           <div className="flex items-center gap-2 mb-3">
             <Link href="/atlas" className="text-[9px] font-mono uppercase tracking-[0.2em] text-solar-muted/50 hover:text-solar-amber transition-solar">
               Atlas
@@ -148,8 +148,8 @@ export function RelationGraphClient() {
 
       {/* Selected item panel */}
       {selected && (
-        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-8 md:px-12 py-3">
-          <div className="flex items-center gap-4 px-4 py-3 border border-solar-amber/20 bg-solar-amber/5">
+        <div className="relative z-10 max-w-6xl mx-auto py-3">
+          <div className="flex items-center gap-4 py-3 border border-solar-amber/20 bg-solar-amber/5">
             <div
               className="w-2 h-2 rounded-full flex-shrink-0"
               style={{ background: AREA_COLORS[selected.area] ?? "#C8A45A" }}
@@ -175,7 +175,7 @@ export function RelationGraphClient() {
       )}
 
       {/* Graph */}
-      <div ref={containerRef} className="relative z-10 max-w-6xl mx-auto px-4 sm:px-8 md:px-12 pb-24">
+      <div ref={containerRef} className="relative z-10 max-w-6xl mx-auto pb-24">
         {loading ? (
           <div
             className="flex items-center justify-center border border-dashed border-solar-border/15"
