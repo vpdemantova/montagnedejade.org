@@ -16,6 +16,7 @@ export async function GET(_req: Request, { params }: Params) {
       select: {
         id: true, username: true, displayName: true,
         bio: true, avatarUrl: true, accentColor: true, createdAt: true,
+        invitedBy: { select: { username: true, displayName: true, accentColor: true } },
         _count: {
           select: { followers: true, following: true, interests: true, posts: true },
         },

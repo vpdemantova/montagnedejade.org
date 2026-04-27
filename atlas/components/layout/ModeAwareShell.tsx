@@ -35,7 +35,8 @@ export function ModeAwareShell({ children }: { children: React.ReactNode }) {
         top:  nav(38) + breadcrumb(28) + gap(4) = 70px
         bot:  nav(38) = 38px
       */}
-      <div className="pt-[70px] pb-[38px] min-h-screen" style={{ paddingLeft: NAV_PAD, paddingRight: NAV_PAD }}>
+      <div className="fixed inset-0 pointer-events-none z-0 bg-grid-aligned" />
+      <div className="relative z-10 pt-[70px] pb-[38px] min-h-screen" style={{ paddingLeft: NAV_PAD, paddingRight: NAV_PAD }}>
         {children}
       </div>
     </div>

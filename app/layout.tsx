@@ -4,11 +4,12 @@ import { LenisProvider }        from "@/atlas/components/layout/LenisProvider"
 import { PageTransition }       from "@/atlas/components/layout/PageTransition"
 import { NavProgress }          from "@/atlas/components/layout/NavProgress"
 import { GlobalSearch }         from "@/atlas/components/ui/GlobalSearch"
-import { QuickCapture, QuickCaptureButton } from "@/atlas/components/ui/QuickCapture"
+import { QuickCapture } from "@/atlas/components/ui/QuickCapture"
 import { ModeAwareShell }       from "@/atlas/components/layout/ModeAwareShell"
 import { OnboardingOverlay }    from "@/atlas/components/layout/OnboardingOverlay"
 import { ThemeApplier }         from "@/atlas/components/layout/ThemeApplier"
 import { KeyboardShortcuts }    from "@/atlas/components/ui/KeyboardShortcuts"
+import { EntryCard }            from "@/atlas/components/ui/EntryCard"
 
 import "./globals.css"
 
@@ -57,9 +58,9 @@ export default function RootLayout({
           </ModeAwareShell>
           <GlobalSearch />
           <QuickCapture />
-          <QuickCaptureButton />
           <KeyboardShortcuts />
           <OnboardingOverlay />
+          <EntryCard />
         </LenisProvider>
       </body>
     </html>

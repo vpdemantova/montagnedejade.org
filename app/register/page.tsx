@@ -1,11 +1,13 @@
 "use client"
 
-import { useState, FormEvent } from "react"
-import { useRouter } from "next/navigation"
+import { useState, FormEvent, Suspense } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 
-export default function RegisterPage() {
-  const router = useRouter()
+function RegisterForm() {
+  const router        = useRouter()
+  const searchParams  = useSearchParams()
+  const invitedBy     = searchParams.get("ref") ?? undefined
 
   const [username,    setUsername]    = useState("")
   const [displayName, setDisplayName] = useState("")
@@ -27,7 +29,7 @@ export default function RegisterPage() {
     const res = await fetch("/api/auth/register", {
       method:  "POST",
       headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify({ username, displayName, password }),
+      body:    JSON.stringify({ username, displayName, password, invitedByUsername: invitedBy }),
     })
 
     if (res.ok) {
@@ -40,19 +42,31 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#08080C]">
+    <div className="min-h-screen flex items-center justify-center" style={{ background: "rgb(var(--c-void))" }}>
       <div className="w-full max-w-sm">
+
         {/* Logo */}
-        <div className="flex flex-col items-center gap-3 mb-12">
-          <div className="w-14 h-14 border border-[#C8A45A]/20 rounded-full flex items-center justify-center">
-            <span className="font-mono text-[#C8A45A]/50 text-2xl leading-none">☀</span>
+        <div className="flex flex-col items-center gap-3 mb-10">
+          <div className="w-12 h-12 flex items-center justify-center"
+            style={{ border: "1px solid rgb(var(--c-accent) / 0.2)" }}>
+            <span className="font-mono text-2xl leading-none" style={{ color: "rgb(var(--c-accent) / 0.5)" }}>☀</span>
           </div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#C8A45A]/30">Portal Solar</p>
+          <p className="page-label">Portal Solar</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="border border-[#2A2A2A] bg-[#0D0D12]">
-          <div className="px-8 py-6 border-b border-[#2A2A2A] space-y-5">
-            <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#555]">Criar perfil</p>
+        {invitedBy && (
+          <div className="mb-4 px-5 py-3 text-center font-mono text-[8px]"
+            style={{ border: "1px solid rgb(var(--c-accent) / 0.2)", color: "rgb(var(--c-muted) / 0.7)" }}>
+            <span style={{ color: "rgb(var(--c-accent) / 0.8)" }}>@{invitedBy}</span> te convida para o Portal Solar
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}
+          style={{ border: "1px solid rgb(var(--c-border) / 0.25)", background: "rgb(var(--c-deep) / 0.4)" }}>
+
+          <div className="px-8 py-6 space-y-5"
+            style={{ borderBottom: "1px solid rgb(var(--c-border) / 0.2)" }}>
+            <p className="section-label">Criar perfil</p>
 
             <div>
               <input
@@ -64,49 +78,48 @@ export default function RegisterPage() {
                 autoComplete="username"
                 required
                 maxLength={20}
-                className="w-full bg-transparent font-mono text-sm text-white/80 placeholder-[#444] outline-none border-b border-[#2A2A2A] pb-2 focus:border-[#C8A45A]/40 transition-colors"
+                className="w-full bg-transparent font-mono text-sm outline-none pb-2 transition-colors"
+                style={{
+                  color: "rgb(var(--c-text) / 0.8)",
+                  borderBottom: "1px solid rgb(var(--c-border) / 0.3)",
+                }}
+                onFocus={(e) => e.currentTarget.style.borderBottomColor = "rgb(var(--c-accent) / 0.4)"}
+                onBlur={(e) => e.currentTarget.style.borderBottomColor = "rgb(var(--c-border) / 0.3)"}
               />
-              <p className="font-mono text-[8px] text-[#444] mt-1">Apenas letras, números e _ · Imutável depois de criado</p>
+              <p className="font-mono text-[7.5px] mt-1" style={{ color: "rgb(var(--c-muted) / 0.4)" }}>
+                Apenas letras, números e _ · Você pode mudar depois nas configurações
+              </p>
             </div>
 
-            <input
-              type="text"
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-              placeholder="Nome de exibição"
-              autoComplete="name"
-              required
-              maxLength={40}
-              className="w-full bg-transparent font-mono text-sm text-white/80 placeholder-[#444] outline-none border-b border-[#2A2A2A] pb-2 focus:border-[#C8A45A]/40 transition-colors"
-            />
+            {[
+              { value: displayName, set: setDisplayName, placeholder: "Nome de exibição", type: "text",     autoComplete: "name" },
+              { value: password,    set: setPassword,    placeholder: "Senha (mín. 6 caracteres)", type: "password", autoComplete: "new-password" },
+              { value: confirm,     set: setConfirm,     placeholder: "Confirmar senha",  type: "password", autoComplete: "new-password" },
+            ].map(({ value, set, placeholder, type, autoComplete }) => (
+              <input
+                key={placeholder}
+                type={type}
+                value={value}
+                onChange={(e) => set(e.target.value)}
+                placeholder={placeholder}
+                autoComplete={autoComplete}
+                required
+                className="w-full bg-transparent font-mono text-sm outline-none pb-2 transition-colors"
+                style={{
+                  color: "rgb(var(--c-text) / 0.8)",
+                  borderBottom: "1px solid rgb(var(--c-border) / 0.3)",
+                }}
+                onFocus={(e) => e.currentTarget.style.borderBottomColor = "rgb(var(--c-accent) / 0.4)"}
+                onBlur={(e) => e.currentTarget.style.borderBottomColor = "rgb(var(--c-border) / 0.3)"}
+              />
+            ))}
 
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Senha (mín. 6 caracteres)"
-              autoComplete="new-password"
-              required
-              className="w-full bg-transparent font-mono text-sm text-white/80 placeholder-[#444] outline-none border-b border-[#2A2A2A] pb-2 focus:border-[#C8A45A]/40 transition-colors"
-            />
+            {error && <p className="font-mono text-[9px] text-red-400/70">{error}</p>}
 
-            <input
-              type="password"
-              value={confirm}
-              onChange={(e) => setConfirm(e.target.value)}
-              placeholder="Confirmar senha"
-              autoComplete="new-password"
-              required
-              className="w-full bg-transparent font-mono text-sm text-white/80 placeholder-[#444] outline-none border-b border-[#2A2A2A] pb-2 focus:border-[#C8A45A]/40 transition-colors"
-            />
-
-            {error && (
-              <p className="font-mono text-[9px] text-red-400/70">{error}</p>
-            )}
-
-            <p className="font-mono text-[8px] text-[#444] leading-relaxed">
-              Ao criar sua conta você ganha <span className="text-[#C8A45A]/60">3 Tickets Solares</span> de boas-vindas,
-              incluindo um <span className="text-[#C8A45A]/60">Ticket Fundador</span> exclusivo.
+            <p className="font-mono text-[7.5px] leading-relaxed" style={{ color: "rgb(var(--c-muted) / 0.4)" }}>
+              Ao criar sua conta você ganha{" "}
+              <span style={{ color: "rgb(var(--c-accent) / 0.7)" }}>3 Tickets Solares</span> de boas-vindas,
+              incluindo um <span style={{ color: "rgb(var(--c-accent) / 0.7)" }}>Ticket Fundador</span> exclusivo.
             </p>
           </div>
 
@@ -114,19 +127,24 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={loading || !username || !displayName || !password || !confirm}
-              className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#C8A45A]/60 hover:text-[#C8A45A] disabled:text-[#444] disabled:cursor-not-allowed transition-colors py-2"
+              className="btn btn-primary btn-md"
             >
               {loading ? "Criando…" : "Criar conta →"}
             </button>
-            <Link
-              href="/login"
-              className="font-mono text-[9px] text-[#555] hover:text-[#C8A45A]/50 transition-colors"
-            >
+            <Link href="/login" className="btn btn-subtle btn-sm">
               Já tenho conta
             </Link>
           </div>
         </form>
       </div>
     </div>
+  )
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense>
+      <RegisterForm />
+    </Suspense>
   )
 }

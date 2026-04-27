@@ -24,7 +24,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-portal.tasks.ts
+portal.tasks.md
+portal.tasks.main.md
+
 
 # local env files
 .env

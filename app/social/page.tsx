@@ -43,6 +43,17 @@ type Me = {
   accentColor: string
 }
 
+type MemberUser = {
+  id:          string
+  username:    string
+  displayName: string
+  bio:         string | null
+  avatarUrl:   string | null
+  accentColor: string
+  createdAt:   string
+  _count:      { followers: number; posts: number; interests: number }
+}
+
 // Area labels for posts — use monochrome accent instead of per-area colors
 const AREA_LABELS_MAP: Record<string, string> = {
   ACADEMIA: "Academia", ARTES: "Artes", CULTURA: "Cultura",
@@ -60,9 +71,11 @@ export default function SocialPage() {
   const [loading,      setLoading]      = useState(true)
   const [posting,      setPosting]      = useState(false)
   const [postText,     setPostText]     = useState("")
-  const [tab,          setTab]          = useState<"feed" | "descobrir" | "tokens">("feed")
+  const [tab,          setTab]          = useState<"feed" | "descobrir" | "tokens" | "comunidade">("feed")
   const [tokens,       setTokens]       = useState<UserToken[]>([])
   const [tokensLoaded, setTokensLoaded] = useState(false)
+  const [members,      setMembers]      = useState<MemberUser[]>([])
+  const [membersLoaded,setMembersLoaded] = useState(false)
   const [likingIds,    setLikingIds]    = useState<Set<string>>(new Set())
 
   const loadData = useCallback(async () => {
@@ -93,6 +106,17 @@ export default function SocialPage() {
       })
     }
   }, [tab, tokensLoaded])
+
+  useEffect(() => {
+    if (tab === "comunidade" && !membersLoaded) {
+      fetch("/api/social/members?limit=100")
+        .then((r) => r.ok ? r.json() : { users: [] })
+        .then((data: { users: MemberUser[] }) => {
+          setMembers(data.users ?? [])
+          setMembersLoaded(true)
+        })
+    }
+  }, [tab, membersLoaded])
 
   const loadMore = async () => {
     if (!nextCursor || loadingMore) return
@@ -169,14 +193,14 @@ export default function SocialPage() {
 
   return (
     <div className="min-h-screen pb-24">
-      <header className="border-b border-solar-border/30 pt-10 pb-6">
-        <div className="max-w-2xl mx-auto">
-          <p className="editorial-label text-solar-muted/35 mb-3">PORTAL SOLAR / REDE</p>
+      <header className="ph">
+        <div className="page-narrow">
+          <p className="page-label mb-3">Portal Solar · Rede</p>
           <h1 className="page-hero text-solar-text leading-none">REDE<br/>SOLAR</h1>
         </div>
       </header>
 
-      <div className="max-w-2xl mx-auto py-6 space-y-6">
+      <div className="page-narrow py-6 space-y-6">
 
         {/* Compose */}
         {me && (
@@ -201,16 +225,7 @@ export default function SocialPage() {
               />
             </div>
             <div className="flex justify-end">
-              <button
-                onClick={handlePost}
-                disabled={posting || !postText.trim()}
-                className="px-5 py-1.5 text-[10px] font-mono uppercase tracking-widest transition-all disabled:opacity-30"
-                style={{
-                  background:  "rgb(var(--c-accent) / 0.15)",
-                  color:       "rgb(var(--c-accent))",
-                  border:      "1px solid rgb(var(--c-accent) / 0.3)",
-                }}
-              >
+              <button onClick={handlePost} disabled={posting || !postText.trim()} className="btn btn-primary btn-sm">
                 {posting ? "Publicando…" : "Publicar →"}
               </button>
             </div>
@@ -218,21 +233,15 @@ export default function SocialPage() {
         )}
 
         {/* Tabs */}
-        <div className="flex gap-1 border-b border-solar-border/30">
+        <div className="tab-bar scrollbar-hide">
           {([
-            { key: "feed",      label: "Feed"           },
-            { key: "descobrir", label: "Descobrir"      },
-            { key: "tokens",    label: "Minha coleção"  },
+            { key: "feed",       label: "Feed"           },
+            { key: "comunidade", label: "Comunidade"     },
+            { key: "descobrir",  label: "Descobrir"      },
+            { key: "tokens",     label: "Minha coleção"  },
           ] as const).map((t) => (
-            <button
-              key={t.key}
-              onClick={() => setTab(t.key)}
-              className={`px-4 py-2 text-[10px] font-mono uppercase tracking-widest transition-colors border-b-2 -mb-px
-                ${tab === t.key
-                  ? "border-solar-accent text-solar-accent"
-                  : "border-transparent text-solar-muted/40 hover:text-solar-muted"
-                }`}
-            >
+            <button key={t.key} onClick={() => setTab(t.key)} className="tab"
+              data-active={tab === t.key ? "true" : undefined}>
               {t.label}
             </button>
           ))}
@@ -381,6 +390,90 @@ export default function SocialPage() {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Comunidade — todos os perfis registrados */}
+        {tab === "comunidade" && (
+          <div>
+            <div className="flex items-center justify-between mb-5">
+              <p className="font-mono text-[7.5px] uppercase tracking-[0.3em]" style={{ color: "rgb(var(--c-muted) / 0.5)" }}>
+                {members.length} {members.length === 1 ? "membro" : "membros"} · Portal Solar
+              </p>
+            </div>
+
+            {!membersLoaded && (
+              <p className="font-mono text-[8px] animate-pulse" style={{ color: "rgb(var(--c-muted) / 0.35)" }}>Carregando membros…</p>
+            )}
+
+            <div className="grid gap-3" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))" }}>
+              {members.map((u) => (
+                <Link
+                  key={u.id}
+                  href={`/perfil/${u.username}`}
+                  className="group flex flex-col overflow-hidden transition-all duration-150 hover:scale-[1.01]"
+                  style={{ border: "1px solid rgb(var(--c-border) / 0.2)", background: "rgb(var(--c-deep))" }}
+                >
+                  {/* Topo colorido com avatar */}
+                  <div className="relative h-16" style={{ background: `linear-gradient(135deg, ${u.accentColor}22, ${u.accentColor}08)` }}>
+                    <div
+                      className="absolute bottom-0 left-4 translate-y-1/2 w-10 h-10 rounded-full overflow-hidden"
+                      style={{ border: `2px solid ${u.accentColor}50`, background: "rgb(var(--c-deep))" }}
+                    >
+                      {u.avatarUrl
+                        ? <img src={u.avatarUrl} alt={u.displayName} className="w-full h-full object-cover" />
+                        : (
+                          <div className="w-full h-full flex items-center justify-center font-bold text-sm"
+                            style={{ background: `${u.accentColor}30`, color: u.accentColor }}>
+                            {u.displayName[0]?.toUpperCase()}
+                          </div>
+                        )
+                      }
+                    </div>
+                    {/* Acento */}
+                    <div className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full" style={{ background: u.accentColor }} />
+                  </div>
+
+                  {/* Info */}
+                  <div className="px-4 pt-7 pb-4">
+                    <p className="font-display text-[13px] leading-tight group-hover:opacity-80 transition-opacity" style={{ color: "rgb(var(--c-text) / 0.88)" }}>
+                      {u.displayName}
+                    </p>
+                    <p className="font-mono text-[7.5px] mb-2" style={{ color: u.accentColor + "99" }}>
+                      @{u.username}
+                    </p>
+                    {u.bio && (
+                      <p className="font-mono text-[7.5px] line-clamp-2 mb-3" style={{ color: "rgb(var(--c-muted) / 0.55)" }}>
+                        {u.bio}
+                      </p>
+                    )}
+                    <div className="flex gap-3">
+                      {[
+                        { val: u._count.followers, label: "seg" },
+                        { val: u._count.posts,     label: "posts" },
+                        { val: u._count.interests, label: "atlas" },
+                      ].map((m) => (
+                        <div key={m.label}>
+                          <span className="font-mono text-[9px] tabular-nums" style={{ color: "rgb(var(--c-text) / 0.65)" }}>{m.val} </span>
+                          <span className="font-mono text-[7px]" style={{ color: "rgb(var(--c-muted) / 0.4)" }}>{m.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            {members.length === 0 && membersLoaded && (
+              <div className="py-16 text-center">
+                <p className="font-mono text-[9px] uppercase tracking-widest" style={{ color: "rgb(var(--c-muted) / 0.35)" }}>
+                  Nenhum membro ainda
+                </p>
+                <Link href="/register" className="font-mono text-[8px] mt-2 block" style={{ color: "rgb(var(--c-accent) / 0.7)" }}>
+                  Criar o primeiro perfil →
+                </Link>
+              </div>
+            )}
           </div>
         )}
 

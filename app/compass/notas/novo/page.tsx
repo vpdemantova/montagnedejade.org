@@ -54,21 +54,15 @@ export default function NovaNotaPage() {
   }
 
   return (
-    <div className="relative min-h-screen">
-      <div className="fixed inset-0 pointer-events-none z-0 bg-grid-aligned" />
-
-      <header className="page-header relative z-10 border-b border-solar-border/40 pt-12 pb-6">
-        <div className="max-w-4xl mx-auto">
-          <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-compass-neon-dim/60 mb-3">
-            Numita Compass · Notas · Nova
-          </p>
-          <h1 className="font-display text-[36px] leading-none text-solar-text font-semibold tracking-tight">
-            Nova nota
-          </h1>
+    <div className="min-h-screen">
+      <header className="ph">
+        <div className="page-standard">
+          <p className="page-label mb-3">Compass · Notas · Nova</p>
+          <h1 className="page-title">Nova nota</h1>
         </div>
       </header>
 
-      <div className="relative z-10 max-w-4xl mx-auto py-10 space-y-8">
+      <div className="page-standard py-10 space-y-8">
 
         {/* Mode selector */}
         <div>

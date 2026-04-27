@@ -159,36 +159,26 @@ export default function NotasPage() {
   }
 
   return (
-    <div className="relative min-h-screen">
-      <div className="fixed inset-0 pointer-events-none z-0 bg-grid-aligned" />
-
-      <header className="relative z-10 border-b border-solar-border/30 pt-10 pb-6">
-        <div className="max-w-6xl mx-auto">
-          <p className="editorial-label text-solar-muted/35 mb-3">COMPASS / NOTAS</p>
-          <div className="flex items-end justify-between gap-6">
-            <div>
-              <h1 className="page-hero text-solar-text leading-none">{notes.length > 0 ? `${notes.length}` : ""}</h1>
-              <p className="font-mono text-[11px] text-solar-muted/40 mt-1">notas · idéias · links</p>
-            </div>
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <button
-                onClick={() => openQuickCapture("nota")}
-                className="px-4 py-2 border border-solar-accent/35 text-[9px] font-mono uppercase tracking-[0.2em] text-solar-accent/70 hover:bg-solar-accent/10 hover:text-solar-accent transition-colors"
-              >
-                ⌘N Capturar
-              </button>
-              <Link
-                href="/compass/notas/novo"
-                className="px-4 py-2 bg-solar-text text-solar-void text-[9px] font-mono uppercase tracking-[0.2em] hover:opacity-80 transition-opacity"
-              >
-                + Nota completa
-              </Link>
-            </div>
+    <div className="min-h-screen">
+      <header className="ph">
+        <div className="page-wide flex items-end justify-between gap-6">
+          <div>
+            <p className="page-label mb-3">Compass · Notas</p>
+            <h1 className="page-hero text-solar-text leading-none">{notes.length > 0 ? `${notes.length}` : "—"}</h1>
+            <p className="page-subtitle">notas · idéias · links</p>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0 mb-1">
+            <button onClick={() => openQuickCapture("nota")} className="btn btn-ghost btn-md">
+              ⌘N Capturar
+            </button>
+            <Link href="/compass/notas/novo" className="btn btn-solid btn-md">
+              + Nota completa
+            </Link>
           </div>
         </div>
       </header>
 
-      <div className="relative z-10 max-w-6xl mx-auto py-6 space-y-3">
+      <div className="page-wide py-6 space-y-3">
 
         {/* Filter bar */}
         <div className="flex items-center justify-between gap-4">

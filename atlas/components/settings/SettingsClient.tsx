@@ -199,6 +199,102 @@ function ContaTab() {
   )
 }
 
+// ── Username tab (inline na PerfilTab) ───────────────────────────────────────
+
+function UsernameSection({ currentUsername }: { currentUsername: string }) {
+  const router            = useRouter()
+  const [newUsername, setNewUsername]   = useState("")
+  const [password,    setPassword]     = useState("")
+  const [saving,      setSaving]       = useState(false)
+  const [msg,         setMsg]          = useState<{ ok: boolean; text: string } | null>(null)
+  const [showForm,    setShowForm]     = useState(false)
+
+  const save = async () => {
+    if (!newUsername || !password) { setMsg({ ok: false, text: "Preencha todos os campos" }); return }
+    setSaving(true); setMsg(null)
+    const res = await fetch("/api/auth/username", {
+      method:  "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify({ newUsername: newUsername.toLowerCase().replace(/[^a-z0-9_]/g, ""), currentPassword: password }),
+    })
+    const data = await res.json() as { ok?: boolean; error?: string; username?: string }
+    if (res.ok) {
+      setMsg({ ok: true, text: `Username alterado para @${data.username ?? newUsername}` })
+      setNewUsername(""); setPassword("")
+      setShowForm(false)
+      router.refresh()
+    } else {
+      setMsg({ ok: false, text: data.error ?? "Erro ao alterar" })
+    }
+    setSaving(false)
+  }
+
+  return (
+    <Section title="Nome de usuário">
+      <Field label="Usuário atual">
+        <div className="flex items-center gap-3">
+          <p className="text-[11px] font-mono text-solar-muted/60">@{currentUsername}</p>
+          <button
+            onClick={() => setShowForm((v) => !v)}
+            className="text-[8px] font-mono text-solar-muted/40 hover:text-solar-amber/70 transition-colors uppercase tracking-widest border border-solar-border/25 py-0.5 hover:border-solar-amber/30"
+          >
+            {showForm ? "cancelar" : "mudar"}
+          </button>
+        </div>
+      </Field>
+
+      {showForm && (
+        <>
+          <Field label="Novo usuário">
+            <input
+              type="text"
+              value={newUsername}
+              onChange={(e) => setNewUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ""))}
+              placeholder="novo_usuario"
+              maxLength={20}
+              className="w-full bg-solar-deep/50 border border-solar-border/30 py-1.5 text-xs font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-solar-amber/40 transition-all duration-150"
+            />
+          </Field>
+          <Field label="Confirmar com senha">
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") void save() }}
+              className="w-full bg-solar-deep/50 border border-solar-border/30 py-1.5 text-xs font-mono text-solar-text focus:outline-none focus:border-solar-amber/40 transition-all duration-150"
+            />
+          </Field>
+
+          <div className="mt-3 p-3 border border-solar-border/20 bg-solar-deep/30">
+            <p className="text-[8px] font-mono text-solar-muted/50 leading-relaxed">
+              ⚠ Ao mudar o username, o seu link de convite{" "}
+              <span className="text-solar-muted/70">/convite/{currentUsername}</span> vai parar de funcionar.
+              Mas o seu <span className="text-solar-amber/60">ID interno nunca muda</span> — todos os seus
+              seguidores, quem você segue e seus interesses são preservados. Quem te convidou também continua vinculado.
+            </p>
+          </div>
+        </>
+      )}
+
+      {msg && (
+        <p className={`text-[9px] font-mono mt-3 ${msg.ok ? "text-solar-green" : "text-solar-red"}`}>
+          {msg.text}
+        </p>
+      )}
+
+      {showForm && (
+        <button
+          onClick={() => void save()}
+          disabled={saving || !newUsername || !password}
+          className="mt-3 px-5 py-2 bg-solar-amber/10 border border-solar-amber/40 text-[10px] font-mono text-solar-amber uppercase tracking-widest hover:bg-solar-amber/20 transition-solar disabled:opacity-30"
+        >
+          {saving ? "Salvando…" : "Confirmar mudança →"}
+        </button>
+      )}
+    </Section>
+  )
+}
+
 // ── Senha tab ─────────────────────────────────────────────────────────────────
 
 function SenhaTab() {
@@ -345,11 +441,7 @@ function PerfilTab() {
 
   return (
     <div className="flex flex-col gap-4">
-      <Section title="Conta">
-        <Field label="Usuário">
-          <p className="text-[11px] font-mono text-solar-muted/60">@{profile.username}</p>
-        </Field>
-      </Section>
+      <UsernameSection currentUsername={profile.username} />
 
       <Section title="Identidade">
         <Field label="Nome de exibição">

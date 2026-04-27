@@ -166,43 +166,30 @@ export default function MetasPage() {
   const done     = filtered.filter((g) => g.status === "completed")
 
   return (
-    <div className="relative min-h-screen">
-      <div className="fixed inset-0 pointer-events-none z-0 bg-grid-aligned" />
-
-      <header className="relative z-10 border-b border-solar-border/30 pt-10 pb-6">
-        <div className="max-w-4xl mx-auto">
-          <p className="editorial-label text-solar-muted/35 mb-3">COMPASS / METAS</p>
-          <div className="flex items-end justify-between gap-6">
-            <div>
-              <h1 className="page-hero text-solar-text leading-none">METAS</h1>
-              <p className="font-mono text-[10px] text-solar-muted/40 mt-1">objetivos · intenções · horizontes</p>
-            </div>
-            <button
-              onClick={() => setShowForm((o) => !o)}
-              className="flex-shrink-0 py-2 bg-solar-text text-solar-void text-[9px] font-mono uppercase tracking-[0.2em] hover:opacity-80 transition-opacity"
-            >
+    <div className="min-h-screen">
+      <header className="ph">
+        <div className="page-standard flex items-end justify-between gap-6">
+          <div>
+            <p className="page-label mb-3">Compass · Metas</p>
+            <h1 className="page-title">Metas</h1>
+            <p className="page-subtitle">objetivos · intenções · horizontes</p>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0 mb-1">
+            <button onClick={() => setShowForm((o) => !o)} className="btn btn-solid btn-md">
               + Meta
             </button>
           </div>
-
-          {/* Horizon filter */}
-          <div className="flex items-center gap-0 mt-5 border-t border-solar-border/15 pt-3">
-            {(["all", "short", "long"] as const).map((h) => (
-              <button
-                key={h}
-                onClick={() => setHorizon(h)}
-                className={`px-4 py-1.5 text-[9px] font-mono uppercase tracking-widest border-b-2 transition-all ${
-                  horizon === h ? "border-solar-accent text-solar-accent" : "border-transparent text-solar-muted/40 hover:text-solar-muted"
-                }`}
-              >
-                {h === "all" ? "Todas" : h === "short" ? "Curto prazo" : "Longo prazo"}
-              </button>
-            ))}
-          </div>
+        </div>
+        <div className="page-standard tab-bar mt-4 border-b-0 pb-0">
+          {(["all", "short", "long"] as const).map((h) => (
+            <button key={h} onClick={() => setHorizon(h)} className="tab" data-active={horizon === h ? "true" : undefined}>
+              {h === "all" ? "Todas" : h === "short" ? "Curto prazo" : "Longo prazo"}
+            </button>
+          ))}
         </div>
       </header>
 
-      <main className="relative z-10 max-w-4xl mx-auto py-6 space-y-6">
+      <main className="page-standard py-6 space-y-6">
 
         {/* Add form */}
         {showForm && (
@@ -238,12 +225,8 @@ export default function MetasPage() {
               />
             </div>
             <div className="flex gap-2">
-              <button onClick={addGoal} className="px-4 py-2 border border-solar-accent/40 text-[10px] font-mono text-solar-accent hover:bg-solar-accent/10 transition-colors">
-                Adicionar
-              </button>
-              <button onClick={() => setShowForm(false)} className="px-4 py-2 border border-solar-border/30 text-[10px] font-mono text-solar-muted/50 hover:border-solar-border/60 transition-colors">
-                Cancelar
-              </button>
+              <button onClick={addGoal} className="btn btn-primary btn-md">Adicionar</button>
+              <button onClick={() => setShowForm(false)} className="btn btn-ghost btn-md">Cancelar</button>
             </div>
           </div>
         )}

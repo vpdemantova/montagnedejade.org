@@ -10,7 +10,6 @@ export default async function SettingsPage() {
 
   return (
     <>
-      <div className="fixed inset-0 pointer-events-none z-0 bg-grid-aligned" />
       <SettingsClient areaCounts={areaCounts} total={total} />
     </>
   )

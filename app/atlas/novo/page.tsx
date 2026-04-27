@@ -55,21 +55,15 @@ function NovoItemForm() {
   const isPersonType = type === "PERSON"
 
   return (
-    <div className="relative min-h-screen pb-20">
-      <div className="fixed inset-0 pointer-events-none z-0 bg-grid-aligned" />
-
-      <header className="page-header relative z-10 border-b border-solar-border/40 pt-8 sm:pt-12 pb-5 sm:pb-6">
-        <div className="max-w-3xl mx-auto">
-          <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-solar-muted/70 mb-3">
-            Atlas · Novo item
-          </p>
-          <h1 className="font-display text-[28px] sm:text-[36px] leading-none text-solar-text font-semibold tracking-tight">
-            Criar
-          </h1>
+    <div className="min-h-screen pb-20">
+      <header className="ph">
+        <div className="page-narrow">
+          <p className="page-label mb-3">Atlas · Novo item</p>
+          <h1 className="page-title">Criar</h1>
         </div>
       </header>
 
-      <div className="relative z-10 max-w-3xl mx-auto py-6 sm:py-10 space-y-6">
+      <div className="page-narrow py-8 space-y-6">
 
         {/* Título */}
         <div>
@@ -190,19 +184,11 @@ function NovoItemForm() {
 
         {/* Actions */}
         <div className="flex items-center gap-4 pt-4 border-t border-solar-border/15">
-          <button
-            onClick={() => void handleCreate()}
-            disabled={!title.trim() || loading}
-            className="px-6 py-2.5 bg-solar-amber/10 border border-solar-amber/40 text-[11px] font-mono text-solar-amber uppercase tracking-widest hover:bg-solar-amber/20 transition-solar disabled:opacity-30 disabled:cursor-not-allowed"
-          >
+          <button onClick={() => void handleCreate()} disabled={!title.trim() || loading}
+            className="btn btn-primary btn-md">
             {loading ? "Criando…" : "Criar item →"}
           </button>
-          <button
-            onClick={() => router.back()}
-            className="text-[10px] font-mono text-solar-muted/50 hover:text-solar-muted transition-solar"
-          >
-            Cancelar
-          </button>
+          <button onClick={() => router.back()} className="btn btn-subtle btn-md">Cancelar</button>
         </div>
       </div>
     </div>

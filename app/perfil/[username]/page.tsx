@@ -14,6 +14,7 @@ type UserProfile = {
   accentColor: string
   createdAt:   string
   isFollowing: boolean
+  invitedBy:   { username: string; displayName: string; accentColor: string } | null
   _count:      { followers: number; following: number; interests: number; posts: number }
   interests:   Array<{
     id:        string
@@ -120,7 +121,7 @@ export default function ProfilePage() {
       </div>
 
       {/* Avatar + info */}
-      <div className="max-w-2xl mx-auto">
+      <div className="page-narrow">
         <div className="relative -mt-12 mb-6 flex items-end justify-between">
           {/* Avatar */}
           <div
@@ -142,24 +143,10 @@ export default function ProfilePage() {
           {/* Actions */}
           <div className="flex gap-2 mb-2">
             {isOwnProfile ? (
-              <Link
-                href="/settings"
-                className="px-4 py-1.5 border text-[10px] font-mono uppercase tracking-widest transition-colors"
-                style={{ borderColor: `${profile.accentColor}40`, color: profile.accentColor }}
-              >
-                Editar perfil
-              </Link>
+              <Link href="/settings" className="btn btn-ghost btn-sm">Editar perfil</Link>
             ) : (
-              <button
-                onClick={handleFollow}
-                disabled={followLoading}
-                className="px-4 py-1.5 text-[10px] font-mono uppercase tracking-widest transition-all disabled:opacity-50"
-                style={{
-                  background:  profile.isFollowing ? `${profile.accentColor}15` : profile.accentColor,
-                  color:       profile.isFollowing ? profile.accentColor : "#08080C",
-                  border:      `1px solid ${profile.accentColor}`,
-                }}
-              >
+              <button onClick={handleFollow} disabled={followLoading}
+                className={`btn btn-sm ${profile.isFollowing ? "btn-ghost" : "btn-solid"}`}>
                 {profile.isFollowing ? "Seguindo" : "Seguir"}
               </button>
             )}
@@ -168,10 +155,22 @@ export default function ProfilePage() {
 
         {/* Nome e bio */}
         <div className="mb-6">
-          <h1 className="font-display text-2xl font-semibold text-solar-text">{profile.displayName}</h1>
+          <h1 className="page-title">{profile.displayName}</h1>
           <p className="font-mono text-[10px] text-solar-muted/60 mb-2">@{profile.username}</p>
           {profile.bio && (
-            <p className="text-sm text-solar-muted/80 leading-relaxed">{profile.bio}</p>
+            <p className="text-sm text-solar-muted/80 leading-relaxed mb-2">{profile.bio}</p>
+          )}
+          {profile.invitedBy && (
+            <p className="font-mono text-[8px]" style={{ color: "rgb(var(--c-muted) / 0.45)" }}>
+              Convidado por{" "}
+              <a
+                href={`/perfil/${profile.invitedBy.username}`}
+                className="hover:opacity-80 transition-opacity"
+                style={{ color: profile.invitedBy.accentColor }}
+              >
+                @{profile.invitedBy.username}
+              </a>
+            </p>
           )}
         </div>
 
@@ -191,17 +190,10 @@ export default function ProfilePage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 mb-6 border-b border-solar-border/30">
+        <div className="tab-bar mb-6">
           {(["posts", "interesses", "tokens"] as const).map((t) => (
-            <button
-              key={t}
-              onClick={() => setTab(t)}
-              className={`px-4 py-2 text-[10px] font-mono uppercase tracking-widest transition-colors border-b-2 -mb-px
-                ${tab === t
-                  ? "border-solar-accent text-solar-accent"
-                  : "border-transparent text-solar-muted/40 hover:text-solar-muted"
-                }`}
-            >
+            <button key={t} onClick={() => setTab(t)} className="tab"
+              data-active={tab === t ? "true" : undefined}>
               {t}
             </button>
           ))}

@@ -26,8 +26,9 @@ import { PartiturasView }   from "./PartiturasView"
 import { CursosView }       from "./CursosView"
 import { RepertorioView }   from "./RepertorioView"
 import { ReadingsView }       from "./ReadingsView"
-import { AtlasMapView }       from "./AtlasMapView"
+import { AtlasMapView }        from "./AtlasMapView"
 import { AtlasHorizontalView } from "./AtlasHorizontalView"
+import { AtlasHomeView }       from "./AtlasHomeView"
 
 type AtlasClientProps = {
   items:        AtlasItemWithTags[]
@@ -41,15 +42,27 @@ type AtlasClientProps = {
 // ── Area filter chips ──────────────────────────────────────────────────────────
 
 const AREA_CHIPS = [
-  { value: "",         label: "Todos" },
-  { value: "ATLAS",    label: "Atlas" },
-  { value: "ACADEMIA", label: "Academia" },
-  { value: "ARTES",    label: "Artes" },
-  { value: "OBRAS",    label: "Obras" },
-  { value: "PESSOAS",  label: "Pessoas" },
-  { value: "CULTURA",  label: "Cultura" },
-  { value: "STUDIO",   label: "Studio" },
-  { value: "COMPASS",  label: "Compass" },
+  { value: "",            label: "Todos"       },
+  { value: "ATLAS",       label: "Acervo"      },
+  { value: "COSMOS",      label: "Cosmos"      },
+  { value: "NATUREZA",    label: "Natureza"    },
+  { value: "CIENCIAS",    label: "Ciências"    },
+  { value: "HISTORIA",    label: "História"    },
+  { value: "ELEMENTOS",   label: "Elementos"   },
+  { value: "PESSOAS",     label: "Pessoas"     },
+  { value: "MUSICOS",     label: "Músicos"     },
+  { value: "PINTORES",    label: "Pintores"    },
+  { value: "ESCRITORES",  label: "Escritores"  },
+  { value: "CIENTISTAS",  label: "Cientistas"  },
+  { value: "FILOSOFOS",   label: "Filósofos"   },
+  { value: "OBRAS",       label: "Obras"       },
+  { value: "BIBLIOTECA",  label: "Biblioteca"  },
+  { value: "MUSICA",      label: "Música"      },
+  { value: "PINTURAS",    label: "Pinturas"    },
+  { value: "ARQUITETURA", label: "Arquitetura" },
+  { value: "ACADEMIA",    label: "Academia"    },
+  { value: "ARTES",       label: "Artes"       },
+  { value: "CULTURA",     label: "Cultura"     },
 ]
 
 const TYPE_CHIPS = [
@@ -63,6 +76,7 @@ const TYPE_CHIPS = [
 ]
 
 const VIEW_CHIPS: { value: string; label: string; icon: LucideIcon }[] = [
+  { value: "HOME",              label: "Início",  icon: Layers      },
   { value: ViewType.HORIZONTAL, label: "Grupos",  icon: Layers      },
   { value: ViewType.GALLERY,    label: "Galeria", icon: LayoutGrid  },
   { value: ViewType.TABLE,      label: "Tabela",  icon: Table2      },
@@ -72,7 +86,7 @@ const VIEW_CHIPS: { value: string; label: string; icon: LucideIcon }[] = [
 
 export function AtlasClient({ items, initialArea, initialTag, defaultView, backHref, backLabel }: AtlasClientProps) {
   const { getViewForRoute, setViewForRoute } = useViewStore()
-  const persistedView = getViewForRoute("/atlas", defaultView ?? ViewType.HORIZONTAL)
+  const persistedView = getViewForRoute("/atlas", defaultView ?? "HOME")
   const [view, setView]         = useState<string>(persistedView)
   const [activeItem, setActiveItem] = useState<AtlasItemWithTags | null>(null)
   const [query, setQuery]       = useState("")
@@ -130,18 +144,15 @@ export function AtlasClient({ items, initialArea, initialTag, defaultView, backH
   return (
     <div className="relative min-h-screen flex flex-col">
 
-      {/* ── Editorial header ── */}
-      <div className="border-b border-solar-border/30 pt-10 pb-6">
-        <p className="editorial-label text-solar-muted/35 mb-3">
-          PORTAL SOLAR / {new Date().getFullYear()}
-        </p>
-        <h1 className="page-hero text-solar-text leading-none mb-4">ATLAS</h1>
-        <p className="font-mono text-[10px] text-solar-muted/35">
-          {finalItems.length.toLocaleString("pt-BR")} itens
-          {areaFilter ? ` · ${AREA_LABELS[areaFilter as keyof typeof AREA_LABELS] ?? areaFilter}` : ""}
-          {query ? ` · "${query}"` : ""}
-        </p>
-      </div>
+      {/* ── Header — só em views que não têm cabeçalho próprio ── */}
+      {view !== "HOME" && areaFilter && (
+        <div className="border-b border-solar-border/20 pt-6 pb-4">
+          <p className="font-mono text-[8px] uppercase tracking-[0.3em]" style={{ color: "rgb(var(--c-muted) / 0.6)" }}>
+            {AREA_LABELS[areaFilter as keyof typeof AREA_LABELS] ?? areaFilter}
+            {query ? ` · "${query}"` : ""}
+          </p>
+        </div>
+      )}
 
       {/* ── Toolbar unificada ── */}
       <div
@@ -162,14 +173,7 @@ export function AtlasClient({ items, initialArea, initialTag, defaultView, backH
             </Link>
           )}
 
-          <span
-            className="font-display font-semibold text-base leading-none flex-shrink-0"
-            style={{ color: "rgb(var(--c-text))" }}
-          >
-            Atlas
-          </span>
-
-          <span className="text-[9px] font-mono flex-shrink-0 hidden xs:inline" style={{ color: "rgb(var(--c-muted) / 0.45)" }}>
+          <span className="font-mono text-[9px] flex-shrink-0 tabular-nums" style={{ color: "rgb(var(--c-muted) / 0.6)" }}>
             {finalItems.length}
           </span>
 
@@ -339,6 +343,7 @@ type ViewRendererProps = {
 
 function ViewRenderer({ view, items, onItemClick }: ViewRendererProps) {
   switch (view) {
+    case "HOME":              return <AtlasHomeView      items={items} />
     case ViewType.HORIZONTAL: return <AtlasHorizontalView items={items} onItemClick={onItemClick} />
     case ViewType.GALLERY:    return <AtlasGalleryView   items={items} onItemClick={onItemClick} />
     case ViewType.TABLE:      return <AtlasTableView     items={items} onItemClick={onItemClick} />

@@ -13,7 +13,7 @@ import { NAV } from "@/portal.config"
 
 export const PILL_H              = 38
 export const PILL_W              = "min(640px, calc(100vw - 24px))"
-export const NAV_PAD             = 64
+export const NAV_PAD             = "var(--page-pad)"
 export const DIV_CLR             = "rgb(var(--c-border) / 0.18)"
 export const BAR_BG              = "rgb(var(--c-deep) / 0.96)"
 export const BAR_BORDER          = `1px solid rgb(var(--c-border) / 0.2)`
@@ -274,17 +274,17 @@ export function UnifiedNav() {
               <span className="font-mono uppercase tracking-[0.22em]" style={{ fontSize: "8px" }}>Atlas</span>
             </Link>
 
-            {/* Quadro */}
+            {/* Display */}
             <Link
-              href="/compass/quadro"
+              href="/display"
               className="flex-1 flex items-center justify-center transition-colors duration-150"
               style={{
                 borderRight:     `1px solid ${DIV_CLR}`,
-                color:           isOn("/compass/quadro", pathname) ? "rgb(var(--c-void))" : "rgb(var(--c-text) / 0.65)",
-                backgroundColor: isOn("/compass/quadro", pathname) ? "rgb(var(--c-text))" : "transparent",
+                color:           isOn("/display", pathname) ? "rgb(var(--c-void))" : "rgb(var(--c-text) / 0.65)",
+                backgroundColor: isOn("/display", pathname) ? "rgb(var(--c-text))" : "transparent",
               }}
             >
-              <span className="font-mono uppercase tracking-[0.22em]" style={{ fontSize: "7px" }}>Quadro</span>
+              <span className="font-mono uppercase tracking-[0.22em]" style={{ fontSize: "7px" }}>Display</span>
             </Link>
 
             {/* Menu geral */}
@@ -386,93 +386,89 @@ export function UnifiedNav() {
                   >
                     <ColHead n="02" label="Atlas" delay={0.1} />
                     <NavCol links={COL_ATLAS} pathname={pathname} colDelay={0.13} onClose={() => setOpen(false)} />
-
-                    {/* Ações rápidas */}
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1, transition: { delay: 0.28, duration: 0.22 } }}
-                      className="flex items-center gap-3 mt-6"
-                    >
-                      {[
-                        { icon: <Search size={12} strokeWidth={1.5} />, label: "Buscar", fn: () => { triggerSearch(); setOpen(false) } },
-                        { icon: <Plus   size={12} strokeWidth={1.5} />, label: "Novo",   fn: () => { openQuickCapture("nota"); setOpen(false) } },
-                      ].map(({ icon, label, fn }) => (
-                        <button
-                          key={label}
-                          onClick={fn}
-                          aria-label={label}
-                          className="flex items-center gap-1.5 hover:opacity-60 transition-opacity"
-                          style={{
-                            height: "26px", padding: "0 10px",
-                            border: `1px solid ${DIV_CLR}`,
-                            color: "rgb(var(--c-text) / 0.7)",
-                          }}
-                        >
-                          {icon}
-                          <span className="font-mono text-[7px] uppercase tracking-[0.2em]">{label}</span>
-                        </button>
-                      ))}
-                    </motion.div>
                   </div>
 
-                  {/* COL 3 — Academia + Modo */}
-                  <div className="flex flex-col pt-6 pb-6 px-6 gap-6">
-                    <div>
-                      <ColHead n="03" label="Academia" delay={0.16} />
-                      <NavCol links={COL_ACADEMIA} pathname={pathname} colDelay={0.19} onClose={() => setOpen(false)} />
-                    </div>
-
-                    <div>
-                      <ColHead n="04" label="Modo" delay={0.24} />
-                      <div className="flex flex-col gap-1">
-                        {MODES.map((m, i) => (
-                          <div key={m.id} style={{ overflow: "hidden" }}>
-                            <Reveal delay={0.27 + i * 0.04}>
-                              <button
-                                onClick={() => { setMode(m.id); setOpen(false) }}
-                                className="flex flex-col gap-0.5 py-2 w-full text-left"
-                                style={{ borderBottom: "1px solid rgb(var(--c-border) / 0.1)" }}
-                              >
-                                <span className="font-display leading-tight" style={{ fontSize: "1.0rem", color: mode === m.id ? "rgb(var(--c-accent))" : "rgb(var(--c-text) / 0.8)", fontWeight: mode === m.id ? 600 : 400 }}>
-                                  {m.label}
-                                </span>
-                                <span className="font-mono uppercase tracking-widest" style={{ fontSize: "6.5px", color: "rgb(var(--c-muted) / 0.75)" }}>
-                                  {m.desc}
-                                </span>
-                              </button>
-                            </Reveal>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
+                  {/* COL 3 — Academia */}
+                  <div className="flex flex-col pt-6 pb-6 px-6">
+                    <ColHead n="03" label="Academia" delay={0.16} />
+                    <NavCol links={COL_ACADEMIA} pathname={pathname} colDelay={0.19} onClose={() => setOpen(false)} />
                   </div>
 
                 </div>
               </div>
 
-              {/* ── Strip inferior — sistema ────────────────────────── */}
+              {/* ── Strip 1 — Ações pessoais (destacado) ─────────────── */}
               <div
-                className="flex-shrink-0 flex items-center justify-between px-7 py-3"
+                className="flex-shrink-0 flex items-center gap-2 px-6 py-3 flex-wrap"
+                style={{ borderTop: `1px solid ${DIV_CLR}`, background: "rgb(var(--c-surface) / 0.15)" }}
+              >
+                {/* Perfil */}
+                <Link
+                  href="/compass/perfil"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-1.5 px-4 py-2 font-mono text-[8px] uppercase tracking-[0.18em] hover:opacity-75 transition-opacity"
+                  style={{ border: `1px solid rgb(var(--c-accent) / 0.35)`, color: "rgb(var(--c-accent))" }}
+                >
+                  Perfil
+                </Link>
+
+                {/* Separador */}
+                <span style={{ width: 1, height: 18, background: DIV_CLR, flexShrink: 0 }} />
+
+                {/* Links de sistema */}
+                {[
+                  { label: "Configurações", href: "/settings"   },
+                  { label: "Sobre",         href: "/sobre"       },
+                  { label: "+ Atlas",       href: "/atlas/novo"  },
+                ].map((l) => (
+                  <Link
+                    key={l.href}
+                    href={l.href}
+                    onClick={() => setOpen(false)}
+                    className="flex items-center px-3 py-2 font-mono text-[8px] uppercase tracking-[0.18em] hover:opacity-75 transition-opacity"
+                    style={{ border: `1px solid ${DIV_CLR}`, color: "rgb(var(--c-text) / 0.78)" }}
+                  >
+                    {l.label}
+                  </Link>
+                ))}
+
+                {/* Sair */}
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center px-3 py-2 font-mono text-[8px] uppercase tracking-[0.18em] hover:opacity-75 transition-opacity ml-auto"
+                  style={{ border: `1px solid ${DIV_CLR}`, color: "rgb(var(--c-muted) / 0.65)" }}
+                >
+                  Sair
+                </button>
+
+                <LiveClock />
+              </div>
+
+              {/* ── Strip 2 — Modo de interface ──────────────────────── */}
+              <div
+                className="flex-shrink-0 flex items-center gap-1 px-6 py-2"
                 style={{ borderTop: `1px solid ${DIV_CLR}` }}
               >
-                <div className="flex items-center gap-4">
-                  <Link href="/atlas/novo" onClick={() => setOpen(false)} className="font-mono text-[7.5px] uppercase tracking-[0.18em] hover:opacity-60 transition-opacity" style={{ color: "rgb(var(--c-text) / 0.7)" }}>
-                    + Atlas
-                  </Link>
-                  {[{ label: "Config", href: "/settings" }, { label: "Sobre", href: "/sobre" }].map((l) => (
-                    <Link key={l.href} href={l.href} onClick={() => setOpen(false)} className="font-mono text-[7.5px] uppercase tracking-[0.18em] hover:opacity-60 transition-opacity" style={{ color: "rgb(var(--c-muted) / 0.75)" }}>
-                      {l.label}
-                    </Link>
-                  ))}
-                  <button onClick={handleLogout} className="font-mono text-[7.5px] uppercase tracking-[0.18em] hover:opacity-60 transition-opacity" style={{ color: "rgb(var(--c-muted) / 0.75)" }}>
-                    Sair
+                <span className="font-mono text-[7px] uppercase tracking-[0.3em] mr-3 flex-shrink-0" style={{ color: "rgb(var(--c-muted) / 0.5)" }}>
+                  Modo
+                </span>
+                {MODES.map((m) => (
+                  <button
+                    key={m.id}
+                    onClick={() => { setMode(m.id); setOpen(false) }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 font-mono text-[7.5px] uppercase tracking-[0.15em] transition-all"
+                    style={{
+                      border:          `1px solid ${mode === m.id ? "rgb(var(--c-accent) / 0.45)" : DIV_CLR}`,
+                      backgroundColor: mode === m.id ? "rgb(var(--c-accent) / 0.08)" : "transparent",
+                      color:           mode === m.id ? "rgb(var(--c-accent))" : "rgb(var(--c-text) / 0.65)",
+                    }}
+                  >
+                    {m.label}
+                    <span className="hidden sm:inline font-mono text-[6px] uppercase tracking-widest" style={{ color: mode === m.id ? "rgb(var(--c-accent) / 0.6)" : "rgb(var(--c-muted) / 0.4)" }}>
+                      {m.desc}
+                    </span>
                   </button>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="font-mono text-[7px] uppercase tracking-[0.2em]" style={{ color: "rgb(var(--c-muted) / 0.7)" }}>{currentMode.label}</span>
-                  <span style={{ width: 1, height: 10, background: DIV_CLR }} />
-                  <LiveClock />
-                </div>
+                ))}
               </div>
             </motion.div>
             </div>

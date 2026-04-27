@@ -1,0 +1,15 @@
+faça com que carrega mais rapido as secoes de perfil e de contato
+
+o que é o seed? que tipo de função opera'ão é essa? porque o atlas não tem quase nada do que eu pedi? os menus estão estranhos e não estao compativeis nem integrados nem condizentes. eu tenho tudo planejado e ja te disse, preciso te dizer de forma mais clara sobre os menus e paginas e rotas gerais e depois o que vai dentro de cada uma, vamos criar um documento com instruções e coma estrutura toda, para eu ir mudando e te enviar a forma final perfeita e você implementar com as melhores instruçÕes possiveis. então me crie esse documento com as melhores instrucoes para alterar tudo e em baixo todas as funcoes e funcionamentso do site como toda a estrutura e hierarquia para eu ir mudando o texto e te mandar de volto para de uma vez por todas ficar exatamente como deve ficar e eu planejei. dentro do documento, me diga o que pode ser mudado,como podfe ser mudado como um plano diretor geral e aplicavel! me devolva somente o lugar que voce criou isso, e dentro dele fale como usar e tudo mais. capriche e va afundo!
+
+no atlas crie a maior e melhor tabela periodica que seja estática por olhar e dinamica por poder mexer nela, interagir e clicar e abrir os elementos e entender as relações e ver as imagens e modelos 3D aplciados de cada um dos elementos em suas naturezas e estados!
+
+no link de convite, não carrege o card de entrada do site! somente nessa url não vai carregar esse card
+
+e que esse card no perfil e no convite mexam de acordo com o mouse nos angulos..!
+
+no perfil, faça com que se eu criei o perfil a partir do link de alguem, que fique o usuario e o nome da pessoa que convidou no perfil do outro!
+
+que dentro do perfil ou das confis, você diz o que é melhor, tenha opção para mudar de usuario de perfil, e que veja no banco de dados o id que nunca mudar, para ter noção de que o usuario é apenas um filho od id que nunca vai mudar mesmo que ele mude de usuario e de nome e etc! para nao perdemos as refenrecias e links, e explique na hora de criar que voc6e vai poder mudar, mas que se voce compartlhar o link ele nao vai funcioanr mais, e o amigo que te convidou e os amigos que voce tem ainda ficaram poque o id que madna e nao o nome de usurario. consegues fazer tudo isso como as melhore s praticas e dinamicas de login e perfis?
+
+motivos e metodos para imprimir sua carteirinha - historai dos formatos e proporcoes e de meotods de impressao, coleta de materia primia, transformacao, e usos das industrias e impressoes para termos um consenso dde carteirinhas e a liberdade de formas e vonatdes em ter ou nao ter e em como ter

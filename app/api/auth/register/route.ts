@@ -16,10 +16,11 @@ export async function POST(req: Request) {
       )
     }
 
-    const { username, displayName, password } = await req.json() as {
-      username:    string
-      displayName: string
-      password:    string
+    const { username, displayName, password, invitedByUsername } = await req.json() as {
+      username:           string
+      displayName:        string
+      password:           string
+      invitedByUsername?: string
     }
 
     if (!username || !password || !displayName) {
@@ -44,6 +45,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Username já está em uso" }, { status: 409 })
     }
 
+    // Resolve o ID de quem convidou (se fornecido)
+    let invitedById: string | undefined
+    if (invitedByUsername) {
+      const inviter = await prisma.user.findUnique({
+        where:  { username: invitedByUsername.toLowerCase() },
+        select: { id: true },
+      })
+      if (inviter) invitedById = inviter.id
+    }
+
     const passwordHash = await bcrypt.hash(password, 12)
 
     const user = await prisma.user.create({
@@ -51,6 +62,7 @@ export async function POST(req: Request) {
         username:    username.toLowerCase(),
         displayName: displayName.trim(),
         passwordHash,
+        invitedById,
         // Dar 3 tickets de boas-vindas
         tickets: {
           create: [

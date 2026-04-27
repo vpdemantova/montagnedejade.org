@@ -173,17 +173,27 @@ model User {
   avatarUrl    String?
   // Cor de destaque do perfil (hex)
   accentColor  String   @default("#C8A45A")
+  // ID permanente nunca muda, mesmo que username ou displayName sejam alterados
+  invitedById  String?
+  invitedBy    User?    @relation("InvitedBy", fields: [invitedById], references: [id])
+  invitees     User[]   @relation("InvitedBy")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  following    Follow[]       @relation("UserFollowing")
-  followers    Follow[]       @relation("UserFollowers")
-  tickets      SolarTicket[]  @relation("TicketOwner")
-  ticketsGiven SolarTicket[]  @relation("TicketGiver")
-  tokens       UserToken[]
-  interests    UserInterest[]
-  posts        Post[]
-  likes        PostLike[]
+  following               Follow[]                  @relation("UserFollowing")
+  followers               Follow[]                  @relation("UserFollowers")
+  tickets                 SolarTicket[]             @relation("TicketOwner")
+  ticketsGiven            SolarTicket[]             @relation("TicketGiver")
+  tokens                  UserToken[]
+  interests               UserInterest[]
+  posts                   Post[]
+  likes                   PostLike[]
+  userTags                UserTag[]
+  hostedEvents            Event[]                   @relation("EventHost")
+  eventRequests           EventRequest[]            @relation("EventRequests")
+  eventMessages           EventMessage[]            @relation("EventMessages")
+  conversationMemberships ConversationParticipant[] @relation("ConvParticipants")
+  sentMessages            Message[]                 @relation("MessageSender")
 }
 
 model Follow {
@@ -287,4 +297,92 @@ model WorldNotice {
   isPinned  Boolean  @default(false)
   expiresAt DateTime?
   createdAt DateTime @default(now())
+}
+
+// ─── TAGS LIVRES DE INTERESSE ─────────────────────────────────────────────────
+
+model UserTag {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tag       String   // "espiritualidade" | "botânica" | "wicca" | livre
+  createdAt DateTime @default(now())
+  @@unique([userId, tag])
+}
+
+// ─── EVENTOS / ENCONTROS ──────────────────────────────────────────────────────
+
+model Event {
+  id           String         @id @default(cuid())
+  hostId       String
+  host         User           @relation("EventHost", fields: [hostId], references: [id])
+  title        String
+  description  String?
+  date         DateTime
+  city         String?        // público
+  neighborhood String?        // público
+  address      String?        // PRIVADO — visível só a participantes aceitos
+  maxGuests    Int            @default(6)
+  // OPEN | CLOSED | CANCELLED | ENDED
+  status       String         @default("OPEN")
+  tags         String         @default("[]") // JSON array de strings
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  requests     EventRequest[]
+  messages     EventMessage[]
+}
+
+model EventRequest {
+  id        String   @id @default(cuid())
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation("EventRequests", fields: [userId], references: [id])
+  // PENDING | ACCEPTED | REJECTED
+  status    String   @default("PENDING")
+  note      String?  // apresentação ao host
+  createdAt DateTime @default(now())
+  @@unique([eventId, userId])
+}
+
+model EventMessage {
+  id        String   @id @default(cuid())
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation("EventMessages", fields: [userId], references: [id])
+  content   String
+  createdAt DateTime @default(now())
+}
+
+// ─── MENSAGENS / CONVERSAS ────────────────────────────────────────────────────
+
+model Conversation {
+  id           String                    @id @default(cuid())
+  name         String?                   // null = DM, string = nome do grupo
+  createdAt    DateTime                  @default(now())
+  updatedAt    DateTime                  @updatedAt
+  participants ConversationParticipant[]
+  messages     Message[]
+}
+
+model ConversationParticipant {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User         @relation("ConvParticipants", fields: [userId], references: [id])
+  lastReadAt     DateTime?
+  createdAt      DateTime     @default(now())
+  @@unique([conversationId, userId])
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         User         @relation("MessageSender", fields: [senderId], references: [id])
+  content        String
+  createdAt      DateTime     @default(now())
 }

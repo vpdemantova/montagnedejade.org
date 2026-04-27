@@ -1,5 +1,6 @@
 import { findAll } from "@/atlas/lib/db"
 import { WorldClient } from "@/atlas/components/portal/WorldClient"
+import { ReopenEntryCard } from "@/atlas/components/ui/ReopenEntryCard"
 
 export const dynamic = "force-dynamic"
 export const metadata = {
@@ -25,6 +26,10 @@ export default async function AcademiaPage() {
           backgroundSize: "80px 100%",
         }}
       />
+      {/* Botão para rever o card de apresentação */}
+      <div className="relative z-10 flex justify-end pb-2 pt-4">
+        <ReopenEntryCard />
+      </div>
       <WorldClient items={items} />
     </>
   )

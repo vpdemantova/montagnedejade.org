@@ -69,17 +69,17 @@ export function BottomNav() {
             <Plus size={15} strokeWidth={1.4} />
           </button>
 
-          {/* Display */}
+          {/* Quadro */}
           <Link
-            href="/display"
+            href="/compass/quadro"
             className="flex-1 flex items-center justify-center transition-colors duration-150"
             style={{
               borderRight:     `1px solid ${DIV_CLR}`,
-              color:           isOn("/display", pathname) ? "rgb(var(--c-void))" : "rgb(var(--c-text) / 0.65)",
-              backgroundColor: isOn("/display", pathname) ? "rgb(var(--c-text))" : "transparent",
+              color:           isOn("/compass/quadro", pathname) ? "rgb(var(--c-void))" : "rgb(var(--c-text) / 0.65)",
+              backgroundColor: isOn("/compass/quadro", pathname) ? "rgb(var(--c-text))" : "transparent",
             }}
           >
-            <span className="font-mono uppercase tracking-[0.22em]" style={{ fontSize: "7px" }}>Display</span>
+            <span className="font-mono uppercase tracking-[0.22em]" style={{ fontSize: "7px" }}>Quadro</span>
           </Link>
 
           {/* Buscar */}

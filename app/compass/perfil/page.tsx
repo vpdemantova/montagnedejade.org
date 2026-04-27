@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import { MapaInterior } from "@/atlas/components/compass/MapaInterior"
+import { ProfileCardWidget, type CardData } from "@/atlas/components/compass/ProfileCard"
 
 const TABS = [
   { id: "favoritos",  label: "Favoritos"    },
@@ -544,25 +545,91 @@ function RepertorioTab() {
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 
+// ── Widget de cartão de membro ────────────────────────────────────────────────
+
+type MeResponse = {
+  id: string; username: string; displayName: string
+  bio?: string | null; avatarUrl?: string | null
+  accentColor: string; createdAt: string
+}
+
+function memberNum(id: string): string {
+  let n = 0
+  for (let i = 0; i < id.length; i++) n = (n * 31 + id.charCodeAt(i)) >>> 0
+  return (n % 999999).toString().padStart(6, "0")
+}
+
+function MemberCardSection() {
+  const [card,    setCard]    = useState<CardData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error,   setError]   = useState<string | null>(null)
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then(async (r) => {
+        if (!r.ok) {
+          const body = await r.json().catch(() => ({})) as { error?: string }
+          throw new Error(body.error ?? `HTTP ${r.status}`)
+        }
+        const me = await r.json() as MeResponse
+        const since = new Date(me.createdAt).toLocaleDateString("pt-BR", {
+          month: "short", year: "numeric",
+        })
+        setCard({
+          username:    me.username,
+          displayName: me.displayName,
+          bio:         me.bio,
+          avatarUrl:   me.avatarUrl,
+          accentColor: me.accentColor ?? "#C8A45A",
+          memberNum:   memberNum(me.id),
+          since,
+        })
+      })
+      .catch((e: Error) => setError(e.message))
+      .finally(() => setLoading(false))
+  }, [])
+
+  return (
+    <div className="mb-8 pb-8" style={{ borderBottom: "1px solid rgb(var(--c-border) / 0.15)" }}>
+      <p className="font-mono text-[7.5px] uppercase tracking-[0.3em] mb-4"
+        style={{ color: "rgb(var(--c-muted) / 0.5)" }}>
+        Cartão de Membro
+      </p>
+
+      {loading && (
+        <p className="font-mono text-[8px] animate-pulse" style={{ color: "rgb(var(--c-muted) / 0.35)" }}>
+          Carregando cartão…
+        </p>
+      )}
+
+      {error && (
+        <p className="font-mono text-[8px]" style={{ color: "rgb(var(--c-muted) / 0.4)" }}>
+          Erro: {error}
+        </p>
+      )}
+
+      {card && <ProfileCardWidget data={card} />}
+    </div>
+  )
+}
+
 export default function PerfilPage() {
   const [activeTab, setActiveTab] = useState<TabId>("favoritos")
 
   return (
-    <div className="relative min-h-screen">
-      <div className="fixed inset-0 pointer-events-none z-0 bg-grid-aligned" />
-
-      <header className="page-header relative z-10 border-b border-solar-border/40 pt-12 pb-6">
-        <div className="max-w-6xl mx-auto">
-          <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-compass-neon-dim/60 mb-3">
-            Numita Compass · Perfil
-          </p>
-          <h1 className="font-display text-[28px] sm:text-[36px] md:text-[44px] leading-none text-solar-text font-semibold tracking-tight">
-            Perfil
-          </h1>
+    <div className="min-h-screen">
+      <header className="ph">
+        <div className="page-wide">
+          <p className="page-label mb-3">Numita Compass · Perfil</p>
+          <h1 className="page-title">Perfil</h1>
         </div>
       </header>
 
-      <div className="relative z-10 max-w-6xl mx-auto py-6">
+      <div className="page-wide py-6">
+
+        {/* Cartão de membro — primeiro elemento visível */}
+        <MemberCardSection />
+
         {/* Tabs */}
         <div className="flex gap-0 border-b border-solar-border/20 mb-8 overflow-x-auto scrollbar-hide">
           {TABS.map((tab) => (
