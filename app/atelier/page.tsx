@@ -382,32 +382,28 @@ export default function AtelierPage() {
   const selectedStyle = STYLES.find((s) => s.id === selected)
 
   return (
-    <div className="min-h-screen" style={{ background: "rgb(var(--c-void))" }}>
+    <div className="min-h-screen">
 
       {/* ── Header ── */}
-      <div className="border-b px-0 pt-8 pb-6" style={{ borderColor: "rgb(var(--c-border) / 0.15)" }}>
-        <p className="font-mono text-[7.5px] uppercase tracking-[0.3em] mb-2" style={{ color: "rgb(var(--c-muted) / 0.5)" }}>
-          Portal Solar · Atelier de Interfaces
-        </p>
-        <h1 className="font-display text-3xl font-bold leading-none mb-2" style={{ color: "rgb(var(--c-text) / 0.9)" }}>
-          24 Direções de Design
-        </h1>
-        <p className="font-mono text-[9px] max-w-2xl" style={{ color: "rgb(var(--c-muted) / 0.6)" }}>
-          Cada cartão é uma direção visual completa e autônoma. Clique para selecionar, copie o token e aplique no site.
-        </p>
-        <div className="flex items-center gap-3 mt-4">
-          <Link href="/docs/design-plan" className="font-mono text-[7.5px] uppercase tracking-widest hover:opacity-70 transition-opacity" style={{ color: "rgb(var(--c-accent) / 0.8)" }}>
-            Plano de Execução →
-          </Link>
-          <span style={{ color: "rgb(var(--c-border) / 0.5)" }}>·</span>
-          <Link href="/" className="font-mono text-[7.5px] uppercase tracking-widest hover:opacity-70 transition-opacity" style={{ color: "rgb(var(--c-muted) / 0.5)" }}>
-            ← Atlas
-          </Link>
+      <header className="ph">
+        <div className="page-wide">
+          <p className="page-label mb-2">Portal Solar · Atelier</p>
+          <h1 className="page-title mb-1">24 Direções de Design</h1>
+          <p className="page-subtitle">Cada cartão é uma direção visual completa. Clique para selecionar e aplicar.</p>
+          <div className="flex items-center gap-3 mt-3">
+            <Link href="/docs/design-plan" className="font-mono text-[7.5px] uppercase tracking-widest hover:opacity-70 transition-opacity" style={{ color: "rgb(var(--c-accent) / 0.8)" }}>
+              Plano de Execução →
+            </Link>
+            <span style={{ color: "rgb(var(--c-border) / 0.5)" }}>·</span>
+            <Link href="/" className="font-mono text-[7.5px] uppercase tracking-widest hover:opacity-70 transition-opacity" style={{ color: "rgb(var(--c-muted) / 0.5)" }}>
+              ← Atlas
+            </Link>
+          </div>
         </div>
-      </div>
+      </header>
 
       {/* ── Filtros ── */}
-      <div className="flex gap-1 py-4 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
+      <div className="page-wide flex gap-1 py-4 overflow-x-auto" style={{ scrollbarWidth: "none" }}>
         {TAGS.map((t) => (
           <button
             key={t}
@@ -425,10 +421,10 @@ export default function AtelierPage() {
       </div>
 
       {/* ── Painel do selecionado ── */}
-      {selectedStyle && <StyleDetail s={selectedStyle} />}
+      {selectedStyle && <div className="page-wide"><StyleDetail s={selectedStyle} /></div>}
 
       {/* ── Grade 24 interfaces ── */}
-      <div className="grid gap-3 pb-16"
+      <div className="page-wide grid gap-3 pb-8"
         style={{ gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))" }}>
         {visible.map((s) => (
           <StylePreview

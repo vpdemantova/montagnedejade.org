@@ -93,6 +93,9 @@ export function BottomNav() {
           </button>
         </div>
 
+        {/* Mensagens */}
+        <SideLink href="/social/mensagens" label="✉" pathname={pathname} />
+
         {/* Direita: Work — bloco completo */}
         <SideLink href="/compass/estudos" label="Work" pathname={pathname} />
 

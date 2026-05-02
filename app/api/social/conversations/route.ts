@@ -71,7 +71,7 @@ export async function POST(req: Request) {
   }
 
   // Para DMs, verifica se já existe conversa entre os dois
-  const allIds = [...new Set([me.userId, ...participantIds])]
+  const allIds = Array.from(new Set([me.userId, ...participantIds]))
   if (!name && allIds.length === 2) {
     const existing = await prisma.conversation.findFirst({
       where: {

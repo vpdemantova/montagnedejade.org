@@ -34,18 +34,21 @@ const MODES: { id: InterfaceMode; label: string; desc: string }[] = [
 ]
 
 const COL_CULTURA: NavLink[] = [
-  { label: "Cultura",  href: "/portal/cultura", desc: "Portal editorial e cultural" },
-  { label: "Social",   href: "/social",          desc: "Rede de conexões"            },
-  { label: "Vilas",    href: "/portal/vilas",    desc: "Comunidades temáticas"       },
-  { label: "Mundo",    href: "/world",            desc: "Exploração mundial"          },
-  { label: "Display",  href: "/display",          desc: "Curadoria visual"            },
+  { label: "Cultura",    href: "/portal/cultura",   desc: "Portal editorial e cultural" },
+  { label: "Social",     href: "/social",            desc: "Rede de conexões"            },
+  { label: "Eventos",    href: "/social/eventos",    desc: "Encontros presenciais"       },
+  { label: "Mensagens",  href: "/social/mensagens",  desc: "DMs e grupos"                },
+  { label: "Vilas",      href: "/portal/vilas",      desc: "Comunidades temáticas"       },
+  { label: "Mundo",      href: "/world",              desc: "Exploração mundial"          },
+  { label: "Display",    href: "/display",            desc: "Curadoria visual"            },
 ]
 
 const COL_ATLAS: NavLink[] = [
-  { label: "Acervo",    href: "/",            desc: "Todo o conhecimento"   },
-  { label: "Hub",       href: "/hub",          desc: "Centro de recursos"    },
-  { label: "Grafo",     href: "/atlas/grafo",  desc: "Mapa de relações"      },
-  { label: "Novo item", href: "/atlas/novo",   desc: "Adicionar ao acervo"  },
+  { label: "Acervo",          href: "/",                          desc: "Todo o conhecimento"      },
+  { label: "Hub",             href: "/hub",                       desc: "Centro de recursos"       },
+  { label: "Grafo",           href: "/atlas/grafo",               desc: "Mapa de relações"         },
+  { label: "Tabela Periódica",href: "/atlas/tabela-periodica",    desc: "118 elementos interativos"},
+  { label: "Novo item",       href: "/atlas/novo",                desc: "Adicionar ao acervo"      },
 ]
 
 const COL_ACADEMIA: NavLink[] = [

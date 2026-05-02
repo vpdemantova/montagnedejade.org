@@ -16,21 +16,15 @@ export async function GET() {
       select: {
         id: true, username: true, displayName: true,
         bio: true, avatarUrl: true, accentColor: true, createdAt: true,
-        _count: {
-          select: {
-            followers: true,
-            following: true,
-            interests: true,
-            tickets:   true,
-            tokens:    true,
-            posts:     true,
-          },
-        },
       },
     })
 
     if (!user) return NextResponse.json({ error: "Usuário não encontrado" }, { status: 404 })
-    return NextResponse.json(user)
+
+    const res = NextResponse.json(user)
+    // Cache privado no browser por 60s — evita re-fetch a cada navegação
+    res.headers.set("Cache-Control", "private, max-age=60, stale-while-revalidate=30")
+    return res
   } catch (e) {
     return NextResponse.json({ error: (e as Error).message }, { status: 500 })
   }

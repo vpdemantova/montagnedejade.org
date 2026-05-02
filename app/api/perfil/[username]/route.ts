@@ -29,7 +29,7 @@ export async function GET(
     Math.abs(parseInt(user.id.replace(/[^0-9a-f]/gi, "").slice(-8), 16)) % 999999
   ).toString().padStart(6, "0")
 
-  return NextResponse.json({
+  const res = NextResponse.json({
     username:    user.username,
     displayName: user.displayName,
     bio:         user.bio,
@@ -38,4 +38,7 @@ export async function GET(
     memberNum,
     since:       user.createdAt.toLocaleDateString("pt-BR", { month: "short", year: "numeric" }),
   })
+  // Cache público: CDN serve por 60s, revalida em background
+  res.headers.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120")
+  return res
 }

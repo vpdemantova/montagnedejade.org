@@ -17,6 +17,7 @@ export async function GET(_req: Request, { params }: Params) {
         id: true, username: true, displayName: true,
         bio: true, avatarUrl: true, accentColor: true, createdAt: true,
         invitedBy: { select: { username: true, displayName: true, accentColor: true } },
+        userTags: { select: { tag: true }, orderBy: { tag: "asc" } },
         _count: {
           select: { followers: true, following: true, interests: true, posts: true },
         },
@@ -47,16 +48,17 @@ export async function GET(_req: Request, { params }: Params) {
 
     if (!user) return NextResponse.json({ error: "Usuário não encontrado" }, { status: 404 })
 
-    // Verificar se o usuário autenticado segue esse perfil
-    let isFollowing = false
-    if (me && me.userId !== user.id) {
-      const follow = await prisma.follow.findUnique({
-        where: { followerId_followingId: { followerId: me.userId, followingId: user.id } },
-      })
-      isFollowing = !!follow
-    }
+    // Follow check em paralelo com a própria resposta (já temos user)
+    const follow = me && me.userId !== user.id
+      ? await prisma.follow.findFirst({
+          where:  { followerId: me.userId, following: { username: username.toLowerCase() } },
+          select: { id: true },
+        })
+      : null
 
-    return NextResponse.json({ ...user, isFollowing })
+    const res = NextResponse.json({ ...user, isFollowing: !!follow })
+    res.headers.set("Cache-Control", "private, max-age=0, must-revalidate")
+    return res
   } catch (e) {
     return NextResponse.json({ error: (e as Error).message }, { status: 500 })
   }

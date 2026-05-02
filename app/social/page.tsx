@@ -192,7 +192,7 @@ export default function SocialPage() {
   }
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen">
       <header className="ph">
         <div className="page-narrow">
           <p className="page-label mb-3">Portal Solar · Rede</p>

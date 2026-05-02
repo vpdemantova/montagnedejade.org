@@ -16,16 +16,18 @@ type SectionDef = {
 }
 
 const SECTIONS: SectionDef[] = [
-  { id:"cosmos",      label:"Cosmos",       icon:"✦", desc:"Universo, astronomia e espaço",          areas:["COSMOS"]                                                    },
-  { id:"natureza",    label:"Natureza",      icon:"◉", desc:"Terra, vida e ecossistemas",             areas:["NATUREZA"]                                                   },
-  { id:"ciencias",    label:"Ciências",      icon:"⬡", desc:"Física, química, matemática",           areas:["CIENCIAS","ELEMENTOS","GEOMETRIA"]                          },
-  { id:"historia",    label:"História",      icon:"◈", desc:"Civilizações, eventos e eras",          areas:["HISTORIA"]                                                   },
-  { id:"filosofia",   label:"Filosofia",     icon:"◻", desc:"Pensamento, ética e metafísica",        areas:["FILOSOFIA"]                                                  },
-  { id:"tecnologia",  label:"Tecnologia",    icon:"⬛", desc:"Invenções, máquinas e computação",      areas:["TECNOLOGIA","COMPUTACAO"]                                    },
-  { id:"pessoas",     label:"Pessoas",       icon:"○", desc:"Humanos notáveis da história",          areas:["PESSOAS","MUSICOS","PINTORES","ESCRITORES","CIENTISTAS","FILOSOFOS","ARQUITETOS"] },
-  { id:"obras",       label:"Obras",         icon:"▣", desc:"Criações que moldaram a civilização",   areas:["OBRAS","MUSICA","PINTURAS","ESCULTURA","ARQUITETURA","CINEMA","ARTES"] },
-  { id:"biblioteca",  label:"Biblioteca",    icon:"▤", desc:"Livros da humanidade",                  areas:["BIBLIOTECA"],  types:["READING"]                             },
-  { id:"acervo",      label:"Acervo Geral",  icon:"◈", desc:"Todo o conhecimento indexado",          areas:["ATLAS","STUDIO"]                                             },
+  { id:"cosmos",      label:"Cosmos",         icon:"✦", desc:"Universo, astronomia e espaço",         areas:["COSMOS"]                                                     },
+  { id:"natureza",    label:"Natureza",        icon:"◉", desc:"Terra, vida e ecossistemas",            areas:["NATUREZA"]                                                    },
+  { id:"ciencias",    label:"Ciências",        icon:"⬡", desc:"Física, química, matemática",          areas:["CIENCIAS","ELEMENTOS","GEOMETRIA"]                           },
+  { id:"historia",    label:"História",        icon:"◈", desc:"Civilizações, eras, movimentos, países",areas:["HISTORIA"]                                                   },
+  { id:"filosofia",   label:"Filosofia",       icon:"◻", desc:"Pensamento, ética e metafísica",       areas:["FILOSOFIA"]                                                   },
+  { id:"mitologia",   label:"Mitologias",      icon:"⊕", desc:"Deuses e mitos do mundo",              areas:["HISTORIA"], types:["CONCEPT"]                                },
+  { id:"musica-inst", label:"Instrumentos",    icon:"♩", desc:"Instrumentos musicais do mundo",       areas:["MUSICA"]                                                     },
+  { id:"tecnologia",  label:"Tecnologia",      icon:"⬛", desc:"Invenções, máquinas e computação",     areas:["TECNOLOGIA","COMPUTACAO"]                                    },
+  { id:"pessoas",     label:"Pessoas",         icon:"○", desc:"Humanos notáveis da história",         areas:["PESSOAS","MUSICOS","PINTORES","ESCRITORES","CIENTISTAS","FILOSOFOS","ARQUITETOS"] },
+  { id:"obras",       label:"Obras",           icon:"▣", desc:"Criações que moldaram a civilização",  areas:["OBRAS","PINTURAS","ESCULTURA","ARQUITETURA","CINEMA","ARTES"] },
+  { id:"biblioteca",  label:"Biblioteca",      icon:"▤", desc:"Livros da humanidade",                 areas:["BIBLIOTECA"], types:["READING"]                              },
+  { id:"acervo",      label:"Acervo Geral",    icon:"◈", desc:"Todo o conhecimento indexado",         areas:["ATLAS","STUDIO"]                                              },
 ]
 
 function parseMetadata(raw?: string | null): Record<string, unknown> {
@@ -84,7 +86,16 @@ function FeaturedRow({ items }: { items: AtlasItemWithTags[] }) {
 }
 
 function AtlasSection({ section, items }: { section: SectionDef; items: AtlasItemWithTags[] }) {
-  const sectionItems = items.filter((i) => section.areas.includes(i.area ?? ""))
+  let sectionItems = items.filter((i) => section.areas.includes(i.area ?? ""))
+
+  // Seção de mitologias: filtra apenas itens com metadata.category = "mythology"
+  if (section.id === "mitologia") {
+    sectionItems = sectionItems.filter((i) => {
+      const m = parseMetadata(i.metadata)
+      return m.category === "mythology"
+    })
+  }
+
   if (!sectionItems.length) return null
 
   const presentTypes  = Array.from(new Set(sectionItems.map((i) => i.type)))
@@ -120,6 +131,15 @@ function AtlasSection({ section, items }: { section: SectionDef; items: AtlasIte
       </div>
 
       <div className="flex gap-4 overflow-x-auto pb-2" style={{ scrollbarWidth: "none" }}>
+        {/* Link especial para tabela periódica na seção de Ciências */}
+        {section.id === "ciencias" && (
+          <Link href="/atlas/tabela-periodica"
+            className="w-40 flex-shrink-0 flex flex-col items-center justify-center gap-1 border border-solar-accent/25 bg-solar-accent/5 hover:bg-solar-accent/10 hover:border-solar-accent/50 transition-all"
+            style={{ minHeight: "112px" }}>
+            <span className="font-mono text-[18px]" style={{ color: "rgb(var(--c-accent))" }}>⬡</span>
+            <span className="font-mono text-[7px] uppercase tracking-widest text-center" style={{ color: "rgb(var(--c-accent) / 0.8)" }}>Tabela<br/>Periódica</span>
+          </Link>
+        )}
         {filtered.slice(0, 24).map((item) => <AtlasCard key={item.id} item={item} size="md" />)}
         {filtered.length > 24 && (
           <Link href={`/?area=${section.areas[0]}`}

@@ -31,7 +31,7 @@ function RecentRow({ item, index }: { item: AtlasItemWithTags; index: number }) 
   return (
     <Link
       href={`/atlas/${item.slug ?? item.id}`}
-      className="group flex items-baseline gap-4 border-b border-solar-border/20 py-3 hover:bg-solar-surface/20 transition-colors px-6"
+      className="group flex items-baseline gap-4 border-b border-solar-border/20 py-3 hover:bg-solar-surface/20 transition-colors"
     >
       <span className="font-mono text-[10px] text-solar-muted/25 flex-shrink-0 w-6 text-right">
         {String(index + 1).padStart(2, "0")}
@@ -86,10 +86,12 @@ export default async function HubPage() {
     <div className="min-h-screen">
 
       {/* ── Row 1: Headline + data ── */}
-      <div className="border-b border-solar-border/30 px-6 py-10">
-        <p className="editorial-label text-solar-muted/40 mb-3">PORTAL SOLAR / {new Date().getFullYear()}</p>
-        <h1 className="page-hero text-solar-text mb-4">{greeting}</h1>
-        <p className="font-mono text-[10px] text-solar-muted/40 capitalize">{today}</p>
+      <div className="border-b border-solar-border/30 py-10">
+        <div className="page-wide">
+          <p className="editorial-label text-solar-muted/40 mb-3">PORTAL SOLAR / {new Date().getFullYear()}</p>
+          <h1 className="page-hero text-solar-text mb-4">{greeting}</h1>
+          <p className="font-mono text-[10px] text-solar-muted/40 capitalize">{today}</p>
+        </div>
       </div>
 
       {/* ── Row 2: Descoberta + Estatísticas ── */}
@@ -150,7 +152,7 @@ export default async function HubPage() {
 
       {/* ── Row 3: Recentes ── */}
       <div className="border-b border-solar-border/30">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-solar-border/15">
+        <div className="page-wide flex items-center justify-between py-4 border-b border-solar-border/15">
           <p className="editorial-label text-solar-muted/40">ADICIONADOS RECENTEMENTE</p>
           <Link href="/atlas" className="font-mono text-[8px] uppercase tracking-[0.2em] text-solar-muted/30 hover:text-solar-text transition-colors">
             Ver todos →
@@ -164,7 +166,7 @@ export default async function HubPage() {
       {/* ── Row 4: Notices ── */}
       {notices.length > 0 && (
         <div className="border-b border-solar-border/30">
-          <div className="px-6 py-4 border-b border-solar-border/15">
+          <div className="page-wide py-4 border-b border-solar-border/15">
             <p className="editorial-label text-solar-muted/40">AVISOS & NOTÍCIAS</p>
           </div>
           <div className="flex gap-0 overflow-x-auto scrollbar-hide divide-x divide-solar-border/20">
@@ -176,7 +178,7 @@ export default async function HubPage() {
       )}
 
       {/* Footer */}
-      <footer className="px-6 py-10 border-t border-solar-border/15">
+      <footer className="page-wide py-10 border-t border-solar-border/15">
         <p className="font-mono text-[9px] text-solar-muted/25 tracking-[0.2em] uppercase">
           ☀ Portal Solar · MMXX–MMXXVI · Vitor de Mantova
         </p>

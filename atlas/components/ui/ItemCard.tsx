@@ -37,15 +37,18 @@ function GridCard({ item, onClick }: { item: AtlasItemWithTags; onClick?: (item:
   return (
     <article
       onClick={() => onClick?.(item)}
-      className="group border-b border-solar-border/30 py-5 cursor-pointer hover:bg-solar-surface/20 transition-colors duration-150"
+      className="group border border-solar-border/25 rounded-[6px] bg-solar-deep/50 px-4 py-4 cursor-pointer
+        hover:bg-solar-deep/70 hover:border-solar-border/50
+        hover:shadow-[0_4px_16px_rgba(0,0,0,0.12)]
+        transition-all duration-200"
     >
       {/* Cover image / placeholder generativo */}
-      <div className="aspect-[3/1] overflow-hidden mb-3">
+      <div className="aspect-[3/1] overflow-hidden mb-3 rounded-[4px]">
         <CoverImage
           src={imageUrl}
           alt={item.title}
           name={item.title}
-          className="w-full h-full object-cover opacity-75 group-hover:opacity-90 transition-opacity duration-200"
+          className="w-full h-full object-cover opacity-70 group-hover:opacity-95 transition-opacity duration-300"
         />
       </div>
 
@@ -60,20 +63,23 @@ function GridCard({ item, onClick }: { item: AtlasItemWithTags; onClick?: (item:
       </div>
 
       {/* Title */}
-      <h3 className="font-display text-[17px] leading-tight text-solar-text group-hover:opacity-80 transition-opacity mb-3 line-clamp-3">
+      <h3 className="font-display text-[17px] leading-tight text-solar-text group-hover:opacity-90 transition-opacity mb-3 line-clamp-3">
         {item.title}
       </h3>
 
       {/* Tags + date */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-1.5 flex-wrap">
           {item.tags.slice(0, 2).map((tag) => (
-            <span key={tag.id} className="font-mono text-[8px] text-solar-muted/45">
+            <span key={tag.id}
+              className="font-mono text-[7.5px] text-solar-muted/55 border border-solar-border/25 px-1.5 py-0.5 rounded-sm">
               #{tag.name}
             </span>
           ))}
           {item.tags.length > 2 && (
-            <span className="font-mono text-[8px] text-solar-muted/25">+{item.tags.length - 2}</span>
+            <span className="font-mono text-[7.5px] text-solar-muted/30 border border-solar-border/20 px-1.5 py-0.5 rounded-sm">
+              +{item.tags.length - 2}
+            </span>
           )}
         </div>
         <span className="font-mono text-[8px] text-solar-muted/35 flex-shrink-0">

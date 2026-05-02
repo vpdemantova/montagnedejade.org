@@ -7,10 +7,19 @@ export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl
   const limit  = Math.min(parseInt(searchParams.get("limit")  ?? "50"), 100)
   const cursor = searchParams.get("cursor") ?? undefined
+  const search = searchParams.get("search") ?? undefined
 
   const users = await prisma.user.findMany({
     take:    limit + 1,
     ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
+    ...(search ? {
+      where: {
+        OR: [
+          { username:    { contains: search } },
+          { displayName: { contains: search } },
+        ],
+      },
+    } : {}),
     orderBy: { createdAt: "desc" },
     select: {
       id:          true,

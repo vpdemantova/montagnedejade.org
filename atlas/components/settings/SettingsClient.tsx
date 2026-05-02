@@ -295,6 +295,104 @@ function UsernameSection({ currentUsername }: { currentUsername: string }) {
   )
 }
 
+// ── Interesses livres (tags) ──────────────────────────────────────────────────
+
+const TAG_SUGGESTIONS = [
+  "espiritualidade", "música", "mantras", "meditação", "desenho",
+  "biologia", "botânica", "wicca", "astronomia", "cinema",
+  "dança", "culinária", "filosofia", "teatro", "literatura",
+  "yoga", "fotografia", "poesia", "games", "programação",
+]
+
+function InteressesSection() {
+  const [tags,     setTags]     = useState<string[]>([])
+  const [input,    setInput]    = useState("")
+  const [loading,  setLoading]  = useState(true)
+
+  useEffect(() => {
+    fetch("/api/social/tags")
+      .then((r) => r.ok ? r.json() as Promise<string[]> : [])
+      .then((t) => { setTags(t); setLoading(false) })
+  }, [])
+
+  const add = async (tag: string) => {
+    const t = tag.trim().toLowerCase()
+    if (!t || tags.includes(t)) return
+    await fetch("/api/social/tags", {
+      method:  "POST",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify({ tag: t }),
+    })
+    setTags((prev) => [...prev, t].sort())
+    setInput("")
+  }
+
+  const remove = async (tag: string) => {
+    await fetch(`/api/social/tags?tag=${encodeURIComponent(tag)}`, { method: "DELETE" })
+    setTags((prev) => prev.filter((t) => t !== tag))
+  }
+
+  const handleKey = (e: React.KeyboardEvent) => {
+    if ((e.key === "Enter" || e.key === ",") && input.trim()) {
+      e.preventDefault()
+      void add(input)
+    }
+  }
+
+  return (
+    <Section title="Meus interesses">
+      {loading ? (
+        <p className="text-[9px] font-mono text-solar-muted/30 animate-pulse">Carregando…</p>
+      ) : (
+        <>
+          {/* Tags ativas */}
+          {tags.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mb-4">
+              {tags.map((t) => (
+                <button
+                  key={t}
+                  onClick={() => void remove(t)}
+                  className="flex items-center gap-1 font-mono text-[7.5px] uppercase tracking-widest px-2 py-1 transition-colors hover:opacity-70"
+                  style={{ background: "rgb(var(--c-accent) / 0.1)", border: "1px solid rgb(var(--c-accent) / 0.3)", color: "rgb(var(--c-accent) / 0.85)" }}
+                >
+                  {t} <span style={{ opacity: 0.5, fontSize: 10 }}>×</span>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Input livre */}
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value.toLowerCase())}
+            onKeyDown={handleKey}
+            placeholder="Digite um interesse e pressione Enter"
+            className="w-full bg-solar-deep/50 border border-solar-border/30 py-1.5 text-xs font-mono text-solar-text placeholder:text-solar-muted/30 focus:outline-none focus:border-solar-amber/40 transition-all duration-150 mb-3"
+          />
+
+          {/* Sugestões */}
+          <div className="flex flex-wrap gap-1.5">
+            {TAG_SUGGESTIONS.filter((t) => !tags.includes(t)).map((t) => (
+              <button
+                key={t}
+                onClick={() => void add(t)}
+                className="font-mono text-[7px] uppercase tracking-widest px-2 py-0.5 border transition-colors hover:border-solar-amber/40 hover:text-solar-amber/70"
+                style={{ borderColor: "rgb(var(--c-border) / 0.25)", color: "rgb(var(--c-muted) / 0.45)" }}
+              >
+                + {t}
+              </button>
+            ))}
+          </div>
+          <p className="font-mono text-[7px] text-solar-muted/30 mt-3">
+            Aparece no seu perfil público e melhora o matching de eventos.
+          </p>
+        </>
+      )}
+    </Section>
+  )
+}
+
 // ── Senha tab ─────────────────────────────────────────────────────────────────
 
 function SenhaTab() {
@@ -488,6 +586,8 @@ function PerfilTab() {
           <p className="text-[9px] font-mono text-solar-muted/40">Prévia do avatar</p>
         </div>
       </Section>
+
+      <InteressesSection />
 
       {error && <p className="text-[9px] font-mono text-red-400/70">{error}</p>}
 
