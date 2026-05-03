@@ -421,7 +421,7 @@ export default function SocialPage() {
                       style={{ border: `2px solid ${u.accentColor}50`, background: "rgb(var(--c-deep))" }}
                     >
                       {u.avatarUrl
-                        ? <img src={u.avatarUrl} alt={u.displayName} className="w-full h-full object-cover" />
+                        ? <Image src={u.avatarUrl} alt={u.displayName} fill className="object-cover" unoptimized />
                         : (
                           <div className="w-full h-full flex items-center justify-center font-bold text-sm"
                             style={{ background: `${u.accentColor}30`, color: u.accentColor }}>

@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import Link from "next/link"
+import Link    from "next/link"
+import Image   from "next/image"
 import { GenerativePlaceholder } from "@/atlas/components/ui/GenerativePlaceholder"
 
 type AdminUser = {
@@ -115,7 +116,7 @@ function AdminPanel({ adminKey }: { adminKey: string }) {
               {/* Avatar */}
               <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
                 {u.avatarUrl
-                  ? <img src={u.avatarUrl} alt={u.displayName} className="w-full h-full object-cover" />
+                  ? <Image src={u.avatarUrl} alt={u.displayName} fill className="object-cover" unoptimized />
                   : <GenerativePlaceholder name={u.displayName} className="w-full h-full" />
                 }
               </div>
