@@ -140,6 +140,24 @@ export const BRANDING = {
 } as const
 
 // ─────────────────────────────────────────────────────────────────────────────
+// 4b. FUNDADOR
+//
+//    USERNAME  → username do fundador no banco de dados.
+//                Usado em: InstallPrompt.tsx (botão de convite → /convite/USERNAME)
+//                Crie a conta com: pnpm seed:founder
+//
+//    DISPLAY   → nome exibido no botão de convite quando não há conta criada ainda.
+//    BIO       → bio padrão do fundador (usada no seed).
+//    ACCENT    → cor de destaque do perfil do fundador.
+// ─────────────────────────────────────────────────────────────────────────────
+export const FOUNDER = {
+  USERNAME: "vitor",
+  DISPLAY:  "Vitor de Mantova",
+  BIO:      "Fundador do Portal Solar — Diamantov. Construindo utopias, registrando ações de paz.",
+  ACCENT:   "#C8A45A",
+} as const
+
+// ─────────────────────────────────────────────────────────────────────────────
 // 5. FUNCIONALIDADES (FEATURES FLAGS)
 //
 //    Controla quais seções do app aparecem na navegação.

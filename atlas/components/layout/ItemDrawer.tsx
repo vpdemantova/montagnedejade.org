@@ -2,12 +2,14 @@
 
 import { useEffect, useRef } from "react"
 import Link from "next/link"
+import ReactMarkdown from "react-markdown"
 import { X, ExternalLink, Tag as TagIcon, Calendar, Hash } from "lucide-react"
 import { UI } from "@/portal.config"
 import type { AtlasItemWithTags } from "@/atlas/types"
 import { AREA_LABELS, TYPE_LABELS, STATUS_LABELS, AREA_COLORS } from "@/atlas/types"
 import { Tag } from "@/atlas/components/ui/Tag"
 import { RelationsPanel } from "@/atlas/components/ui/RelationsPanel"
+import { blockNoteToMarkdown } from "@/atlas/lib/blocknote-md"
 
 type ItemDrawerProps = {
   item: AtlasItemWithTags | null
@@ -199,10 +201,10 @@ export function ItemDrawer({ item, onClose }: ItemDrawerProps) {
 
           <div className="px-6 py-4">
           {item.content ? (
-            <div className="prose prose-sm prose-invert max-w-none">
-              <p className="text-solar-text/80 text-sm leading-relaxed whitespace-pre-wrap font-body">
-                {item.content}
-              </p>
+            <div className="prose prose-sm prose-invert max-w-none prose-p:text-solar-text/80 prose-headings:text-solar-text/90 prose-a:text-solar-accent prose-code:text-solar-accent/80 prose-blockquote:border-solar-accent/30 prose-blockquote:text-solar-muted/70">
+              <ReactMarkdown>
+                {blockNoteToMarkdown(item.content)}
+              </ReactMarkdown>
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center h-32 text-center">

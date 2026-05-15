@@ -42,3 +42,13 @@ portal.tasks.main.md
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Vault Obsidian — esboços da plataforma (referência local, não commitar)
+_esbocos/
+
+# Conteúdo gerado automaticamente (index do /content)
+content/index.json
+
+# PWA service worker gerado pelo build
+/public/sw.js
+/public/workbox-*.js

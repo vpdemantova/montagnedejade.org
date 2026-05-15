@@ -194,6 +194,7 @@ model User {
   eventMessages           EventMessage[]            @relation("EventMessages")
   conversationMemberships ConversationParticipant[] @relation("ConvParticipants")
   sentMessages            Message[]                 @relation("MessageSender")
+  pages                   Page[]                    @relation("UserPages")
 }
 
 model Follow {
@@ -385,4 +386,47 @@ model Message {
   sender         User         @relation("MessageSender", fields: [senderId], references: [id])
   content        String
   createdAt      DateTime     @default(now())
+}
+
+// ─── BUBBLE MIXTURE — perguntas e percepções ─────────────────────────────────
+
+model BubbleQuestion {
+  id        String           @id @default(cuid())
+  n         Int              @unique // número da pergunta 1-100
+  text      String
+  type      String           @default("scale") // scale | choice | text
+  options   String?          // JSON array para choice
+  createdAt DateTime         @default(now())
+  responses BubbleResponse[]
+}
+
+model BubbleResponse {
+  id         String   @id @default(cuid())
+  userId     String?  // opcional, pode ser anônimo
+  sessionId  String   // fingerprint de sessão
+  questionId String
+  question   BubbleQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  answer     String   // valor da resposta
+  createdAt  DateTime @default(now())
+  @@unique([sessionId, questionId])
+}
+
+// ─── WORKSPACE — páginas hierárquicas (estilo Notion) ─────────────────────────
+
+model Page {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation("UserPages", fields: [userId], references: [id], onDelete: Cascade)
+  parentId  String?
+  parent    Page?    @relation("PageTree", fields: [parentId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  children  Page[]   @relation("PageTree")
+  title     String   @default("Sem título")
+  icon      String?  // emoji ou caractere especial
+  content   String?  // BlockNote JSON serializado
+  slug      String?  @unique
+  isPublic  Boolean  @default(false)  // visível sem login
+  isBlog    Boolean  @default(false)  // aparece em /blog
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

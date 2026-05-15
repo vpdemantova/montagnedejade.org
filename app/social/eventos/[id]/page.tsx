@@ -307,7 +307,7 @@ export default function EventDetailPage() {
                       {r.status === "ACCEPTED" ? "Aceito" : r.status === "REJECTED" ? "Rejeitado" : "Pendente"}
                     </span>
                   </div>
-                  {r.note && <p className="font-mono text-[9px] text-solar-muted/55 italic mb-2">"{r.note}"</p>}
+                  {r.note && <p className="font-mono text-[9px] text-solar-muted/55 italic mb-2">&ldquo;{r.note}&rdquo;</p>}
                   {r.status === "PENDING" && (
                     <div className="flex gap-2">
                       <button

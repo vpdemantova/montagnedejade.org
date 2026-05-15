@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#0D0D0F"/>
+  <circle cx="256" cy="256" r="200" fill="#C8A45A" opacity="0.12"/>
+  <circle cx="256" cy="256" r="160" fill="none" stroke="#C8A45A" stroke-width="4" opacity="0.3"/>
+  <!-- Sol — círculo central -->
+  <circle cx="256" cy="256" r="60" fill="#C8A45A"/>
+  <!-- Raios do sol -->
+  <line x1="256" y1="156" x2="256" y2="116" stroke="#C8A45A" stroke-width="12" stroke-linecap="round"/>
+  <line x1="256" y1="356" x2="256" y2="396" stroke="#C8A45A" stroke-width="12" stroke-linecap="round"/>
+  <line x1="156" y1="256" x2="116" y2="256" stroke="#C8A45A" stroke-width="12" stroke-linecap="round"/>
+  <line x1="356" y1="256" x2="396" y2="256" stroke="#C8A45A" stroke-width="12" stroke-linecap="round"/>
+  <line x1="185" y1="185" x2="155" y2="155" stroke="#C8A45A" stroke-width="10" stroke-linecap="round"/>
+  <line x1="327" y1="327" x2="357" y2="357" stroke="#C8A45A" stroke-width="10" stroke-linecap="round"/>
+  <line x1="327" y1="185" x2="357" y2="155" stroke="#C8A45A" stroke-width="10" stroke-linecap="round"/>
+  <line x1="185" y1="327" x2="155" y2="357" stroke="#C8A45A" stroke-width="10" stroke-linecap="round"/>
+</svg>

@@ -4,23 +4,28 @@ import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
-import { Search, Plus } from "lucide-react"
 import { useSolarStore, type InterfaceMode } from "@/atlas/lib/store"
-import { openQuickCapture } from "@/atlas/components/ui/QuickCapture"
 import { NAV } from "@/portal.config"
 
-// ── Constants ─────────────────────────────────────────────────────────────────
+// ── Constantes ────────────────────────────────────────────────────────────────
 
-export const PILL_H              = 38
-export const PILL_W              = "min(640px, calc(100vw - 24px))"
-export const NAV_PAD             = "var(--page-pad)"
-export const DIV_CLR             = "rgb(var(--c-border) / 0.18)"
-export const BAR_BG              = "rgb(var(--c-deep) / 0.96)"
-export const BAR_BORDER          = `1px solid rgb(var(--c-border) / 0.2)`
+export const PILL_H   = 38
+export const PILL_W   = "min(640px, calc(100vw - 24px))"
+export const NAV_PAD  = "var(--page-pad)"
+export const DIV_CLR  = "rgb(var(--c-border) / 0.18)"
+export const BAR_BG   = "rgb(var(--c-deep) / 0.96)"
+export const BAR_BORDER = `1px solid rgb(var(--c-border) / 0.2)`
 export const SECTION_STYLE: React.CSSProperties = {
   border:    "1px solid rgb(var(--c-border) / 0.28)",
   boxShadow: "0 8px 40px rgb(0 0 0 / 0.14), 0 1px 0 rgb(var(--c-void) / 0.5)",
 }
+
+export const PILL_STYLE = {
+  height:     `${PILL_H}px`,
+  background: "rgb(var(--c-deep))",
+  border:     "1px solid rgb(var(--c-border) / 0.28)",
+  boxShadow:  "0 8px 40px rgb(0 0 0 / 0.14), 0 1px 0 rgb(var(--c-void) / 0.5)",
+} as const
 
 // ── Data ──────────────────────────────────────────────────────────────────────
 
@@ -34,79 +39,43 @@ const MODES: { id: InterfaceMode; label: string; desc: string }[] = [
 ]
 
 const COL_CULTURA: NavLink[] = [
-  { label: "Cultura",    href: "/portal/cultura",   desc: "Portal editorial e cultural" },
-  { label: "Social",     href: "/social",            desc: "Rede de conexões"            },
-  { label: "Eventos",    href: "/social/eventos",    desc: "Encontros presenciais"       },
-  { label: "Mensagens",  href: "/social/mensagens",  desc: "DMs e grupos"                },
-  { label: "Vilas",      href: "/portal/vilas",      desc: "Comunidades temáticas"       },
-  { label: "Mundo",      href: "/world",              desc: "Exploração mundial"          },
-  { label: "Display",    href: "/display",            desc: "Curadoria visual"            },
+  { label: "▸ Cultura",   href: "/portal/cultura",   desc: "Portal editorial e cultural" },
+  { label: "◎ Social",    href: "/social",            desc: "Rede de conexões"            },
+  { label: "⬡ Eventos",   href: "/social/eventos",    desc: "Encontros presenciais"       },
+  { label: "◈ Blog",      href: "/blog",              desc: "Textos e ensaios publicados" },
+  { label: "// Vilas",    href: "/portal/vilas",      desc: "Comunidades temáticas"       },
+  { label: "→ Mundo",     href: "/world",              desc: "Exploração mundial"          },
+  { label: "◻ Display",   href: "/display",            desc: "Curadoria visual"            },
 ]
 
 const COL_ATLAS: NavLink[] = [
-  { label: "Acervo",          href: "/",                          desc: "Todo o conhecimento"      },
-  { label: "Hub",             href: "/hub",                       desc: "Centro de recursos"       },
-  { label: "Grafo",           href: "/atlas/grafo",               desc: "Mapa de relações"         },
-  { label: "Tabela Periódica",href: "/atlas/tabela-periodica",    desc: "118 elementos interativos"},
-  { label: "Novo item",       href: "/atlas/novo",                desc: "Adicionar ao acervo"      },
+  { label: "⬡ Acervo",           href: "/atlas",                   desc: "Todo o conhecimento"      },
+  { label: "◈ Hub",              href: "/hub",                     desc: "Centro de recursos"       },
+  { label: "⊕ Grafo",            href: "/atlas/grafo",             desc: "Mapa de relações"         },
+  { label: "// Tabela Periódica", href: "/atlas/tabela-periodica", desc: "118 elementos interativos"},
+  { label: "→ Workspace",        href: "/workspace",               desc: "Páginas e notas"          },
+  { label: "+ Novo item",        href: "/atlas/novo",              desc: "Adicionar ao acervo"      },
 ]
 
 const COL_ACADEMIA: NavLink[] = [
-  { label: "Academia",  href: "/academia",  desc: "Aprendizado e formação"  },
-  { label: "Monumento", href: "/monument",  desc: "Obra tridimensional 3D"  },
+  { label: "▸ Academia",   href: "/academia",  desc: "Aprendizado e formação"  },
+  { label: "◉ Monumento",  href: "/monument",  desc: "Obra tridimensional 3D"  },
 ]
 
 // ── Active helpers ────────────────────────────────────────────────────────────
 
 function isOn(href: string, pathname: string) {
-  return href === "/" ? pathname === "/" : pathname.startsWith(href)
+  if (href === "/atlas") return pathname === "/atlas" || pathname.startsWith("/atlas/")
+  if (href === "/")      return pathname === "/"
+  return pathname.startsWith(href)
 }
 
 function isAtlasActive(pathname: string) {
-  return pathname === "/" || pathname.startsWith("/atlas")
+  return pathname === "/" || pathname === "/atlas" || pathname.startsWith("/atlas/")
 }
 
-// ── Shared pill styles ────────────────────────────────────────────────────────
-
-export const PILL_STYLE = {
-  height:     `${PILL_H}px`,
-  width:      PILL_W,
-  background: "rgb(var(--c-deep))",
-  border:     "1px solid rgb(var(--c-border) / 0.28)",
-  boxShadow:  "0 8px 40px rgb(0 0 0 / 0.14), 0 1px 0 rgb(var(--c-void) / 0.5)",
-} as const
-
-// ── NavCell — célula lateral (py curto = tamanho do texto, borda própria) ─────
-
-function NavCell({
-  href,
-  label,
-  pathname,
-  atlasRoot = false,
-}: {
-  href:       string
-  label:      string
-  pathname:   string
-  atlasRoot?: boolean
-}) {
-  const on = atlasRoot ? isAtlasActive(pathname) : isOn(href, pathname)
-  return (
-    <Link
-      href={href}
-      className="h-full flex flex-col items-center justify-center select-none transition-colors duration-150 px-5"
-      style={{
-        ...SECTION_STYLE,
-        backgroundColor: on ? "rgb(var(--c-text))" : "rgb(var(--c-deep))",
-        color:           on ? "rgb(var(--c-void))" : "rgb(var(--c-text) / 0.72)",
-      }}
-    >
-      {NAV.SHOW_NAV_LABELS && (
-        <span className="font-mono uppercase tracking-[0.22em] whitespace-nowrap" style={{ fontSize: "8px" }}>
-          {label}
-        </span>
-      )}
-    </Link>
-  )
+function isAcademiaActive(pathname: string) {
+  return pathname === "/academia" || pathname.startsWith("/academia/")
 }
 
 // ── Overlay helpers ───────────────────────────────────────────────────────────
@@ -153,9 +122,7 @@ function NavCol({ links, pathname, colDelay, onClose }: {
         const dimmed = anyHovered && hovered !== l.href && !on
         return (
           <Reveal key={l.href} delay={colDelay + i * 0.05}>
-            <Link
-              href={l.href}
-              onClick={onClose}
+            <Link href={l.href} onClick={onClose}
               onMouseEnter={() => setHovered(l.href)}
               className="flex flex-col gap-0.5 py-2 select-none"
               style={{
@@ -164,22 +131,15 @@ function NavCol({ links, pathname, colDelay, onClose }: {
                 transition: "opacity 0.18s ease",
               }}
             >
-              <span
-                className="font-display leading-tight"
-                style={{
-                  fontSize: "1.0rem",
-                  letterSpacing: "-0.01em",
+              <span className="font-display leading-tight"
+                style={{ fontSize: "1.0rem", letterSpacing: "-0.01em",
                   color: on ? "rgb(var(--c-accent))" : "rgb(var(--c-text) / 0.85)",
-                  fontWeight: on ? 600 : 400,
-                }}
-              >
+                  fontWeight: on ? 600 : 400 }}>
                 {l.label}
               </span>
               {l.desc && (
-                <span
-                  className="font-mono uppercase tracking-widest"
-                  style={{ fontSize: "6.5px", color: "rgb(var(--c-muted) / 0.75)" }}
-                >
+                <span className="font-mono uppercase tracking-widest"
+                  style={{ fontSize: "6.5px", color: "rgb(var(--c-muted) / 0.75)" }}>
                   {l.desc}
                 </span>
               )}
@@ -191,7 +151,6 @@ function NavCol({ links, pathname, colDelay, onClose }: {
   )
 }
 
-
 function LiveClock() {
   const [time, setTime] = useState<string>("")
   useEffect(() => {
@@ -202,7 +161,8 @@ function LiveClock() {
   }, [])
   if (!time) return null
   return (
-    <span className="font-mono text-[7px] tabular-nums tracking-[0.2em]" style={{ color: "rgb(var(--c-muted) / 0.35)" }}>
+    <span className="font-mono text-[7px] tabular-nums tracking-[0.2em]"
+      style={{ color: "rgb(var(--c-muted) / 0.35)" }}>
       {time}
     </span>
   )
@@ -230,67 +190,65 @@ export function UnifiedNav() {
     return () => { document.body.style.overflow = "" }
   }, [open])
 
-  const triggerSearch = useCallback(() => {
-    window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true, bubbles: true }))
-  }, [])
-
   const handleLogout = useCallback(async () => {
     await fetch("/api/auth/logout", { method: "POST" })
     window.location.href = "/login"
   }, [])
 
-  const currentMode = MODES.find((m) => m.id === mode) ?? MODES[0]!
-
   return (
     <>
       {/* ══════════════════════════════════════════════════════
-          PILL — 3 células: [Cultura] [Centro vertical] [Academia]
-          Centro: Display (top) / Atlas (mid) / ≡≡ (bottom)
+          PILL — ponta a ponta, sem padding lateral
+          Ordem: [Academia] [Atlas ⊞ | Quadro ◈ | ≡] [Cultura]
       ══════════════════════════════════════════════════════ */}
-      <header
-        role="banner"
-        className="fixed top-0 inset-x-0 z-50"
-        style={{ height: `${PILL_H}px` }}
-      >
-        <div className="h-full flex items-stretch" style={{ paddingLeft: NAV_PAD, paddingRight: NAV_PAD }}>
+      <header role="banner" className="fixed top-0 inset-x-0 z-50"
+        style={{ height: `${PILL_H}px`, background: "rgb(var(--c-deep))", borderBottom: `1px solid ${DIV_CLR}`, boxShadow: "0 4px 20px rgb(0 0 0 / 0.12)" }}>
 
-          {/* Esquerda — Cultura: bloco completo */}
-          <div style={{ flex: 1 }}>
-            <NavCell href="/portal/cultura" label="Cultura" pathname={pathname} />
-          </div>
+        <div className="h-full flex items-stretch w-full">
 
-          {/* Centro — Atlas · Quadro · ≡ na horizontal */}
-          <div
-            className="flex-1 flex flex-row items-stretch overflow-hidden"
-            style={{ ...SECTION_STYLE, backgroundColor: "rgb(var(--c-deep))" }}
-          >
-            {/* Atlas */}
-            <Link
-              href="/"
+          {/* Academia — célula esquerda */}
+          <Link href="/academia"
+            className="flex items-center justify-center px-5 h-full select-none transition-colors duration-150 flex-shrink-0"
+            style={{
+              backgroundColor: isAcademiaActive(pathname) ? "rgb(var(--c-text))" : "rgb(var(--c-deep))",
+              color:           isAcademiaActive(pathname) ? "rgb(var(--c-void))" : "rgb(var(--c-text) / 0.72)",
+              borderRight:     `1px solid ${DIV_CLR}`,
+              minWidth:        90,
+            }}>
+            {NAV.SHOW_NAV_LABELS && (
+              <span className="font-mono uppercase tracking-[0.22em] whitespace-nowrap" style={{ fontSize: "8px" }}>
+                ▸ Academia
+              </span>
+            )}
+          </Link>
+
+          {/* Centro — Atlas ⊞ | Quadro ◈ | ≡ Menu — 3 juntos, flex-1 */}
+          <div className="flex-1 flex flex-row items-stretch overflow-hidden"
+            style={{ borderRight: `1px solid ${DIV_CLR}` }}>
+
+            {/* Atlas — ícone de tabela/grade */}
+            <Link href="/atlas"
               className="flex-1 flex items-center justify-center transition-colors duration-150"
               style={{
                 borderRight:     `1px solid ${DIV_CLR}`,
-                color:           isAtlasActive(pathname) ? "rgb(var(--c-void))" : "rgb(var(--c-text) / 0.68)",
                 backgroundColor: isAtlasActive(pathname) ? "rgb(var(--c-text))" : "transparent",
-              }}
-            >
-              <span className="font-mono uppercase tracking-[0.22em]" style={{ fontSize: "8px" }}>Atlas</span>
+                color:           isAtlasActive(pathname) ? "rgb(var(--c-void))" : "rgb(var(--c-text) / 0.65)",
+              }}>
+              <span style={{ fontSize: "14px", lineHeight: 1 }}>⊞</span>
             </Link>
 
-            {/* Display */}
-            <Link
-              href="/display"
+            {/* Quadro */}
+            <Link href="/compass/quadro"
               className="flex-1 flex items-center justify-center transition-colors duration-150"
               style={{
                 borderRight:     `1px solid ${DIV_CLR}`,
-                color:           isOn("/display", pathname) ? "rgb(var(--c-void))" : "rgb(var(--c-text) / 0.65)",
-                backgroundColor: isOn("/display", pathname) ? "rgb(var(--c-text))" : "transparent",
-              }}
-            >
-              <span className="font-mono uppercase tracking-[0.22em]" style={{ fontSize: "7px" }}>Display</span>
+                backgroundColor: isOn("/compass/quadro", pathname) ? "rgb(var(--c-text))" : "transparent",
+                color:           isOn("/compass/quadro", pathname) ? "rgb(var(--c-void))" : "rgb(var(--c-text) / 0.6)",
+              }}>
+              <span className="font-mono uppercase tracking-[0.22em]" style={{ fontSize: "7px" }}>◈</span>
             </Link>
 
-            {/* Menu geral */}
+            {/* Menu ≡ */}
             <button
               onClick={() => setOpen((v) => !v)}
               aria-label={open ? "Fechar menu" : "Menu"}
@@ -298,182 +256,130 @@ export function UnifiedNav() {
               aria-controls="nav-overlay"
               className="flex-1 flex items-center justify-center transition-colors duration-150"
               style={{
-                color:           open ? "rgb(var(--c-void))" : "rgb(var(--c-text) / 0.65)",
                 backgroundColor: open ? "rgb(var(--c-text))" : "transparent",
-              }}
-            >
+                color:           open ? "rgb(var(--c-void))" : "rgb(var(--c-text) / 0.6)",
+              }}>
               <span className="flex flex-col gap-[5px] w-[14px]">
-                <motion.span
-                  animate={open ? { rotate: 45, y: 3 } : { rotate: 0, y: 0 }}
+                <motion.span animate={open ? { rotate: 45, y: 3 } : { rotate: 0, y: 0 }}
                   transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                  className="block h-px w-full" style={{ background: "currentColor" }}
-                />
-                <motion.span
-                  animate={open ? { rotate: -45, y: -3 } : { rotate: 0, y: 0 }}
+                  className="block h-px w-full" style={{ background: "currentColor" }} />
+                <motion.span animate={open ? { rotate: -45, y: -3 } : { rotate: 0, y: 0 }}
                   transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                  className="block h-px w-full" style={{ background: "currentColor" }}
-                />
+                  className="block h-px w-full" style={{ background: "currentColor" }} />
               </span>
             </button>
           </div>
 
-          {/* Direita — Academia: bloco completo */}
-          <div style={{ flex: 1 }}>
-            <NavCell href="/academia" label="Academia" pathname={pathname} />
-          </div>
+          {/* Cultura — célula direita */}
+          <Link href="/portal/cultura"
+            className="flex items-center justify-center px-5 h-full select-none transition-colors duration-150 flex-shrink-0"
+            style={{
+              backgroundColor: isOn("/portal/cultura", pathname) ? "rgb(var(--c-text))" : "rgb(var(--c-deep))",
+              color:           isOn("/portal/cultura", pathname) ? "rgb(var(--c-void))" : "rgb(var(--c-text) / 0.72)",
+              borderLeft:      `1px solid ${DIV_CLR}`,
+              minWidth:        85,
+            }}>
+            {NAV.SHOW_NAV_LABELS && (
+              <span className="font-mono uppercase tracking-[0.22em] whitespace-nowrap" style={{ fontSize: "8px" }}>
+                ▸ Cultura
+              </span>
+            )}
+          </Link>
 
         </div>
       </header>
 
-      {/* ══════════════════════════════════════════════════════
-          CARD — entre o pill superior e o inferior
-          Mesma largura dos pills, posicionado no meio da tela
-      ══════════════════════════════════════════════════════ */}
+      {/* ══ OVERLAY ══════════════════════════════════════════════════════════ */}
       <AnimatePresence>
         {open && (
           <>
-            {/* Backdrop — clique fora para fechar */}
             <motion.div
               className="fixed inset-0 z-[45]"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               transition={{ duration: 0.18 }}
               style={{ background: "rgb(var(--c-void) / 0.65)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" }}
               onClick={() => setOpen(false)}
             />
 
-            {/* Card — mesma largura e alinhamento do nav */}
-            <div
-              className="fixed z-[46]"
-              style={{
-                left:   NAV_PAD,
-                right:  NAV_PAD,
-                top:    `${PILL_H}px`,
-                bottom: `${PILL_H}px`,
-              }}
-            >
-            <motion.div
-              id="nav-overlay"
-              role="dialog"
-              aria-modal="true"
-              aria-label="Menu de navegação"
-              className="flex flex-col overflow-hidden h-full"
-              style={{
-                background: "rgb(var(--c-deep))",
-                border:     "1px solid rgb(var(--c-border) / 0.28)",
-                boxShadow:  "0 20px 60px rgb(0 0 0 / 0.18)",
-              }}
-              initial={{ opacity: 0, y: -6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-            >
-              {/* ── Conteúdo scrollável ─────────────────────────────── */}
-              <div className="flex-1 overflow-y-auto">
-                <div className="grid grid-cols-3 h-full">
-
-                  {/* COL 1 — Cultura */}
-                  <div
-                    className="flex flex-col pt-6 pb-6 px-6"
-                    style={{ borderRight: `1px solid ${DIV_CLR}` }}
-                  >
-                    <ColHead n="01" label="Cultura" delay={0.04} />
-                    <NavCol links={COL_CULTURA} pathname={pathname} colDelay={0.07} onClose={() => setOpen(false)} />
+            <div className="fixed z-[46]"
+              style={{ left: 0, right: 0, top: `${PILL_H}px`, bottom: `${PILL_H}px` }}>
+              <motion.div
+                id="nav-overlay"
+                role="dialog"
+                aria-modal="true"
+                aria-label="Menu de navegação"
+                className="flex flex-col overflow-hidden h-full"
+                style={{ background: "rgb(var(--c-deep))", border: "1px solid rgb(var(--c-border) / 0.28)", boxShadow: "0 20px 60px rgb(0 0 0 / 0.18)" }}
+                initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              >
+                {/* Conteúdo scrollável */}
+                <div className="flex-1 overflow-y-auto">
+                  <div className="grid grid-cols-3 h-full">
+                    <div className="flex flex-col pt-6 pb-6 px-6" style={{ borderRight: `1px solid ${DIV_CLR}` }}>
+                      <ColHead n="01" label="Cultura" delay={0.04} />
+                      <NavCol links={COL_CULTURA} pathname={pathname} colDelay={0.07} onClose={() => setOpen(false)} />
+                    </div>
+                    <div className="flex flex-col pt-6 pb-6 px-6" style={{ borderRight: `1px solid ${DIV_CLR}` }}>
+                      <ColHead n="02" label="Atlas" delay={0.1} />
+                      <NavCol links={COL_ATLAS} pathname={pathname} colDelay={0.13} onClose={() => setOpen(false)} />
+                    </div>
+                    <div className="flex flex-col pt-6 pb-6 px-6">
+                      <ColHead n="03" label="Academia" delay={0.16} />
+                      <NavCol links={COL_ACADEMIA} pathname={pathname} colDelay={0.19} onClose={() => setOpen(false)} />
+                    </div>
                   </div>
-
-                  {/* COL 2 — Atlas */}
-                  <div
-                    className="flex flex-col pt-6 pb-6 px-6"
-                    style={{ borderRight: `1px solid ${DIV_CLR}` }}
-                  >
-                    <ColHead n="02" label="Atlas" delay={0.1} />
-                    <NavCol links={COL_ATLAS} pathname={pathname} colDelay={0.13} onClose={() => setOpen(false)} />
-                  </div>
-
-                  {/* COL 3 — Academia */}
-                  <div className="flex flex-col pt-6 pb-6 px-6">
-                    <ColHead n="03" label="Academia" delay={0.16} />
-                    <NavCol links={COL_ACADEMIA} pathname={pathname} colDelay={0.19} onClose={() => setOpen(false)} />
-                  </div>
-
                 </div>
-              </div>
 
-              {/* ── Strip 1 — Ações pessoais (destacado) ─────────────── */}
-              <div
-                className="flex-shrink-0 flex items-center gap-2 px-6 py-3 flex-wrap"
-                style={{ borderTop: `1px solid ${DIV_CLR}`, background: "rgb(var(--c-surface) / 0.15)" }}
-              >
-                {/* Perfil */}
-                <Link
-                  href="/compass/perfil"
-                  onClick={() => setOpen(false)}
-                  className="flex items-center gap-1.5 px-4 py-2 font-mono text-[8px] uppercase tracking-[0.18em] hover:opacity-75 transition-opacity"
-                  style={{ border: `1px solid rgb(var(--c-accent) / 0.35)`, color: "rgb(var(--c-accent))" }}
-                >
-                  Perfil
-                </Link>
-
-                {/* Separador */}
-                <span style={{ width: 1, height: 18, background: DIV_CLR, flexShrink: 0 }} />
-
-                {/* Links de sistema */}
-                {[
-                  { label: "Configurações", href: "/settings"   },
-                  { label: "Sobre",         href: "/sobre"       },
-                  { label: "+ Atlas",       href: "/atlas/novo"  },
-                ].map((l) => (
-                  <Link
-                    key={l.href}
-                    href={l.href}
-                    onClick={() => setOpen(false)}
-                    className="flex items-center px-3 py-2 font-mono text-[8px] uppercase tracking-[0.18em] hover:opacity-75 transition-opacity"
-                    style={{ border: `1px solid ${DIV_CLR}`, color: "rgb(var(--c-text) / 0.78)" }}
-                  >
-                    {l.label}
+                {/* Strip 1 — Ações pessoais */}
+                <div className="flex-shrink-0 flex items-center gap-2 px-6 py-3 flex-wrap"
+                  style={{ borderTop: `1px solid ${DIV_CLR}`, background: "rgb(var(--c-surface) / 0.15)" }}>
+                  <Link href="/compass/perfil" onClick={() => setOpen(false)}
+                    className="flex items-center gap-1.5 px-4 py-2 font-mono text-[8px] uppercase tracking-[0.18em] hover:opacity-75 transition-opacity"
+                    style={{ border: `1px solid rgb(var(--c-accent) / 0.35)`, color: "rgb(var(--c-accent))" }}>
+                    ◉ Perfil
                   </Link>
-                ))}
-
-                {/* Sair */}
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center px-3 py-2 font-mono text-[8px] uppercase tracking-[0.18em] hover:opacity-75 transition-opacity ml-auto"
-                  style={{ border: `1px solid ${DIV_CLR}`, color: "rgb(var(--c-muted) / 0.65)" }}
-                >
-                  Sair
-                </button>
-
-                <LiveClock />
-              </div>
-
-              {/* ── Strip 2 — Modo de interface ──────────────────────── */}
-              <div
-                className="flex-shrink-0 flex items-center gap-1 px-6 py-2"
-                style={{ borderTop: `1px solid ${DIV_CLR}` }}
-              >
-                <span className="font-mono text-[7px] uppercase tracking-[0.3em] mr-3 flex-shrink-0" style={{ color: "rgb(var(--c-muted) / 0.5)" }}>
-                  Modo
-                </span>
-                {MODES.map((m) => (
-                  <button
-                    key={m.id}
-                    onClick={() => { setMode(m.id); setOpen(false) }}
-                    className="flex items-center gap-1.5 px-3 py-1.5 font-mono text-[7.5px] uppercase tracking-[0.15em] transition-all"
-                    style={{
-                      border:          `1px solid ${mode === m.id ? "rgb(var(--c-accent) / 0.45)" : DIV_CLR}`,
-                      backgroundColor: mode === m.id ? "rgb(var(--c-accent) / 0.08)" : "transparent",
-                      color:           mode === m.id ? "rgb(var(--c-accent))" : "rgb(var(--c-text) / 0.65)",
-                    }}
-                  >
-                    {m.label}
-                    <span className="hidden sm:inline font-mono text-[6px] uppercase tracking-widest" style={{ color: mode === m.id ? "rgb(var(--c-accent) / 0.6)" : "rgb(var(--c-muted) / 0.4)" }}>
-                      {m.desc}
-                    </span>
+                  <span style={{ width: 1, height: 18, background: DIV_CLR, flexShrink: 0 }} />
+                  {[
+                    { label: "→ Workspace",     href: "/workspace" },
+                    { label: "⚙ Configurações", href: "/settings"  },
+                    { label: "◈ Sobre",         href: "/sobre"     },
+                    { label: "+ Atlas",         href: "/atlas/novo"},
+                  ].map((l) => (
+                    <Link key={l.href} href={l.href} onClick={() => setOpen(false)}
+                      className="flex items-center px-3 py-2 font-mono text-[8px] uppercase tracking-[0.18em] hover:opacity-75 transition-opacity"
+                      style={{ border: `1px solid ${DIV_CLR}`, color: "rgb(var(--c-text) / 0.78)" }}>
+                      {l.label}
+                    </Link>
+                  ))}
+                  <button onClick={handleLogout}
+                    className="flex items-center px-3 py-2 font-mono text-[8px] uppercase tracking-[0.18em] hover:opacity-75 transition-opacity ml-auto"
+                    style={{ border: `1px solid ${DIV_CLR}`, color: "rgb(var(--c-muted) / 0.65)" }}>
+                    Sair
                   </button>
-                ))}
-              </div>
-            </motion.div>
+                  <LiveClock />
+                </div>
+
+                {/* Strip 2 — Modo */}
+                <div className="flex-shrink-0 flex items-center gap-1 px-6 py-2"
+                  style={{ borderTop: `1px solid ${DIV_CLR}` }}>
+                  <span className="font-mono text-[7px] uppercase tracking-[0.3em] mr-3 flex-shrink-0"
+                    style={{ color: "rgb(var(--c-muted) / 0.5)" }}>
+                    Modo
+                  </span>
+                  {MODES.map((m) => (
+                    <button key={m.id} onClick={() => { setMode(m.id); setOpen(false) }}
+                      className="flex items-center gap-1.5 px-3 py-1.5 font-mono text-[7.5px] uppercase tracking-[0.15em] transition-all"
+                      style={{
+                        border:          `1px solid ${mode === m.id ? "rgb(var(--c-accent) / 0.45)" : DIV_CLR}`,
+                        backgroundColor: mode === m.id ? "rgb(var(--c-accent) / 0.08)" : "transparent",
+                        color:           mode === m.id ? "rgb(var(--c-accent))" : "rgb(var(--c-text) / 0.65)",
+                      }}>
+                      {m.label}
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
             </div>
           </>
         )}

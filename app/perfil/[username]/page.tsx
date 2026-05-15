@@ -172,14 +172,36 @@ export default function ProfilePage() {
             )}
           </div>
 
-          <div className="flex gap-2 mb-2">
+          <div className="flex gap-2 mb-2 flex-wrap">
             {isOwnProfile ? (
-              <Link href="/settings" className="btn btn-ghost btn-sm">Editar perfil</Link>
+              <>
+                <Link href="/settings" className="btn btn-ghost btn-sm">Editar perfil</Link>
+                <Link href="/social/mensagens" className="btn btn-ghost btn-sm">✉ Mensagens</Link>
+              </>
             ) : (
-              <button onClick={() => void handleFollow()} disabled={followLoading}
-                className={`btn btn-sm ${profile.isFollowing ? "btn-ghost" : "btn-solid"}`}>
-                {profile.isFollowing ? "Seguindo" : "Seguir"}
-              </button>
+              <>
+                <button onClick={() => void handleFollow()} disabled={followLoading}
+                  className={`btn btn-sm ${profile.isFollowing ? "btn-ghost" : "btn-solid"}`}>
+                  {profile.isFollowing ? "Seguindo" : "Seguir"}
+                </button>
+                <button
+                  onClick={async () => {
+                    const res = await fetch("/api/social/conversations", {
+                      method:  "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body:    JSON.stringify({ participantIds: [profile.id] }),
+                    })
+                    if (res.ok) {
+                      const conv = await res.json() as { id: string }
+                      window.location.href = `/social/mensagens/${conv.id}`
+                    }
+                  }}
+                  className="btn btn-ghost btn-sm"
+                  title="Enviar mensagem"
+                >
+                  ✉ Mensagem
+                </button>
+              </>
             )}
           </div>
         </div>

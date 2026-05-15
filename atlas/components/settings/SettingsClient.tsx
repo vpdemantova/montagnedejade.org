@@ -10,18 +10,20 @@ import { ViewSwitcher } from "@/atlas/components/ui/ViewSwitcher"
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-type TabId = "conta" | "perfil" | "senha" | "interface" | "home" | "categorias" | "rss" | "exportacao" | "sobre"
+// 6 grupos lógicos — mais claros e navegáveis
+type TabId = "conta" | "perfil" | "senha" | "interface" | "home" | "categorias" | "rss" | "exportacao" | "dados" | "sobre"
 
-const TABS: { id: TabId; label: string; symbol: string }[] = [
-  { id: "conta",      label: "Conta",      symbol: "◎" },
-  { id: "perfil",     label: "Perfil",     symbol: "◉" },
-  { id: "senha",      label: "Senha",      symbol: "⚿" },
-  { id: "interface",  label: "Interface",  symbol: "⬡" },
-  { id: "home",       label: "Home",       symbol: "⊞" },
-  { id: "categorias", label: "Categorias", symbol: "◈" },
-  { id: "rss",        label: "RSS",        symbol: "⊕" },
-  { id: "exportacao", label: "Exportação", symbol: "↑" },
-  { id: "sobre",      label: "Sobre",      symbol: "◈" },
+const TABS: { id: TabId; label: string; symbol: string; desc: string }[] = [
+  { id: "conta",      label: "Conta",       symbol: "◉", desc: "Login e autenticação"          },
+  { id: "perfil",     label: "Perfil",      symbol: "◌", desc: "Avatar, bio, cor de destaque"  },
+  { id: "senha",      label: "Senha",       symbol: "⬡", desc: "Alterar senha"                 },
+  { id: "interface",  label: "Aparência",   symbol: "⊞", desc: "Temas, cores, texturas"        },
+  { id: "home",       label: "Início",      symbol: "◈", desc: "Seções da home"                },
+  { id: "categorias", label: "Categorias",  symbol: "▸", desc: "Áreas do Atlas"                },
+  { id: "rss",        label: "RSS",         symbol: "◎", desc: "Feeds de notícias"             },
+  { id: "exportacao", label: "Exportação",  symbol: "◫", desc: "Backup e portabilidade"        },
+  { id: "dados",      label: "Dados",       symbol: "⊹", desc: "Privacidade e controle"        },
+  { id: "sobre",      label: "Sobre",       symbol: "→", desc: "Versão e módulos"              },
 ]
 
 // ── Section wrapper ───────────────────────────────────────────────────────────
@@ -1358,6 +1360,208 @@ function SobreTab() {
   )
 }
 
+// ── Dados tab — transparência e controle ─────────────────────────────────────
+
+type DataCounts = {
+  pages:     number
+  notes:     number
+  diary:     number
+  goals:     number
+  posts:     number
+  interests: number
+}
+
+function DadosTab() {
+  const [counts,  setCounts]  = useState<DataCounts | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    // Busca contagens em paralelo
+    Promise.all([
+      fetch("/api/workspace/pages").then((r) => r.ok ? r.json() as Promise<unknown[]> : []),
+      fetch("/api/atlas?area=NOTAS&limit=1000").then((r) => r.ok ? r.json() : { items: [] }).then((d: { items?: unknown[] }) => d.items ?? []),
+      fetch("/api/compass/diario?limit=1000").then((r) => r.ok ? r.json() : []),
+      fetch("/api/compass/goals").then((r) => r.ok ? r.json() : []),
+      fetch("/api/social/feed?limit=1000").then((r) => r.ok ? r.json() : { posts: [] }).then((d: { posts?: unknown[] }) => d.posts ?? []),
+      fetch("/api/social/interests").then((r) => r.ok ? r.json() : []),
+    ]).then(([pages, notes, diary, goals, posts, interests]) => {
+      setCounts({
+        pages:     (pages as unknown[]).length,
+        notes:     (notes as unknown[]).length,
+        diary:     (diary as unknown[]).length,
+        goals:     (goals as unknown[]).length,
+        posts:     (posts as unknown[]).length,
+        interests: (interests as unknown[]).length,
+      })
+      setLoading(false)
+    }).catch(() => setLoading(false))
+  }, [])
+
+  const clearPWACache = async () => {
+    if ("caches" in window) {
+      const keys = await caches.keys()
+      await Promise.all(keys.map((k) => caches.delete(k)))
+      alert("Cache offline limpo com sucesso.")
+    } else {
+      alert("Seu navegador não suporta cache offline.")
+    }
+  }
+
+  const DATA_ROWS: {
+    label:    string
+    where:    string
+    who:      string
+    whoColor: string
+    control:  string
+    count?:   number | null
+  }[] = [
+    { label: "Perfil (nome, bio, cor)",    where: "Servidor",        who: "Você + visitantes", whoColor: "#C8A45A", control: "Editar na aba Perfil", count: null },
+    { label: "Páginas do Workspace",       where: "Servidor",        who: "Privado por padrão",whoColor: "#4A90D9", control: "Publicar / Deletar",   count: counts?.pages },
+    { label: "Notas pessoais",             where: "Servidor",        who: "Somente você",      whoColor: "#2ECC71", control: "Exportar / Deletar",   count: counts?.notes },
+    { label: "Diário",                     where: "Servidor",        who: "Somente você",      whoColor: "#2ECC71", control: "Exportar / Deletar",   count: counts?.diary },
+    { label: "Metas e objetivos",          where: "Servidor",        who: "Somente você",      whoColor: "#2ECC71", control: "Gerenciar na aba Metas",count: counts?.goals },
+    { label: "Posts no feed",              where: "Servidor",        who: "Público (social)",  whoColor: "#E67E22", control: "Deletar posts",         count: counts?.posts },
+    { label: "Interesses no Atlas",        where: "Servidor",        who: "Visível no perfil", whoColor: "#C8A45A", control: "Remover interesses",    count: counts?.interests },
+    { label: "Tema e preferências",        where: "Seu dispositivo", who: "Somente você",      whoColor: "#2ECC71", control: "Resetar nas configs",   count: null },
+    { label: "Cache offline (PWA)",        where: "Seu dispositivo", who: "Somente você",      whoColor: "#2ECC71", control: "Limpar cache",          count: null },
+    { label: "Cookie de sessão (login)",   where: "Seu navegador",   who: "Necessário p/ login",whoColor:"#888",    control: "Sair da conta",        count: null },
+  ]
+
+  return (
+    <div className="flex flex-col gap-6 max-w-3xl">
+
+      {/* Princípio geral */}
+      <Section title="Seus dados, seu controle">
+        <div className="space-y-3 text-[10px] font-mono text-solar-muted/60 leading-relaxed">
+          <p>
+            O Portal Solar armazena seus dados no servidor para sincronizar entre dispositivos.
+            Dados pessoais (notas, diário, metas) são <strong className="text-solar-text/80">completamente privados</strong> e nunca são compartilhados com terceiros.
+          </p>
+          <p>
+            Preferências de interface (tema, cores) ficam no <strong className="text-solar-text/80">seu dispositivo</strong> (localStorage) e não são enviadas ao servidor.
+          </p>
+          <p className="text-solar-accent/70 font-mono text-[9px]">
+            ✦ Nenhum dado é vendido, monetizado ou compartilhado com anunciantes.
+          </p>
+        </div>
+      </Section>
+
+      {/* Tabela de dados */}
+      <Section title="O que é armazenado">
+        {loading ? (
+          <p className="text-[9px] font-mono text-solar-muted/30 animate-pulse">Carregando contagens…</p>
+        ) : (
+          <div className="flex flex-col gap-0">
+            {DATA_ROWS.map((row) => (
+              <div key={row.label}
+                className="grid gap-3 py-3 border-b border-solar-border/12 last:border-0"
+                style={{ gridTemplateColumns: "1fr auto auto auto" }}>
+
+                {/* Dado + contagem */}
+                <div>
+                  <p className="text-[10px] font-mono text-solar-text/75">{row.label}</p>
+                  <p className="text-[8px] font-mono text-solar-muted/40 mt-0.5">
+                    {row.where}
+                    {row.count !== null && row.count !== undefined && (
+                      <span className="ml-2 tabular-nums">{row.count} itens</span>
+                    )}
+                  </p>
+                </div>
+
+                {/* Quem vê */}
+                <div className="flex items-center">
+                  <span className="font-mono text-[7.5px] px-2 py-0.5 border"
+                    style={{ borderColor: row.whoColor + "40", color: row.whoColor + "cc", background: row.whoColor + "10" }}>
+                    {row.who}
+                  </span>
+                </div>
+
+                {/* Controle */}
+                <div className="flex items-center">
+                  <span className="font-mono text-[7.5px] text-solar-muted/45 text-right">{row.control}</span>
+                </div>
+
+                {/* Ação rápida */}
+                <div className="flex items-center">
+                  {row.label === "Cache offline (PWA)" ? (
+                    <button
+                      onClick={() => void clearPWACache()}
+                      className="font-mono text-[7px] uppercase tracking-widest px-2 py-0.5 border border-solar-border/25 text-solar-muted/50 hover:border-solar-red/40 hover:text-solar-red/60 transition-colors"
+                    >
+                      Limpar
+                    </button>
+                  ) : null}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </Section>
+
+      {/* Retenção e exclusão */}
+      <Section title="Retenção e exclusão">
+        <div className="space-y-4">
+          <p className="text-[9px] font-mono text-solar-muted/55 leading-relaxed">
+            Seus dados ficam armazenados enquanto sua conta existir. Ao sair da conta, os dados permanecem no servidor até que você solicite exclusão.
+          </p>
+
+          <div className="flex flex-wrap gap-3">
+            {/* Exportar tudo */}
+            <button
+              onClick={async () => {
+                const res  = await fetch("/api/portability/export/all")
+                const blob = await res.blob()
+                const a    = document.createElement("a")
+                a.href     = URL.createObjectURL(blob)
+                a.download = "portal-solar-backup.zip"
+                a.click()
+              }}
+              className="px-4 py-2 border border-solar-amber/40 text-[9px] font-mono text-solar-amber uppercase tracking-widest hover:bg-solar-amber/10 transition-all"
+            >
+              ↓ Exportar todos os dados
+            </button>
+
+            {/* Solicitar exclusão */}
+            <a
+              href="mailto:vitordemantova@gmail.com?subject=Solicitar exclusão de conta — Portal Solar"
+              className="px-4 py-2 border border-solar-border/30 text-[9px] font-mono text-solar-muted/50 uppercase tracking-widest hover:border-solar-red/40 hover:text-solar-red/60 transition-all"
+            >
+              Solicitar exclusão de conta
+            </a>
+          </div>
+
+          <p className="text-[8px] font-mono text-solar-muted/30">
+            A exportação gera um arquivo .zip com todos os seus itens em formato Markdown e JSON, compatível com qualquer sistema.
+          </p>
+        </div>
+      </Section>
+
+      {/* PWA e offline */}
+      <Section title="Offline e PWA">
+        <div className="space-y-3 text-[9px] font-mono text-solar-muted/55 leading-relaxed">
+          <p>
+            O Portal Solar pode ser instalado como app no seu celular ou tablet. Após instalado:
+          </p>
+          <ul className="list-none space-y-1.5 ml-2">
+            {[
+              "Páginas visitadas ficam em cache para acesso offline",
+              "Suas notas e workspace são salvos automaticamente no servidor",
+              "O cache offline é limpo ao atualizar o app ou manualmente",
+              "Nenhum dado sensível fica armazenado localmente sem criptografia",
+            ].map((item) => (
+              <li key={item} className="flex items-start gap-2">
+                <span className="text-solar-accent/60 flex-shrink-0">✦</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </Section>
+
+    </div>
+  )
+}
+
 // ── Categorias tab ────────────────────────────────────────────────────────────
 
 function CategoriasTab() {
@@ -1532,6 +1736,7 @@ export function SettingsClient({
             {tab === "categorias"  && <CategoriasTab />}
             {tab === "rss"         && <RSSTab />}
             {tab === "exportacao"  && <ExportacaoTab total={total} areaCounts={areaCounts} />}
+            {tab === "dados"       && <DadosTab />}
             {tab === "sobre"       && <SobreTab />}
           </motion.div>
         </AnimatePresence>

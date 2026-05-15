@@ -1,0 +1,68 @@
+{
+  "name": "Portal Solar",
+  "short_name": "Portal Solar",
+  "description": "Ecossistema de gestão de conhecimento — Diamantov",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0D0D0F",
+  "theme_color": "#C8A45A",
+  "categories": ["education", "productivity", "utilities"],
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Workspace",
+      "short_name": "Workspace",
+      "description": "Abrir o Workspace de páginas",
+      "url": "/workspace",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Atlas",
+      "short_name": "Atlas",
+      "description": "Abrir o Atlas do conhecimento",
+      "url": "/",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Notas",
+      "short_name": "Notas",
+      "description": "Abrir notas pessoais",
+      "url": "/compass/notas",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

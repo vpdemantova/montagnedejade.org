@@ -30,16 +30,13 @@ export async function POST(request: Request) {
     const body = (await request.json()) as Parameters<typeof create>[0]
     const item = await create(body)
 
-    // Escreve o espelho .md apenas em desenvolvimento (Vercel filesystem é read-only)
-    if (process.env.NODE_ENV !== "production") {
-      await writeMirror(item, "").catch(console.error)
-
-      const contentPath = resolveMirrorRelPath(item)
-      if (!item.contentPath) {
-        void import("@/atlas/lib/db")
-          .then(({ update }) => update(item.id, { contentPath }))
-          .catch(console.error)
-      }
+    // Escreve o espelho .md e salva contentPath no DB
+    await writeMirror(item, "").catch(console.error)
+    const contentPath = resolveMirrorRelPath(item)
+    if (!item.contentPath) {
+      void import("@/atlas/lib/db")
+        .then(({ update }) => update(item.id, { contentPath }))
+        .catch(console.error)
     }
 
     return NextResponse.json(item, { status: 201 })

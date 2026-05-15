@@ -2,6 +2,8 @@ import { findAll } from "@/atlas/lib/db"
 import { AtlasClient } from "@/atlas/components/views/AtlasClient"
 import type { AreaType, ItemType, StatusType } from "@/atlas/types"
 
+export const dynamic = "force-dynamic"
+
 export default async function AtlasPage({
   searchParams,
 }: {

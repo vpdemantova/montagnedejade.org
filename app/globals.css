@@ -1308,4 +1308,18 @@ code, pre, kbd {
   }
   .tab:hover { color: rgb(var(--c-muted)); }
   .tab[data-active="true"] { border-bottom-color: rgb(var(--c-accent)); color: rgb(var(--c-accent)); }
+
+  /* ── Blog / prosa ── */
+  .prose-portal h2 { font-family: var(--font-display); font-size: 1.4rem; font-weight: 700; letter-spacing: -0.015em; color: rgb(var(--c-text)/0.92); margin: 2rem 0 0.75rem; }
+  .prose-portal p  { margin: 0 0 1.2rem; }
+  .prose-portal blockquote { border-left: 3px solid rgb(var(--c-accent)/0.5); padding-left: 1rem; color: rgb(var(--c-muted)/0.7); font-style: italic; margin: 1.5rem 0; }
+  .prose-portal pre { background: rgb(var(--c-deep)/0.8); border: 1px solid rgb(var(--c-border)/0.25); padding: 1rem; overflow-x: auto; margin: 1.5rem 0; }
+  .prose-portal code { font-family: var(--font-ibm-plex-mono); font-size: 0.85em; background: rgb(var(--c-deep)/0.6); padding: 0.1em 0.35em; }
+  .prose-portal pre code { background: transparent; padding: 0; }
+  .prose-portal li { margin: 0.3rem 0; padding-left: 0.5rem; }
+  .prose-portal strong { color: rgb(var(--c-text)/0.95); font-weight: 600; }
+
+  /* ── BlockNote no Workspace ── */
+  .blocknote-workspace .bn-editor { background: transparent !important; padding: 0 !important; }
+  .blocknote-workspace .bn-block-outer { padding: 0.15rem 0 !important; }
 }

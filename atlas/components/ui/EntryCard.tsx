@@ -38,16 +38,19 @@ const QUESTIONS = [
 ]
 
 export function EntryCard() {
-  const router            = useRouter()
-  const pathname          = usePathname()
+  const router   = useRouter()
+  const pathname = usePathname()
+
   const [open,    setOpen]    = useState(false)
   const [elapsed, setElapsed] = useState(0)
   const [hovering,setHovering]= useState(false)
+  // "ler" = false (timer rodando) | "reading" (timer pausado) | "closing" (voltando ao timer)
+  const [readMode, setReadMode] = useState<"off" | "on">("off")
 
-  const rafRef          = useRef<number>(0)
-  const startRef        = useRef<number>(0)
-  const pausedElapsed   = useRef<number>(0)
-  const pausedRef       = useRef<boolean>(false)
+  const rafRef        = useRef<number>(0)
+  const startRef      = useRef<number>(0)
+  const pausedElapsed = useRef<number>(0)
+  const pausedRef     = useRef<boolean>(false)
 
   useEffect(() => {
     if (pathname?.startsWith("/convite")) return
@@ -57,6 +60,7 @@ export function EntryCard() {
       pausedElapsed.current = 0
       pausedRef.current     = false
       setHovering(false)
+      setReadMode("off")
       setOpen(true)
     }
 
@@ -70,7 +74,8 @@ export function EntryCard() {
     return () => window.removeEventListener("portal:show-entry-card", show)
   }, [pathname])
 
-  const close = useCallback((dest = "/") => {
+  // Destino padrão: /academia (entry card é a porta de entrada da Academia)
+  const close = useCallback((dest = "/academia") => {
     sessionStorage.setItem("ps-entry", "1")
     cancelAnimationFrame(rafRef.current)
     setOpen(false)
@@ -79,6 +84,8 @@ export function EntryCard() {
 
   useEffect(() => {
     if (!open) return
+    // Se em modo leitura, não toca o timer
+    if (readMode === "on") return
 
     startRef.current = performance.now() - pausedElapsed.current * 1000
 
@@ -87,24 +94,40 @@ export function EntryCard() {
         const s = (now - startRef.current) / 1000
         pausedElapsed.current = s
         setElapsed(s)
-        if (s >= DURATION) { close("/"); return }
+        if (s >= DURATION) { close("/academia"); return }
       }
       rafRef.current = requestAnimationFrame(tick)
     }
 
     rafRef.current = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(rafRef.current)
-  }, [open, close])
+  }, [open, close, readMode])
 
   const handleHoverEnter = () => {
+    if (readMode === "on") return
     pausedRef.current = true
     setHovering(true)
   }
 
   const handleHoverLeave = () => {
-    startRef.current = performance.now() - pausedElapsed.current * 1000
+    if (readMode === "on") return
+    startRef.current  = performance.now() - pausedElapsed.current * 1000
     pausedRef.current = false
     setHovering(false)
+  }
+
+  // Botão "Ler" — pausa timer definitivamente
+  const handleReadToggle = () => {
+    if (readMode === "off") {
+      // Pausa timer
+      cancelAnimationFrame(rafRef.current)
+      pausedRef.current = true
+      setReadMode("on")
+      setHovering(false)
+    } else {
+      // Fecha o card
+      close("/academia")
+    }
   }
 
   const progress = Math.min(elapsed / DURATION, 1)
@@ -126,7 +149,7 @@ export function EntryCard() {
               backdropFilter:       "blur(12px)",
               WebkitBackdropFilter: "blur(12px)",
             }}
-            onClick={() => close("/")}
+            onClick={() => close("/academia")}
           />
 
           {/* Wrapper centrado */}
@@ -268,62 +291,103 @@ export function EntryCard() {
 
                 </div>
 
-                {/* ── Botão − / + com anel timer ── */}
-                <div className="flex flex-col items-center py-5">
-                  <button
-                    onClick={() => close("/")}
-                    onMouseEnter={handleHoverEnter}
-                    onMouseLeave={handleHoverLeave}
-                    aria-label={hovering ? "Pausado — clique para fechar" : "Fechar"}
-                    className="relative flex items-center justify-center transition-opacity duration-150"
-                    style={{ opacity: hovering ? 0.9 : 1 }}
-                  >
-                    <svg
-                      width={RADIUS * 2 + 16}
-                      height={RADIUS * 2 + 16}
-                      style={{ transform: "rotate(-90deg)", transition: "opacity 0.2s" }}
-                    >
-                      <circle
-                        cx={RADIUS + 8} cy={RADIUS + 8} r={RADIUS}
-                        fill="none"
-                        stroke="rgb(var(--c-border) / 0.22)"
-                        strokeWidth="1.5"
-                      />
-                      <circle
-                        cx={RADIUS + 8} cy={RADIUS + 8} r={RADIUS}
-                        fill="none"
-                        stroke={hovering ? "rgb(var(--c-accent) / 0.4)" : "rgb(var(--c-muted) / 0.45)"}
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeDasharray={CIRC}
-                        strokeDashoffset={dashOff}
-                        style={{ transition: "stroke 0.2s" }}
-                      />
-                    </svg>
+                {/* ── Footer: timer ring + botão LER ── */}
+                <div className="flex items-center justify-between px-8 py-5">
 
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <span
-                        style={{
-                          fontSize:   "24px",
-                          lineHeight: 1,
-                          fontWeight: 200,
-                          color:      hovering
-                            ? "rgb(var(--c-accent) / 0.7)"
-                            : "rgb(var(--c-text) / 0.5)",
-                          transition: "color 0.15s, transform 0.2s",
-                          transform:  hovering ? "rotate(45deg)" : "rotate(0deg)",
-                          display:    "block",
-                        }}
-                      >
-                        {hovering ? "+" : "−"}
-                      </span>
-                    </div>
+                  {/* Botão LER / FECHAR */}
+                  <button
+                    onClick={handleReadToggle}
+                    className="relative overflow-hidden font-mono text-[7px] uppercase tracking-[0.3em] px-4 py-2 border transition-all duration-300"
+                    style={{
+                      borderColor: readMode === "on"
+                        ? "rgb(var(--c-accent) / 0.5)"
+                        : "rgb(var(--c-border) / 0.3)",
+                      background: readMode === "on"
+                        ? "rgb(var(--c-accent) / 0.08)"
+                        : "transparent",
+                    }}
+                  >
+                    <AnimatePresence mode="wait">
+                      {readMode === "off" ? (
+                        <motion.span
+                          key="ler"
+                          initial={{ opacity: 0, y: 6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -6 }}
+                          transition={{ duration: 0.25 }}
+                          style={{ color: "rgb(var(--c-muted) / 0.55)", display: "block" }}
+                        >
+                          ler
+                        </motion.span>
+                      ) : (
+                        <motion.span
+                          key="fechar"
+                          initial={{ opacity: 0, y: 6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -6 }}
+                          transition={{ duration: 0.3, delay: 0.1 }}
+                          style={{ color: "rgb(var(--c-accent))", display: "block" }}
+                        >
+                          fechar
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
                   </button>
 
-                  <p className="font-mono text-[6.5px] uppercase tracking-[0.22em] mt-1.5"
-                    style={{ color: hovering ? "rgb(var(--c-accent) / 0.45)" : "rgb(var(--c-muted) / 0.28)", transition: "color 0.2s" }}>
-                    {hovering ? "fechar" : "entrando no portal"}
-                  </p>
+                  {/* Anel timer (oculto em modo leitura) */}
+                  <motion.div
+                    animate={{ opacity: readMode === "on" ? 0 : 1, scale: readMode === "on" ? 0.85 : 1 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <button
+                      onClick={() => close("/academia")}
+                      onMouseEnter={handleHoverEnter}
+                      onMouseLeave={handleHoverLeave}
+                      aria-label="Fechar"
+                      className="relative flex items-center justify-center transition-opacity duration-150"
+                      style={{ opacity: readMode === "on" ? 0 : hovering ? 0.9 : 1, pointerEvents: readMode === "on" ? "none" : "auto" }}
+                    >
+                      <svg
+                        width={RADIUS * 2 + 16}
+                        height={RADIUS * 2 + 16}
+                        style={{ transform: "rotate(-90deg)" }}
+                      >
+                        <circle
+                          cx={RADIUS + 8} cy={RADIUS + 8} r={RADIUS}
+                          fill="none"
+                          stroke="rgb(var(--c-border) / 0.22)"
+                          strokeWidth="1.5"
+                        />
+                        <circle
+                          cx={RADIUS + 8} cy={RADIUS + 8} r={RADIUS}
+                          fill="none"
+                          stroke={hovering ? "rgb(var(--c-accent) / 0.4)" : "rgb(var(--c-muted) / 0.45)"}
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeDasharray={CIRC}
+                          strokeDashoffset={dashOff}
+                          style={{ transition: "stroke 0.2s" }}
+                        />
+                      </svg>
+
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span
+                          style={{
+                            fontSize:   "24px",
+                            lineHeight: 1,
+                            fontWeight: 200,
+                            color:      hovering ? "rgb(var(--c-accent) / 0.7)" : "rgb(var(--c-text) / 0.5)",
+                            transition: "color 0.15s, transform 0.2s",
+                            transform:  hovering ? "rotate(45deg)" : "rotate(0deg)",
+                            display:    "block",
+                          }}
+                        >
+                          {hovering ? "+" : "−"}
+                        </span>
+                      </div>
+                    </button>
+                  </motion.div>
+
                 </div>
 
               </div>

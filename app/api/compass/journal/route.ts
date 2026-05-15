@@ -1,5 +1,6 @@
-import { NextResponse } from "next/server"
-import { prisma } from "@/atlas/lib/db"
+import { NextResponse }        from "next/server"
+import { prisma }              from "@/atlas/lib/db"
+import { writeJournalMirror }  from "@/atlas/lib/mirror"
 
 // GET /api/compass/journal?date=YYYY-MM-DD
 export async function GET(req: Request) {
@@ -36,6 +37,8 @@ export async function POST(req: Request) {
       mood:      body.mood      ?? null,
     },
   })
+
+  void writeJournalMirror(entry).catch(console.error)
 
   return NextResponse.json(entry)
 }

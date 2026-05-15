@@ -1,0 +1,30 @@
+Build limpo. Tudo pronto.
+
+Update Todos
+
+Adicionar FOUNDER config ao portal.config.ts
+
+Criar script scripts/seed-founder.ts para criar conta do Vitor
+
+Redesenhar InstallPrompt com 3 botões: EntryCard + Convite + Instalar
+O que foi feito:
+
+Conta do fundador criada:
+
+@vitor — Vitor de Mantova, 5 tickets (1 FOUNDER + 1 GOLDEN + 3 STANDARD)
+Faça login em /login com vitor + Solar2026!
+Página de convite já funciona em /convite/vitor
+WelcomeBar (InstallPrompt.tsx) — redesenhada:
+
+Aparece em toda primeira visita (não depende mais de suporte a PWA)
+◎ Apresentação — reabre o EntryCard (card inicial com as questões do mundo)
+◉ Convite — linka para /convite/vitor, mostrando o card do perfil real e o convite pessoal do fundador
+⊹ Instalar — aparece só quando o browser suporta PWA (Chrome, Edge, etc.)
+Fecha com × e fica dispensado pela sessão
+Configuração centralizada (portal.config.ts):
+
+FOUNDER.USERNAME, FOUNDER.DISPLAY, FOUNDER.BIO, FOUNDER.ACCENT — mude aqui se precisar alterar o username do fundador
+Script para criar fundadores adicionais:
+
+
+pnpm seed:founder --password=SuaSenha123

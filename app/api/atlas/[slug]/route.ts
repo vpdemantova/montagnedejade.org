@@ -30,9 +30,8 @@ export async function PATCH(request: Request, { params }: Params) {
     const { markdownMirror, contentPath: _contentPath, ...updateFields } = body
     const updated = await update(item.id, updateFields)
 
-    if (process.env.NODE_ENV !== "production") {
-      await writeMirror(updated, markdownMirror ?? "").catch(console.error)
-    }
+    // Escreve o espelho .md sempre (a guarda era só dev; filesystem é gravável local e em prod own-server)
+    await writeMirror(updated, markdownMirror ?? "").catch(console.error)
 
     return NextResponse.json(updated)
   } catch (e) {
@@ -45,9 +44,7 @@ export async function DELETE(_req: Request, { params }: Params) {
     const { slug } = await params
     const item = await findBySlug(slug)
     if (!item) return NextResponse.json({ error: "Não encontrado" }, { status: 404 })
-    if (process.env.NODE_ENV !== "production") {
-      await deleteMirror(item).catch(console.error)
-    }
+    await deleteMirror(item).catch(console.error)
     await remove(item.id)
     return NextResponse.json({ ok: true })
   } catch (e) {
