@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server"
 import { prisma }       from "@/atlas/lib/db"
 
+export const dynamic = "force-dynamic"
+
 type Params = { params: Promise<{ slug: string }> }
 
 // GET — página de blog pública pelo slug

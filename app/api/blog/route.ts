@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server"
 import { prisma }       from "@/atlas/lib/db"
 
+export const dynamic = "force-dynamic"
+
 // GET — lista páginas publicadas no blog (sem login necessário)
 export async function GET() {
   const posts = await prisma.page.findMany({
