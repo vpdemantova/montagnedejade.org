@@ -12,6 +12,9 @@ export default async function AcademiaPage() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const books = await findAll({ area: "BIBLIOTECA" as any, type: "READING" as any, limit: 20 }).catch(() => [])
 
+  // Trilhas — sequências curadas de passos pelo conteúdo
+  const paths = await findAll({ type: "PATH", area: "ACADEMIA", limit: 50 }).catch(() => [])
+
   return (
     <div className="min-h-screen relative">
       {/* Grade de fundo */}
@@ -30,7 +33,7 @@ export default async function AcademiaPage() {
 
       {/* Cliente com menu dinâmico e todas as seções */}
       <div className="relative z-10">
-        <AcademiaClient books={books} />
+        <AcademiaClient books={books} paths={paths} />
       </div>
     </div>
   )

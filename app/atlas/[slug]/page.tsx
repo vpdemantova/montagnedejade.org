@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation"
-import { findBySlug } from "@/atlas/lib/db"
+import { findBySlug, findLinkedAssets } from "@/atlas/lib/db"
 import { AtlasEditor } from "@/atlas/components/blocks/AtlasEditor"
+import { LinkedAssetsSection } from "@/atlas/components/ui/LinkedAssetsSection"
 import { AREA_LABELS, TYPE_LABELS } from "@/atlas/types"
 import Link from "next/link"
 
@@ -10,6 +11,8 @@ export default async function AtlasItemPage({ params }: Props) {
   const { slug } = await params
   const item = await findBySlug(slug)
   if (!item) notFound()
+
+  const linkedAssets = await findLinkedAssets(item.id)
 
   const areaLabel = AREA_LABELS[item.area] ?? item.area
   const typeLabel = TYPE_LABELS[item.type] ?? item.type
@@ -33,6 +36,7 @@ export default async function AtlasItemPage({ params }: Props) {
       </div>
 
       <AtlasEditor item={item} />
+      <LinkedAssetsSection assets={linkedAssets} />
     </div>
   )
 }

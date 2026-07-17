@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { findAll } from "@/atlas/lib/db"
 import { buildMirrorContent } from "@/atlas/lib/mirror"
+import { blockNoteToMarkdown } from "@/atlas/lib/blocknote-md"
 import JSZip from "jszip"
 
 export const dynamic = 'force-dynamic'
@@ -16,7 +17,8 @@ export async function GET() {
       ? `compass/${item.area.toLowerCase()}`
       : "atlas"
     const folder = content.folder(section)!
-    const md = buildMirrorContent(item, "")
+    // Inclui o corpo em Markdown — um backup sem o conteúdo não é backup
+    const md = buildMirrorContent(item, blockNoteToMarkdown(item.content))
     folder.file(`${item.id}.md`, md)
   }
 

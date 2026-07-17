@@ -56,6 +56,7 @@ model AtlasItem {
   relationsTo   AtlasRelation[] @relation("RelationTo")
   interests     UserInterest[]
   posts         Post[]
+  assetLinks    AssetLink[]
 }
 
 // Compass — entradas do diário com metadados estruturados
@@ -98,6 +99,49 @@ model AtlasRelation {
   // Exemplos: "inspira", "parte-de", "contradiz", "autor-de", "referencia", "influenciou"
   relationType String
   createdAt    DateTime  @default(now())
+}
+
+// ─── DIRECTORY — biblioteca de mídia (arquivos individuais) ──────────────────
+
+model Asset {
+  id           String      @id @default(cuid())
+  // Nome gravado em disco: crypto.randomUUID() + extensão
+  filename     String
+  originalName String
+
+  // AssetKind: IMAGE | AUDIO | VIDEO | PDF | DOCUMENT | OTHER
+  kind         String
+  mimeType     String
+  size         Int
+
+  // URL pública, ex: "/uploads/image/<uuid>.jpg"
+  path         String
+
+  title        String?
+  description  String?
+
+  // Metadados flexíveis (JSON serializado): width/height, duration, pageCount...
+  metadata     String?
+
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  links        AssetLink[]
+}
+
+// Vínculo entre um Asset e um AtlasItem — "outras seções contextualizam e linkam" os arquivos
+model AssetLink {
+  id        String    @id @default(cuid())
+  asset     Asset     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  assetId   String
+  item      AtlasItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  itemId    String
+
+  // "attachment" | "cover" | "gallery"
+  role      String    @default("attachment")
+  createdAt DateTime  @default(now())
+
+  @@unique([assetId, itemId, role])
 }
 
 // Compass — disciplinas e tracker de estudos

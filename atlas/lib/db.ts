@@ -261,3 +261,108 @@ export async function createNotice(data: {
 }) {
   return prisma.worldNotice.create({ data })
 }
+
+// ─── Directory — Assets ────────────────────────────────────────────────────────
+
+export async function createAsset(data: {
+  filename:     string
+  originalName: string
+  kind:         string
+  mimeType:     string
+  size:         number
+  path:         string
+  title?:       string
+  description?: string
+  metadata?:    string
+}) {
+  return prisma.asset.create({ data })
+}
+
+export async function findAllAssets(options: {
+  kind?:   string
+  search?: string
+  limit?:  number
+  offset?: number
+} = {}) {
+  const { kind, search, limit = 200, offset = 0 } = options
+
+  return prisma.asset.findMany({
+    where: {
+      ...(kind && { kind }),
+      ...(search && {
+        OR: [
+          { title:        { contains: search } },
+          { originalName: { contains: search } },
+        ],
+      }),
+    },
+    include: {
+      links: { include: { item: { select: { id: true, title: true, slug: true, area: true, type: true } } } },
+    },
+    orderBy: { createdAt: "desc" },
+    take:    limit,
+    skip:    offset,
+  })
+}
+
+export async function findAssetById(id: string) {
+  return prisma.asset.findUnique({
+    where:   { id },
+    include: {
+      links: { include: { item: { select: { id: true, title: true, slug: true, area: true, type: true } } } },
+    },
+  })
+}
+
+export async function removeAsset(id: string) {
+  // Remove só a linha do banco (cascade nos AssetLinks) — o arquivo em disco
+  // é responsabilidade da rota de API, que continua fs-agnostic aqui.
+  return prisma.asset.delete({ where: { id } })
+}
+
+export async function linkAsset(assetId: string, itemId: string, role = "attachment") {
+  return prisma.assetLink.upsert({
+    where:  { assetId_itemId_role: { assetId, itemId, role } },
+    update: {},
+    create: { assetId, itemId, role },
+  })
+}
+
+export async function unlinkAsset(assetId: string, itemId: string, role = "attachment") {
+  await prisma.assetLink.delete({
+    where: { assetId_itemId_role: { assetId, itemId, role } },
+  }).catch(() => {})
+}
+
+export async function findLinkedAssets(itemId: string) {
+  const links = await prisma.assetLink.findMany({
+    where:   { itemId },
+    include: { asset: true },
+    orderBy: { createdAt: "desc" },
+  })
+  return links.map((l) => ({ ...l.asset, linkId: l.id, role: l.role }))
+}
+
+// ─── Academia — Trilhas (paths) ─────────────────────────────────────────────────
+// Sequência de passos armazenada como JSON em AtlasItem.metadata (type: "PATH"),
+// não em AtlasRelation — essa tabela é um grafo não-ordenado e alimenta o Grafo.
+
+export type PathStep = { itemId: string; note?: string }
+
+export function parsePathSteps(metadata?: string | null): PathStep[] {
+  if (!metadata) return []
+  try {
+    const parsed = JSON.parse(metadata)
+    return Array.isArray(parsed?.steps) ? parsed.steps : []
+  } catch {
+    return []
+  }
+}
+
+export async function resolvePathSteps(
+  steps: PathStep[]
+): Promise<Array<{ step: PathStep; item: AtlasItemWithTags | null }>> {
+  return Promise.all(
+    steps.map(async (step) => ({ step, item: await findById(step.itemId) }))
+  )
+}

@@ -52,3 +52,6 @@ content/index.json
 # PWA service worker gerado pelo build
 /public/sw.js
 /public/workbox-*.js
+
+# Directory — arquivos enviados em runtime (local-first, por ambiente)
+/public/uploads/

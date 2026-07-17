@@ -952,6 +952,146 @@ async function main() {
       tags: ["Estruturas", "Monumentos", "Obras", "Egito Antigo", "Sítios UNESCO"],
       content: "Complexo funerário do Egito Antigo, incluindo a Grande Pirâmide de Quéops — a única das Sete Maravilhas do Mundo Antigo ainda em pé.",
     },
+
+    // ══════════════════════════════════════════════════════
+    // MIND — Meditação, consciência e hábitos mentais
+    // ══════════════════════════════════════════════════════
+    {
+      title: "Atenção Plena (Mindfulness)",
+      type: "CONCEPT",
+      area: "MIND",
+      metadata: { category: "meditation" },
+      tags: ["Mente", "Meditação", "Consciência"],
+      content: "Prática de manter a atenção deliberadamente no momento presente, observando pensamentos e sensações sem julgamento.",
+    },
+    {
+      title: "Respiração Diafragmática",
+      type: "CONCEPT",
+      area: "MIND",
+      metadata: { category: "practice" },
+      tags: ["Mente", "Respiração", "Hábitos"],
+      content: "Técnica de respiração profunda que ativa o diafragma, reduzindo a resposta de estresse do sistema nervoso.",
+    },
+    {
+      title: "Higiene do Sono",
+      type: "CONCEPT",
+      area: "MIND",
+      metadata: { category: "habit" },
+      tags: ["Mente", "Sono", "Saúde"],
+      content: "Conjunto de hábitos que favorecem um sono regular e reparador: horários consistentes, ausência de telas, ambiente escuro e fresco.",
+    },
+
+    // ══════════════════════════════════════════════════════
+    // MANIFESTATION — Guias de criação e produção
+    // ══════════════════════════════════════════════════════
+    {
+      title: "Como Esculpir em Argila",
+      type: "CONCEPT",
+      area: "MANIFESTATION",
+      metadata: { category: "guide" },
+      tags: ["Manifestação", "Escultura", "Artesanato"],
+      content: "Guia introdutório: preparo do barro, técnicas de modelagem à mão, secagem e queima em forno cerâmico.",
+    },
+    {
+      title: "Como Compor uma Melodia",
+      type: "CONCEPT",
+      area: "MANIFESTATION",
+      metadata: { category: "guide" },
+      tags: ["Manifestação", "Música", "Composição"],
+      content: "Passos práticos para criar uma melodia original: escolha de escala, motivo rítmico, repetição e variação.",
+    },
+    {
+      title: "Como Construir um Móvel em Madeira",
+      type: "CONCEPT",
+      area: "MANIFESTATION",
+      metadata: { category: "guide" },
+      tags: ["Manifestação", "Marcenaria", "Artesanato"],
+      content: "Do desenho técnico ao corte, encaixe e acabamento — fundamentos da marcenaria para o primeiro móvel.",
+    },
+
+    // ══════════════════════════════════════════════════════
+    // FOUNDATION — Bases de todo conhecimento
+    // ══════════════════════════════════════════════════════
+    {
+      title: "Gramática: Classes de Palavras",
+      type: "CONCEPT",
+      area: "FOUNDATION",
+      metadata: { category: "school-subject", subject: "grammar" },
+      tags: ["Fundamentos", "Gramática", "Língua Portuguesa"],
+      content: "As dez classes gramaticais do português: substantivo, adjetivo, verbo, advérbio, pronome, artigo, numeral, preposição, conjunção e interjeição.",
+    },
+    {
+      title: "Matemática: Frações",
+      type: "CONCEPT",
+      area: "FOUNDATION",
+      metadata: { category: "school-subject", subject: "math" },
+      tags: ["Fundamentos", "Matemática"],
+      content: "Representação de partes de um todo — numerador e denominador — e as operações básicas de soma, subtração, multiplicação e divisão entre frações.",
+    },
+    {
+      title: "Lógica: Silogismos",
+      type: "CONCEPT",
+      area: "FOUNDATION",
+      metadata: { category: "school-subject", subject: "logic" },
+      tags: ["Fundamentos", "Lógica", "Filosofia"],
+      content: "Forma de raciocínio dedutivo com duas premissas e uma conclusão — base do pensamento lógico formal desde Aristóteles.",
+    },
+
+    // ══════════════════════════════════════════════════════
+    // EXPRESSION — Música, escrita, teatro
+    // ══════════════════════════════════════════════════════
+    {
+      title: "Técnicas de Improviso Teatral",
+      type: "CONCEPT",
+      area: "EXPRESSION",
+      metadata: { category: "creative-art", discipline: "theater" },
+      tags: ["Expressão", "Teatro", "Improviso"],
+      content: "Princípios do improviso cênico: aceitação ('sim, e...'), escuta ativa e construção coletiva de cena.",
+    },
+    {
+      title: "Estrutura Narrativa em Três Atos",
+      type: "CONCEPT",
+      area: "EXPRESSION",
+      metadata: { category: "creative-art", discipline: "writing" },
+      tags: ["Expressão", "Escrita", "Narrativa"],
+      content: "Modelo clássico de estrutura dramática: apresentação, confronto e resolução — usado em roteiros, contos e romances.",
+    },
+    {
+      title: "Escalas Musicais Básicas",
+      type: "CONCEPT",
+      area: "EXPRESSION",
+      metadata: { category: "creative-art", discipline: "music" },
+      tags: ["Expressão", "Música", "Teoria Musical"],
+      content: "Escalas maiores e menores como base da composição e improviso musical — a partir delas se constroem acordes e melodias.",
+    },
+
+    // ══════════════════════════════════════════════════════
+    // HYMNS — Cânticos, odes e orações
+    // ══════════════════════════════════════════════════════
+    {
+      title: "Hino ao Sol Nascente",
+      type: "PAGE",
+      area: "HYMNS",
+      metadata: { category: "hymn" },
+      tags: ["Hinos", "Devocional"],
+      content: "Ode à luz que retorna a cada manhã, celebrando o recomeço e a constância do sol sobre a Terra.",
+    },
+    {
+      title: "Oração pela Clareza",
+      type: "PAGE",
+      area: "HYMNS",
+      metadata: { category: "hymn" },
+      tags: ["Hinos", "Devocional"],
+      content: "Súplica breve por discernimento diante da confusão — pedindo que o pensamento se torne quieto e claro.",
+    },
+    {
+      title: "Canto da Terra Fértil",
+      type: "PAGE",
+      area: "HYMNS",
+      metadata: { category: "hymn" },
+      tags: ["Hinos", "Devocional", "Natureza"],
+      content: "Hino de gratidão à terra que sustenta toda vida — um louvor à fertilidade e à abundância natural.",
+    },
   ]
 
   console.log(`Semeando ${items.length} itens no Atlas...`)
@@ -986,7 +1126,64 @@ async function main() {
     console.log(`  ✓ ${item.title}`)
   }
 
+  await seedPaths()
+
   console.log("\n✓ Seed completo!")
+}
+
+// Trilhas de exemplo — passos armazenados como JSON em metadata (type: "PATH").
+// Roda depois do loop principal, pois resolve os passos por título já existente.
+async function seedPaths() {
+  const defs: Array<{ title: string; content: string; stepTitles: string[] }> = [
+    {
+      title: "Trilha: Fundamentos da Mente Contemplativa",
+      content: "Uma sequência introdutória — do corpo à atenção, e da atenção à clareza lógica.",
+      stepTitles: [
+        "Higiene do Sono",
+        "Respiração Diafragmática",
+        "Atenção Plena (Mindfulness)",
+        "Lógica: Silogismos",
+      ],
+    },
+    {
+      title: "Trilha: Do Ofício à Obra",
+      content: "Da estrutura da língua à narrativa, da narrativa à composição, da composição ao cântico.",
+      stepTitles: [
+        "Gramática: Classes de Palavras",
+        "Estrutura Narrativa em Três Atos",
+        "Como Compor uma Melodia",
+        "Hino ao Sol Nascente",
+      ],
+    },
+  ]
+
+  console.log(`\nSemeando ${defs.length} trilhas na Academia...`)
+
+  for (const def of defs) {
+    const existing = await prisma.atlasItem.findFirst({ where: { title: def.title } })
+    if (existing) {
+      console.log(`  ↳ Já existe: ${def.title}`)
+      continue
+    }
+
+    const stepItems = await Promise.all(
+      def.stepTitles.map((t) => prisma.atlasItem.findFirst({ where: { title: t } }))
+    )
+    const steps = stepItems.filter((it): it is NonNullable<typeof it> => it !== null).map((it) => ({ itemId: it.id }))
+
+    await prisma.atlasItem.create({
+      data: {
+        title: def.title,
+        type: "PATH",
+        area: "ACADEMIA",
+        status: "ACTIVE",
+        hemisphere: "PORTAL",
+        content: def.content,
+        metadata: JSON.stringify({ steps }),
+      },
+    })
+    console.log(`  ✓ ${def.title} (${steps.length}/${def.stepTitles.length} passos resolvidos)`)
+  }
 }
 
 main()

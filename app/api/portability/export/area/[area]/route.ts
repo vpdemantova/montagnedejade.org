@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { findAll } from "@/atlas/lib/db"
 import { buildMirrorContent } from "@/atlas/lib/mirror"
+import { blockNoteToMarkdown } from "@/atlas/lib/blocknote-md"
 import JSZip from "jszip"
 import type { AreaType } from "@/atlas/types"
 
@@ -14,7 +15,7 @@ export async function GET(_req: Request, { params }: Params) {
   const folder = zip.folder(area.toLowerCase())!
 
   for (const item of items) {
-    const md = buildMirrorContent(item, "")
+    const md = buildMirrorContent(item, blockNoteToMarkdown(item.content))
     folder.file(`${item.id}.md`, md)
   }
 

@@ -68,7 +68,8 @@ export function buildMirrorContent(
 
   const frontmatter: Record<string, unknown> = {
     id:         item.id,
-    slug:       item.slug ?? undefined,
+    // Nunca gravar `undefined` explícito — js-yaml recusa serializar e derruba o export
+    ...(item.slug ? { slug: item.slug } : {}),
     title:      item.title,
     type:       item.type,
     area:       item.area,

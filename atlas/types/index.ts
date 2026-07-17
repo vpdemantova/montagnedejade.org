@@ -1,4 +1,4 @@
-import type { AtlasItem, Tag, AtlasRelation, WorldNotice } from "@prisma/client"
+import type { AtlasItem, Tag, AtlasRelation, WorldNotice, Asset, AssetLink } from "@prisma/client"
 
 // ─── Enums de domínio (SQLite não suporta enums nativos no Prisma) ─────────────
 
@@ -20,6 +20,15 @@ export const ItemType = {
   PARTITURA:  "PARTITURA",
   NOTA:       "NOTA",
   AULA:       "AULA",
+  PATH:       "PATH",
+  // Enciclopédia — tipos do acervo universal (Atlas como "novo Wikipedia")
+  ERA:        "ERA",
+  EVENT:      "EVENT",
+  MOVEMENT:   "MOVEMENT",
+  PLACE:      "PLACE",
+  ELEMENT:    "ELEMENT",
+  INSTRUMENT: "INSTRUMENT",
+  SPECIES:    "SPECIES",
 } as const
 export type ItemType = (typeof ItemType)[keyof typeof ItemType]
 
@@ -39,8 +48,24 @@ export const AreaType = {
   PERFIL:     "PERFIL",
   NOTAS:      "NOTAS",
   COMPASS:    "COMPASS",    // legacy
+  // Escolas — áreas independentes de conhecimento/prática
+  MIND:           "MIND",
+  MANIFESTATION:  "MANIFESTATION",
+  FOUNDATION:     "FOUNDATION",
+  EXPRESSION:     "EXPRESSION",
+  HYMNS:          "HYMNS",
 } as const
 export type AreaType = (typeof AreaType)[keyof typeof AreaType]
+
+export const AssetKind = {
+  IMAGE:    "IMAGE",
+  AUDIO:    "AUDIO",
+  VIDEO:    "VIDEO",
+  PDF:      "PDF",
+  DOCUMENT: "DOCUMENT",
+  OTHER:    "OTHER",
+} as const
+export type AssetKind = (typeof AssetKind)[keyof typeof AssetKind]
 
 export const StatusType = {
   ACTIVE:    "ACTIVE",
@@ -80,12 +105,16 @@ export type NoticeType = (typeof NoticeType)[keyof typeof NoticeType]
 
 // ─── Re-exporta tipos do Prisma ───────────────────────────────────────────────
 
-export type { AtlasItem, Tag, AtlasRelation, WorldNotice }
+export type { AtlasItem, Tag, AtlasRelation, WorldNotice, Asset, AssetLink }
 
 // ─── Tipos compostos de aplicação ────────────────────────────────────────────
 
 export type AtlasItemWithTags = AtlasItem & {
   tags: Tag[]
+}
+
+export type AssetWithLinks = Asset & {
+  links: Array<AssetLink & { item: Pick<AtlasItem, "id" | "title" | "slug" | "area" | "type"> }>
 }
 
 export type AtlasItemFull = AtlasItem & {
@@ -148,6 +177,26 @@ export const AREA_LABELS: Record<string, string> = {
   PERFIL:     "Perfil",
   NOTAS:      "Notas",
   COMPASS:    "Compass",
+  MIND:           "Mente",
+  MANIFESTATION:  "Manifestação",
+  FOUNDATION:     "Fundamentos",
+  EXPRESSION:     "Expressão",
+  HYMNS:          "Hinos",
+  // Áreas do acervo enciclopédico (presentes nos dados do seed)
+  HISTORIA:     "História",
+  CIENCIAS:     "Ciências",
+  NATUREZA:     "Natureza",
+  COSMOS:       "Cosmos",
+  ELEMENTOS:    "Elementos",
+  MUSICA:       "Música",
+  MUSICOS:      "Músicos",
+  PINTORES:     "Pintores",
+  PINTURAS:     "Pinturas",
+  ESCRITORES:   "Escritores",
+  FILOSOFOS:    "Filósofos",
+  CIENTISTAS:   "Cientistas",
+  ARQUITETURA:  "Arquitetura",
+  BIBLIOTECA:   "Biblioteca",
 }
 
 export const TYPE_LABELS: Record<string, string> = {
@@ -162,6 +211,14 @@ export const TYPE_LABELS: Record<string, string> = {
   PARTITURA:  "Partitura",
   NOTA:       "Nota",
   AULA:       "Aula",
+  PATH:       "Trilha",
+  ERA:        "Era",
+  EVENT:      "Evento",
+  MOVEMENT:   "Movimento",
+  PLACE:      "Lugar",
+  ELEMENT:    "Elemento",
+  INSTRUMENT: "Instrumento",
+  SPECIES:    "Espécie",
 }
 
 export const STATUS_LABELS: Record<string, string> = {
@@ -195,6 +252,11 @@ export const AREA_COLORS: Record<string, string> = {
   PERFIL:     "#4DB84A",
   NOTAS:      "#7CFC6A",
   COMPASS:    "#7CFC6A",
+  MIND:           "#5C7C9B",
+  MANIFESTATION:  "#B85C3F",
+  FOUNDATION:     "#7C8C4A",
+  EXPRESSION:     "#C77DAE",
+  HYMNS:          "#9B8C4A",
 }
 
 // Áreas visíveis no Portal Solar (hemisferio PORTAL)
@@ -206,6 +268,11 @@ export const PORTAL_AREAS = [
   AreaType.PESSOAS,
   AreaType.COMPUTACAO,
   AreaType.AULAS,
+  AreaType.MIND,
+  AreaType.MANIFESTATION,
+  AreaType.FOUNDATION,
+  AreaType.EXPRESSION,
+  AreaType.HYMNS,
 ] as const
 
 // Áreas do Numita Compass (hemisferio COMPASS)

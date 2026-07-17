@@ -53,13 +53,21 @@ const COL_ATLAS: NavLink[] = [
   { label: "◈ Hub",              href: "/hub",                     desc: "Centro de recursos"       },
   { label: "⊕ Grafo",            href: "/atlas/grafo",             desc: "Mapa de relações"         },
   { label: "// Tabela Periódica", href: "/atlas/tabela-periodica", desc: "118 elementos interativos"},
+  { label: "◐ Eras",             href: "/eras",                    desc: "Linha do tempo da humanidade"},
+  { label: "◫ Directory",        href: "/directory",               desc: "Biblioteca de arquivos"   },
+  { label: "⬡ Structure",        href: "/structure",               desc: "Como o app é feito"       },
   { label: "→ Workspace",        href: "/workspace",               desc: "Páginas e notas"          },
   { label: "+ Novo item",        href: "/atlas/novo",              desc: "Adicionar ao acervo"      },
 ]
 
 const COL_ACADEMIA: NavLink[] = [
-  { label: "▸ Academia",   href: "/academia",  desc: "Aprendizado e formação"  },
-  { label: "◉ Monumento",  href: "/monument",  desc: "Obra tridimensional 3D"  },
+  { label: "▸ Academia",        href: "/academia",       desc: "Trilhas e formação"                },
+  { label: "◌ Mente",           href: "/mind",            desc: "Meditação e consciência"           },
+  { label: "▸ Manifestação",    href: "/manifestation",   desc: "Guias de criação e produção"       },
+  { label: "⬡ Fundamentos",     href: "/foundation",      desc: "Bases de todo conhecimento"        },
+  { label: "◈ Expressão",       href: "/expression",      desc: "Música, escrita, teatro"           },
+  { label: "✦ Hinos",           href: "/hymns",           desc: "Cânticos e devocionais"            },
+  { label: "◉ Monumento",       href: "/monument",        desc: "Obra tridimensional 3D"            },
 ]
 
 // ── Active helpers ────────────────────────────────────────────────────────────
@@ -343,7 +351,7 @@ export function UnifiedNav() {
                   {[
                     { label: "→ Workspace",     href: "/workspace" },
                     { label: "⚙ Configurações", href: "/settings"  },
-                    { label: "◈ Sobre",         href: "/sobre"     },
+                    { label: "◈ Sobre",         href: "/structure" },
                     { label: "+ Atlas",         href: "/atlas/novo"},
                   ].map((l) => (
                     <Link key={l.href} href={l.href} onClick={() => setOpen(false)}

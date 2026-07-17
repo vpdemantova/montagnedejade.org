@@ -16,6 +16,7 @@ const NAV_SECTIONS = [
   { id: "motor",         label: "// Motor",             short: "Motor"       },
   { id: "grade",         label: "▣ Grade dos Saberes",  short: "Saberes"     },
   { id: "livros",        label: "◫ Livros & Curadoria", short: "Livros"      },
+  { id: "trilhas",       label: "◇ Trilhas",            short: "Trilhas"     },
   { id: "studio",        label: "◈ Studio",             short: "Studio"      },
 ]
 
@@ -88,8 +89,10 @@ function parseMetadata(raw?: string | null): Record<string, unknown> {
 
 export function AcademiaClient({
   books,
+  paths = [],
 }: {
   books: AtlasItemWithTags[]
+  paths?: AtlasItemWithTags[]
 }) {
   const [activeSection, setActiveSection] = useState("boas-vindas")
   const sectionRefs = useRef<Map<string, HTMLElement>>(new Map())
@@ -666,6 +669,48 @@ export function AcademiaClient({
             ))}
           </div>
         </div>
+      </section>
+
+      {/* ══ SEÇÃO SECUNDÁRIA: TRILHAS ═════════════════════════════════════════ */}
+      <section
+        ref={setSectionRef("trilhas")}
+        id="trilhas"
+        className="page-wide py-14"
+      >
+        <p className="font-mono text-[7px] uppercase tracking-[0.4em] mb-4"
+          style={{ color: "rgb(var(--c-muted) / 0.4)" }}>
+          ◇ Seção Secundária · Sequências curadas pelo conteúdo
+        </p>
+        <h2 className="font-display font-bold leading-none mb-2"
+          style={{ fontSize: "clamp(1.5rem, 3vw, 2.2rem)", letterSpacing: "-0.025em", color: "rgb(var(--c-text)/0.88)" }}>
+          Trilhas
+        </h2>
+        <p className="font-mono text-[9.5px] max-w-lg leading-relaxed mb-8"
+          style={{ color: "rgb(var(--c-muted)/0.55)" }}>
+          Passo a passo curados pela Academia — sequências ordenadas de itens que cruzam Mente,
+          Manifestação, Fundamentos, Expressão e o Atlas.
+        </p>
+
+        {paths.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            {paths.map((path) => (
+              <Link key={path.id} href={`/academia/${path.slug ?? path.id}`}
+                className="group flex flex-col p-4 border border-solar-border/20 hover:border-solar-border/45 hover:bg-solar-surface/15 transition-all">
+                <p className="font-display text-[13px] leading-snug mb-2 group-hover:opacity-90 transition-opacity"
+                  style={{ color: "rgb(var(--c-text)/0.8)", letterSpacing: "-0.01em" }}>
+                  {path.title}
+                </p>
+                <p className="font-mono text-[7.5px] mt-auto" style={{ color: "rgb(var(--c-muted)/0.45)" }}>
+                  Ver trilha →
+                </p>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="py-12 text-center border border-solar-border/15">
+            <p className="font-mono text-[9px] text-solar-muted/35">Nenhuma trilha curada ainda.</p>
+          </div>
+        )}
       </section>
     </div>
   )
